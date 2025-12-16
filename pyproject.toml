@@ -8,15 +8,16 @@ version = "0.0.0"
 description = "FlowBiz AI Core monorepo skeleton"
 authors = [{ name = "flowbiz.cloud" }]
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.11,<3.13"
 dependencies = [
-    "fastapi>=0.110,<0.112",
-    "uvicorn>=0.29,<0.30",
+    "fastapi",
+    "uvicorn[standard]",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.1",
+    "pytest",
+    "httpx",
 ]
 
 [tool.setuptools.packages.find]
