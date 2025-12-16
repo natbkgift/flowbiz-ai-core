@@ -36,4 +36,8 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
    pytest
    ```
 
+4. **Configure environment**
+
+   Copy `.env.example` to `.env` and adjust values as needed for your setup. The defaults are suitable for local development.
+
 The API currently exposes a minimal root endpoint and will expand in later PRs.
