@@ -21,11 +21,11 @@ class AppSettings(BaseSettings):
 
     env: str = Field(default="development", env="APP_ENV")
     name: str = Field(default="FlowBiz AI Core", env="APP_NAME")
-    log_level: str = Field(default="INFO", env="LOG_LEVEL")
-    database_url: str = Field(default="postgresql://localhost:5432/flowbiz", env="DATABASE_URL")
-    allowed_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"], env="ALLOWED_ORIGINS")
-    api_host: str = Field(default="0.0.0.0", env="API_HOST")
-    api_port: int = Field(default=8000, env="API_PORT")
+    log_level: str = Field(default="INFO", env="APP_LOG_LEVEL")
+    database_url: str = Field(default="postgresql://localhost:5432/flowbiz", env="APP_DATABASE_URL")
+    allowed_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"], env="APP_ALLOWED_ORIGINS")
+    api_host: str = Field(default="0.0.0.0", env="APP_API_HOST")
+    api_port: int = Field(default=8000, env="APP_API_PORT")
 
     @field_validator("allowed_origins", mode="before")
     @classmethod
