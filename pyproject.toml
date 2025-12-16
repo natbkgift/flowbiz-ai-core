@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flowbiz-ai-core"
+version = "0.0.0"
+description = "FlowBiz AI Core monorepo skeleton"
+authors = [{ name = "flowbiz.cloud" }]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.110,<0.112",
+    "uvicorn>=0.29,<0.30",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.1",
+]
+
+[tool.setuptools.packages.find]
+include = ["apps*", "packages*"]
