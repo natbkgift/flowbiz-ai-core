@@ -53,7 +53,12 @@ def create_app() -> FastAPI:
         status_code = 500
         code = "HTTP_500"
         message = "Internal Server Error"
-        _log_error(status_code, code, message)
+        logger = getattr(app.state, "logger", get_logger("flowbiz.api"))
+        logger.error(
+            "request error",
+            extra={"status": status_code, "code": code, "message": message},
+            exc_info=exc,
+        )
         return JSONResponse(status_code=status_code, content=build_error_response(code, message))
 
     @app.get("/", summary="Root placeholder")
