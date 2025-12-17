@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import sys
 import threading
+from contextvars import ContextVar
 from typing import Final
 
 from .config import get_settings
@@ -12,13 +13,15 @@ from .config import get_settings
 LOG_FORMAT: Final[str] = "%(asctime)s | %(levelname)s | %(message)s | request_id=%(request_id)s"
 _lock = threading.Lock()
 
+REQUEST_ID_CTX_VAR: ContextVar[str | None] = ContextVar("request_id", default=None)
+
 
 class RequestIdFormatter(logging.Formatter):
     """Formatter that ensures a request ID field is present."""
 
     def format(self, record: logging.LogRecord) -> str:
-        if not hasattr(record, "request_id"):
-            record.request_id = "-"
+        request_id = getattr(record, "request_id", None) or REQUEST_ID_CTX_VAR.get()
+        record.request_id = request_id or "-"
         return super().format(record)
 
 
