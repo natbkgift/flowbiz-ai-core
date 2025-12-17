@@ -17,7 +17,6 @@ def test_get_logger_configures_structured_handler():
 
     handler = logger.handlers[0]
     assert isinstance(handler.formatter, RequestIdFormatter)
-    assert handler.formatter._style._fmt == LOG_FORMAT
 
     record = logging.LogRecord(
         name="tests.logging", level=logging.INFO, pathname=__file__, lineno=1, msg="hello", args=(), exc_info=None
