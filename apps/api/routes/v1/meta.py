@@ -12,7 +12,7 @@ router = APIRouter(prefix="/v1")
 
 
 @router.get("/meta", summary="Service metadata")
-async def get_meta() -> dict[str, str]:
+def get_meta() -> dict[str, str]:
     """Return basic service metadata."""
 
     return {"service": settings.name, "env": settings.env}
