@@ -13,13 +13,15 @@ def _current_request_id() -> str:
     return REQUEST_ID_CTX_VAR.get() or str(uuid.uuid4())
 
 
-def build_error_response(code: str, message: str) -> dict[str, dict[str, str]]:
+def build_error_response(code: str, message: str, *, details: list | None = None) -> dict:
     """Create a standardized error response payload."""
-
-    return {
+    payload = {
         "error": {
             "code": code,
             "message": message,
             "request_id": _current_request_id(),
         }
     }
+    if details:
+        payload["error"]["details"] = details
+    return payload
