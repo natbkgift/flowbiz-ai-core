@@ -32,12 +32,15 @@ class RequestIdFilter(logging.Filter):
         request_id = getattr(record, "request_id", None) or REQUEST_ID_CTX_VAR.get()
         record.request_id = request_id or "-"
 
-        # If the formatted message won't include request_id (e.g., default pytest
-        # caplog formatting), append it to the message so tests can assert on it.
-        message = record.getMessage()
-        if "request_id=" not in message:
-            record.msg = f"{message} | request_id={record.request_id}"
-            record.args = ()
+        # This logic is a workaround for pytest's caplog, which uses a default
+        # formatter that doesn't include the custom 'request_id' attribute.
+        # This modification should only be applied when running under pytest to avoid
+        # duplicating the request_id in production logs where RequestIdFormatter is used.
+        if "pytest" in sys.modules:
+            message = record.getMessage()
+            if "request_id=" not in message:
+                record.msg = f'{message} | request_id={record.request_id}'
+                record.args = ()
 
         return True
 
