@@ -53,7 +53,7 @@ class AppSettings(BaseSettings):
     cors_allow_methods: list[str] = Field(
         default_factory=lambda: ["GET", "POST", "PUT", "PATCH", "DELETE"]
     )
-    cors_allow_headers: list[str] = Field(default_factory=lambda: ["*"])
+    cors_allow_headers: list[str] = Field(default_factory=lambda: ["Content-Type", "Authorization"])
     cors_allow_credentials: bool = Field(default=False)
     api_host: str = Field(default="0.0.0.0")
     api_port: int = Field(default=8000)
