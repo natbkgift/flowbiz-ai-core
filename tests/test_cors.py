@@ -31,4 +31,4 @@ def test_cors_preflight_options(monkeypatch):
     )
     assert resp.status_code in (200, 204)
     assert resp.headers.get("access-control-allow-origin") == "https://example.com"
-    assert resp.headers.get("access-control-allow-methods") is not None
+    assert resp.headers.get("access-control-allow-methods") == "GET"
