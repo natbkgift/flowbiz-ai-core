@@ -50,8 +50,8 @@ class AppSettings(BaseSettings):
     log_level: str = Field(default="INFO")
     database_url: str = Field(default="postgresql://localhost:5432/flowbiz")
     cors_allow_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
-    cors_allow_methods: list[str] = Field(default_factory=lambda: ["GET"])
-    cors_allow_headers: list[str] = Field(default_factory=list)
+    cors_allow_methods: list[str] = Field(default_factory=lambda: ["*"])
+    cors_allow_headers: list[str] = Field(default_factory=lambda: ["*"])
     cors_allow_credentials: bool = Field(default=False)
     api_host: str = Field(default="0.0.0.0")
     api_port: int = Field(default=8000)
@@ -62,10 +62,17 @@ class AppSettings(BaseSettings):
     @classmethod
     def parse_comma_separated_lists(cls, value: Any) -> Any:
         """Parse comma-separated string values into lists."""
+        if value is None:
+            return ["*"]
+
         if isinstance(value, str):
-            return [item.strip() for item in value.split(",") if item.strip()]
+            parsed = [item.strip() for item in value.split(",") if item.strip()]
+            return parsed or ["*"]
+
         if isinstance(value, (list, tuple, set)):
-            return list(value)
+            parsed = [item for item in value if str(item).strip()]
+            return parsed or ["*"]
+
         return value
 
     @classmethod
