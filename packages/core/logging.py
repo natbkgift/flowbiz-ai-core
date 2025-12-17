@@ -20,8 +20,10 @@ class RequestIdFormatter(logging.Formatter):
     """Formatter that ensures a request ID field is present."""
 
     def format(self, record: logging.LogRecord) -> str:
-        request_id = getattr(record, "request_id", None) or REQUEST_ID_CTX_VAR.get()
-        record.request_id = request_id or "-"
+        # RequestIdFilter is responsible for attaching the request_id to the record.
+        # The formatter only ensures a default value is present so formatting doesn't fail
+        # if the filter was not applied for some reason (e.g., custom logger setups).
+        record.request_id = getattr(record, "request_id", None) or "-"
         return super().format(record)
 
 
