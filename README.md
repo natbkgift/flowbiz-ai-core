@@ -36,6 +36,10 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
    pytest
    ```
 
+## Continuous integration
+
+GitHub Actions runs the test suite (pytest) on every push and pull request to ensure changes remain healthy.
+
 4. **Configure environment**
 
    Copy `.env.example` to `.env` and adjust values as needed for your setup. The defaults are suitable for local development. Environment variables use the `APP_` prefix. Example CORS configuration:
