@@ -18,20 +18,17 @@ from apps.api.routes.v1.meta import router as meta_v1_router
 from packages.core import build_error_response, get_logger, get_settings
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.logger = get_logger("flowbiz.api")
+    app.state.logger.info("Logger initialized")
+    yield
+
+
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
 
     settings = get_settings()
-
-    @asynccontextmanager
-    async def lifespan(app: FastAPI):
-        app.state.logger = get_logger("flowbiz.api")
-        app.state.logger.info("Logger initialized")
-        try:
-            yield
-        finally:
-            # No teardown actions required currently.
-            pass
 
     app = FastAPI(title=settings.name, lifespan=lifespan)
 
