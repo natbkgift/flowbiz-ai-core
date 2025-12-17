@@ -36,9 +36,7 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
    pytest
    ```
 
-## Continuous integration
-
-GitHub Actions runs the test suite (pytest) on every push and pull request to ensure changes remain healthy.
+> **Note:** GitHub Actions runs the test suite (pytest) on every push and pull request to ensure changes remain healthy.
 
 4. **Configure environment**
 
