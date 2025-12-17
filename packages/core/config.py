@@ -7,9 +7,8 @@ through :func:`get_settings`. Environment variables can be loaded from a
 
 from __future__ import annotations
 
-import os
 from functools import lru_cache
-from typing import Any, Iterable
+from typing import Any
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -19,12 +18,18 @@ from pydantic_settings.sources import EnvSettingsSource
 class CommaSeparatedListEnvSource(EnvSettingsSource):
     """Custom env source that handles comma-separated lists without requiring JSON."""
 
+    _list_fields = {
+        "cors_allow_origins",
+        "cors_allow_methods",
+        "cors_allow_headers",
+    }
+
     def prepare_field_value(
         self, field_name: str, field, value: Any, value_is_complex: bool
     ) -> Any:
         """Override to handle comma-separated lists specially."""
-        if field_name == "allowed_origins" and isinstance(value, str):
-            # Return the raw string for allowed_origins, skip the parent's JSON parsing
+        if field_name in self._list_fields and isinstance(value, str):
+            # Return the raw string for list fields, skip the parent's JSON parsing
             # The field_validator will handle the string-to-list conversion
             return value
         # For other fields, use the parent implementation
@@ -44,16 +49,21 @@ class AppSettings(BaseSettings):
     name: str = Field(default="FlowBiz AI Core")
     log_level: str = Field(default="INFO")
     database_url: str = Field(default="postgresql://localhost:5432/flowbiz")
-    allowed_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
+    cors_allow_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
+    cors_allow_methods: list[str] = Field(default_factory=lambda: ["*"])
+    cors_allow_headers: list[str] = Field(default_factory=lambda: ["*"])
+    cors_allow_credentials: bool = Field(default=False)
     api_host: str = Field(default="0.0.0.0")
     api_port: int = Field(default=8000)
 
-    @field_validator("allowed_origins", mode="before")
+    @field_validator(
+        "cors_allow_origins", "cors_allow_methods", "cors_allow_headers", mode="before"
+    )
     @classmethod
-    def parse_allowed_origins(cls, value: Any) -> Any:
-        """Parse comma-separated string to list."""
+    def parse_comma_separated_lists(cls, value: Any) -> Any:
+        """Parse comma-separated string values into lists."""
         if isinstance(value, str):
-            return [origin.strip() for origin in value.split(",") if origin.strip()]
+            return [item.strip() for item in value.split(",") if item.strip()]
         if isinstance(value, (list, tuple, set)):
             return list(value)
         return value

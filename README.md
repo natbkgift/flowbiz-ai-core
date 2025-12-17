@@ -38,6 +38,13 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
 
 4. **Configure environment**
 
-   Copy `.env.example` to `.env` and adjust values as needed for your setup. The defaults are suitable for local development.
+   Copy `.env.example` to `.env` and adjust values as needed for your setup. The defaults are suitable for local development. Environment variables use the `APP_` prefix. Example CORS configuration:
+
+   ```bash
+   APP_CORS_ALLOW_ORIGINS=https://example.com,http://localhost:3000
+   APP_CORS_ALLOW_METHODS=GET,POST
+   APP_CORS_ALLOW_HEADERS=Content-Type,Authorization
+   APP_CORS_ALLOW_CREDENTIALS=false
+   ```
 
 The API currently exposes a minimal root endpoint and will expand in later PRs.
