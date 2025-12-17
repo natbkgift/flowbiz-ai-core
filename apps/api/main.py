@@ -36,7 +36,7 @@ def create_app() -> FastAPI:
         logger.log(level, "request error", extra={"status": status_code, "code": code, "error_message": message})
 
     @app.exception_handler(StarletteHTTPException)
-    async def handle_http_exception(request: Request, exc: StarletteHTTPException):
+    async def handle_http_exception(_request: Request, exc: StarletteHTTPException) -> JSONResponse:
         status_code = exc.status_code
         code = f"HTTP_{status_code}"
         message = exc.detail if isinstance(exc.detail, str) else str(exc.detail)
