@@ -31,21 +31,11 @@ def test_request_id_header_is_reused_when_valid():
     assert response.headers["X-Request-ID"] == request_id
 
 
-def test_logging_captures_request_id_from_context():
-    logger = get_logger("flowbiz.api")
-    stream = io.StringIO()
-    handler = logging.StreamHandler(stream)
-    handler.setFormatter(RequestIdFormatter(LOG_FORMAT))
-    logger.addHandler(handler)
-
+def test_logging_captures_request_id_from_context(caplog):
     request_id = str(uuid.uuid4())
 
-    try:
-        with _client() as client:
-            response = client.get("/log", headers={"X-Request-ID": request_id})
+    with _client() as client:
+        response = client.get("/log", headers={"X-Request-ID": request_id})
 
-        assert response.status_code == 200
-        handler.flush()
-        assert f"request_id={request_id}" in stream.getvalue()
-    finally:
-        logger.removeHandler(handler)
+    assert response.status_code == 200
+    assert f"request_id={request_id}" in caplog.text
