@@ -10,6 +10,8 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from apps.api.middleware import RequestIdMiddleware, RequestLoggingMiddleware
+from apps.api.routes.health import router as health_router
+from apps.api.routes.v1.meta import router as meta_v1_router
 from packages.core import build_error_response, get_logger, get_settings
 
 settings = get_settings()
@@ -60,6 +62,9 @@ def create_app() -> FastAPI:
             exc_info=exc,
         )
         return JSONResponse(status_code=status_code, content=build_error_response(code, message))
+
+    app.include_router(health_router)
+    app.include_router(meta_v1_router)
 
     @app.get("/", summary="Root placeholder")
     async def read_root() -> dict[str, str]:
