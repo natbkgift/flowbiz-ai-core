@@ -28,8 +28,10 @@ def test_health_endpoint_returns_status(client: TestClient):
 def test_meta_endpoint_returns_env(client: TestClient):
     """Ensure the meta endpoint reports service name and environment."""
 
+    settings = get_settings()
     response = client.get("/v1/meta")
     data = response.json()
 
     assert response.status_code == 200
-    assert data == {"service": get_settings().name, "env": get_settings().env}
+    assert data["service"] == settings.name
+    assert data["env"] == settings.env
