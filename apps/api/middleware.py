@@ -65,7 +65,7 @@ class RequestLoggingMiddleware:
 
     def __init__(self, app: ASGIApp):
         self.app = app
-        self.logger = get_logger("flowbiz.api")
+        self.logger = get_logger(__name__)
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] != "http":
