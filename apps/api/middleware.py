@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import uuid
 
+import logging
+from time import perf_counter
+
 from starlette.datastructures import Headers, MutableHeaders
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
-from packages.core.logging import REQUEST_ID_CTX_VAR
+from packages.core.logging import REQUEST_ID_CTX_VAR, get_logger
 
 
 def _generate_request_id() -> str:
@@ -55,3 +58,51 @@ class RequestIdMiddleware:
             await self.app(scope, receive, send_wrapper)
         finally:
             REQUEST_ID_CTX_VAR.reset(token)
+
+
+class RequestLoggingMiddleware:
+    """Log a single structured line for each completed request."""
+
+    def __init__(self, app: ASGIApp):
+        self.app = app
+        self.logger = get_logger(__name__)
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        start_time = perf_counter()
+        status_code: int | None = None
+
+        async def send_wrapper(message: Message) -> None:
+            nonlocal status_code
+            if message["type"] == "http.response.start":
+                status_code = message["status"]
+            await send(message)
+
+        try:
+            await self.app(scope, receive, send_wrapper)
+        finally:
+            duration_ms = int((perf_counter() - start_time) * 1000)
+            status = status_code or 500
+
+            if status >= 500:
+                level = logging.ERROR
+            elif status >= 400:
+                level = logging.WARNING
+            else:
+                level = logging.INFO
+
+            self.logger.log(
+                level,
+                "request completed",
+                extra={
+                    "method": scope.get("method"),
+                    "path": scope.get("path"),
+                    "status": status,
+                    "duration_ms": duration_ms,
+                    "request_id": REQUEST_ID_CTX_VAR.get(),
+                },
+            )
+            )

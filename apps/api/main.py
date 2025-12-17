@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 
-from apps.api.middleware import RequestIdMiddleware
+from apps.api.middleware import RequestIdMiddleware, RequestLoggingMiddleware
 from packages.core import get_logger, get_settings
 
 settings = get_settings()
@@ -13,6 +13,7 @@ def create_app() -> FastAPI:
 
     app = FastAPI(title=settings.name)
     app.add_middleware(RequestIdMiddleware)
+    app.add_middleware(RequestLoggingMiddleware)
 
     @app.on_event("startup")
     async def configure_logging() -> None:
