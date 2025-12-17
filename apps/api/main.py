@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -21,7 +22,18 @@ def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
 
     settings = get_settings()
-    app = FastAPI(title=settings.name)
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        app.state.logger = get_logger("flowbiz.api")
+        app.state.logger.info("Logger initialized")
+        try:
+            yield
+        finally:
+            # No teardown actions required currently.
+            pass
+
+    app = FastAPI(title=settings.name, lifespan=lifespan)
 
     # innermost
     app.add_middleware(RequestLoggingMiddleware)
@@ -37,11 +49,6 @@ def create_app() -> FastAPI:
 
     # outermost
     app.add_middleware(RequestIdMiddleware)
-
-    @app.on_event("startup")
-    async def configure_logging() -> None:
-        app.state.logger = get_logger("flowbiz.api")
-        app.state.logger.info("Logger initialized")
 
     def _log_error(status_code: int, code: str, message: str) -> None:
         logger = getattr(app.state, "logger", get_logger("flowbiz.api"))
