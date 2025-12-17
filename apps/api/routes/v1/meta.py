@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from packages.core import get_settings
+from packages.core.services import MetaService
 
-settings = get_settings()
+meta_service = MetaService()
 
 router = APIRouter(prefix="/v1")
 
@@ -15,4 +15,4 @@ router = APIRouter(prefix="/v1")
 def get_meta() -> dict[str, str]:
     """Return basic service metadata."""
 
-    return {"service": settings.name, "env": settings.env}
+    return meta_service.get_meta()

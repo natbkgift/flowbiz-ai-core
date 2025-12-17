@@ -1,5 +1,4 @@
 from fastapi.testclient import TestClient
-import os
 import pytest
 
 from apps.api.main import app
@@ -45,13 +44,28 @@ def test_health_endpoint_version(
     assert response.json()["version"] == expected
 
 
-def test_meta_endpoint_returns_env(client: TestClient):
-    """Ensure the meta endpoint reports service name and environment."""
+@pytest.mark.parametrize(
+    "app_version,expected_version",
+    [
+        ("2.0.0", "2.0.0"),
+        (None, "dev"),
+    ],
+)
+def test_meta_endpoint_returns_env(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, app_version: str | None, expected_version: str
+):
+    """Ensure the meta endpoint reports service name, environment, and version."""
 
     settings = get_settings()
+    if app_version is None:
+        monkeypatch.delenv("APP_VERSION", raising=False)
+    else:
+        monkeypatch.setenv("APP_VERSION", app_version)
+
     response = client.get("/v1/meta")
     data = response.json()
 
     assert response.status_code == 200
     assert data["service"] == settings.name
     assert data["env"] == settings.env
+    assert data["version"] == expected_version

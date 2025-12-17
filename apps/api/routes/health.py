@@ -2,13 +2,11 @@ from __future__ import annotations
 
 """Health check endpoint for FlowBiz AI Core."""
 
-import os
-
 from fastapi import APIRouter
 
-from packages.core import get_settings
+from packages.core.services import MetaService
 
-settings = get_settings()
+meta_service = MetaService()
 
 router = APIRouter()
 
@@ -17,5 +15,5 @@ router = APIRouter()
 def health_check() -> dict[str, str]:
     """Return service health information."""
 
-    version = os.getenv("APP_VERSION") or "dev"
-    return {"status": "ok", "service": settings.name, "version": version}
+    meta = meta_service.get_meta()
+    return {"status": "ok", "service": meta["service"], "version": meta["version"]}
