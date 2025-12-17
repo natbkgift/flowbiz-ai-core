@@ -8,6 +8,7 @@ import os
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from apps.api.middleware import RequestIdMiddleware, RequestLoggingMiddleware
 from apps.api.routes.health import router as health_router
@@ -32,10 +33,10 @@ def create_app() -> FastAPI:
     def _log_error(status_code: int, code: str, message: str) -> None:
         logger = getattr(app.state, "logger", get_logger("flowbiz.api"))
         level = logging.ERROR if status_code >= 500 else logging.WARNING
-        logger.log(level, "request error", extra={"status": status_code, "code": code, "message": message})
+        logger.log(level, "request error", extra={"status": status_code, "code": code, "error_message": message})
 
-    @app.exception_handler(HTTPException)
-    async def handle_http_exception(request: Request, exc: HTTPException):
+    @app.exception_handler(StarletteHTTPException)
+    async def handle_http_exception(request: Request, exc: StarletteHTTPException):
         status_code = exc.status_code
         code = f"HTTP_{status_code}"
         message = exc.detail if isinstance(exc.detail, str) else str(exc.detail)
@@ -58,7 +59,7 @@ def create_app() -> FastAPI:
         logger = getattr(app.state, "logger", get_logger("flowbiz.api"))
         logger.error(
             "request error",
-            extra={"status": status_code, "code": code, "message": message},
+            extra={"status": status_code, "code": code, "error_message": message},
             exc_info=exc,
         )
         return JSONResponse(status_code=status_code, content=build_error_response(code, message))
