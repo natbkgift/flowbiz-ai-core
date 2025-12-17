@@ -12,8 +12,15 @@ def reset_settings(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.delenv("APP_NAME", raising=False)
     monkeypatch.delenv("APP_ENV", raising=False)
     monkeypatch.delenv("APP_VERSION", raising=False)
+    monkeypatch.delenv("GIT_SHA", raising=False)
+    monkeypatch.delenv("BUILD_TIME", raising=False)
     yield
     reset_settings_cache()
+    monkeypatch.delenv("APP_NAME", raising=False)
+    monkeypatch.delenv("APP_ENV", raising=False)
+    monkeypatch.delenv("APP_VERSION", raising=False)
+    monkeypatch.delenv("GIT_SHA", raising=False)
+    monkeypatch.delenv("BUILD_TIME", raising=False)
 
 
 def test_meta_service_returns_settings(monkeypatch: pytest.MonkeyPatch):
