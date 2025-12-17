@@ -48,3 +48,19 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
    ```
 
 The API currently exposes a minimal root endpoint and will expand in later PRs.
+
+## Docker usage
+
+Build and run the FastAPI service in Docker:
+
+```bash
+docker build -t flowbiz-ai-core .
+docker run --rm -d --name flowbiz-ai-core-app -p 8000:8000 flowbiz-ai-core
+```
+
+Verify the container is healthy:
+
+```bash
+curl http://localhost:8000/healthz
+curl http://localhost:8000/v1/meta
+```
