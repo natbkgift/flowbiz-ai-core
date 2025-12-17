@@ -50,8 +50,10 @@ class AppSettings(BaseSettings):
     log_level: str = Field(default="INFO")
     database_url: str = Field(default="postgresql://localhost:5432/flowbiz")
     cors_allow_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
-    cors_allow_methods: list[str] = Field(default_factory=lambda: ["GET"])
-    cors_allow_headers: list[str] = Field(default_factory=list)
+    cors_allow_methods: list[str] = Field(
+        default_factory=lambda: ["GET", "POST", "PUT", "PATCH", "DELETE"]
+    )
+    cors_allow_headers: list[str] = Field(default_factory=lambda: ["*"])
     cors_allow_credentials: bool = Field(default=False)
     api_host: str = Field(default="0.0.0.0")
     api_port: int = Field(default=8000)

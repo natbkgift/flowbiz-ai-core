@@ -14,7 +14,7 @@ def test_get_settings_returns_defaults(monkeypatch):
     assert settings.log_level == "INFO"
     assert settings.database_url == "postgresql://localhost:5432/flowbiz"
     assert settings.cors_allow_origins == ["http://localhost:3000"]
-    assert settings.cors_allow_methods == ["*"]
+    assert settings.cors_allow_methods == ["GET", "POST", "PUT", "PATCH", "DELETE"]
     assert settings.cors_allow_headers == ["*"]
     assert settings.cors_allow_credentials is False
     assert settings.api_host == "0.0.0.0"
