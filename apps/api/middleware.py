@@ -105,4 +105,3 @@ class RequestLoggingMiddleware:
                     "request_id": REQUEST_ID_CTX_VAR.get(),
                 },
             )
-            )

@@ -12,8 +12,8 @@ def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
 
     app = FastAPI(title=settings.name)
-    app.add_middleware(RequestIdMiddleware)
     app.add_middleware(RequestLoggingMiddleware)
+    app.add_middleware(RequestIdMiddleware)
 
     @app.on_event("startup")
     async def configure_logging() -> None:
