@@ -98,8 +98,8 @@ class RequestLoggingMiddleware:
                 level,
                 "request completed",
                 extra={
-                    "method": scope.get("method"),
-                    "path": scope.get("path"),
+                    "method": scope.get("method", "-"),
+                    "path": scope.get("path", "-"),
                     "status": status,
                     "duration_ms": duration_ms,
                 },
