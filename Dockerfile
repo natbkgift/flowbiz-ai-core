@@ -1,20 +1,34 @@
 # syntax=docker/dockerfile:1
-FROM python:3.11-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+# ---- Builder stage ----
+FROM python:3.11-slim AS builder
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 
 WORKDIR /app
 
-RUN addgroup --system app && adduser --system --ingroup app app
+RUN pip install --no-cache-dir --upgrade pip wheel
 
-COPY pyproject.toml README.md ./
+COPY pyproject.toml ./
 COPY apps ./apps
 COPY packages ./packages
 
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir .
+# Build wheels for the project and its dependencies
+RUN pip wheel --no-cache-dir --wheel-dir /wheels .
+
+# ---- Final stage ----
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+RUN addgroup --system app && adduser --system --ingroup app app
+
+# Copy wheels from builder stage and install them
+COPY --from=builder /wheels /wheels
+RUN pip install --no-cache-dir --no-index --find-links=/wheels /wheels/*.whl && rm -rf /wheels
 
 USER app
 
