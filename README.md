@@ -55,7 +55,7 @@ Build and run the FastAPI service in Docker:
 
 ```bash
 docker build -t flowbiz-ai-core .
-docker run --rm -p 8000:8000 flowbiz-ai-core
+docker run --rm -d --name flowbiz-ai-core-app -p 8000:8000 flowbiz-ai-core
 ```
 
 Verify the container is healthy:
