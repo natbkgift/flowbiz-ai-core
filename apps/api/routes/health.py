@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 @router.get("/healthz", summary="Health check")
-async def health_check() -> dict[str, str]:
+def health_check() -> dict[str, str]:
     """Return service health information."""
 
     version = os.getenv("APP_VERSION") or "dev"
