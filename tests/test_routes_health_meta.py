@@ -22,7 +22,27 @@ def test_health_endpoint_returns_status(client: TestClient):
     assert response.status_code == 200
     assert data["status"] == "ok"
     assert data["service"] == get_settings().name
-    assert data["version"] == os.getenv("APP_VERSION") or "dev"
+
+
+@pytest.mark.parametrize(
+    "app_version,expected",
+    [
+        ("1.2.3", "1.2.3"),
+        (None, "dev"),
+    ],
+)
+def test_health_endpoint_version(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, app_version: str | None, expected: str
+):
+    """Ensure the health check reports the correct version."""
+
+    if app_version is None:
+        monkeypatch.delenv("APP_VERSION", raising=False)
+    else:
+        monkeypatch.setenv("APP_VERSION", app_version)
+
+    response = client.get("/healthz")
+    assert response.json()["version"] == expected
 
 
 def test_meta_endpoint_returns_env(client: TestClient):
