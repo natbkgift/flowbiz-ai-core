@@ -50,11 +50,11 @@ class AppSettings(BaseSettings):
 
     @field_validator("allowed_origins", mode="before")
     @classmethod
-    def parse_allowed_origins(cls, value: str | Iterable[str]) -> list[str]:
+    def parse_allowed_origins(cls, value: Any) -> Any:
         """Parse comma-separated string to list."""
         if isinstance(value, str):
             return [origin.strip() for origin in value.split(",") if origin.strip()]
-        if isinstance(value, (list, tuple)):
+        if isinstance(value, (list, tuple, set)):
             return list(value)
         return value
 
