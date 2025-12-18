@@ -45,7 +45,7 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
 4. **Run tests**
 
    ```bash
-   pytest -q
+   pytest
    ```
 
 ## Continuous integration
