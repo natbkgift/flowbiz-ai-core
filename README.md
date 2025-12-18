@@ -59,7 +59,7 @@ Build and run the FastAPI service in Docker:
 
 ```bash
 docker build -t flowbiz-ai-core .
-docker run --rm -d --name flowbiz-ai-core-app -p 8000:8000 flowbiz-ai-core
+docker run --rm -d --name flowbiz-ai-core-app -p 8000:8000 --env-file .env flowbiz-ai-core
 ```
 
 Verify the container is healthy:
@@ -68,3 +68,29 @@ Verify the container is healthy:
 curl http://localhost:8000/healthz
 curl http://localhost:8000/v1/meta
 ```
+
+## Docker Compose (API + PostgreSQL)
+
+Start the full stack locally:
+
+```bash
+cp .env.example .env
+docker compose up --build -d
+```
+
+Verify endpoints:
+
+```bash
+curl http://127.0.0.1:8000/healthz
+curl http://127.0.0.1:8000/v1/meta
+```
+
+Stop the stack:
+
+```bash
+docker compose down
+```
+
+Notes:
+- PostgreSQL data persists in the `postgres-data` volume
+- Compose waits for db healthcheck before starting the API
