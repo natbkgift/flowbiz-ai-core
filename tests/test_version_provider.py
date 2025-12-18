@@ -7,19 +7,19 @@ from packages.core.version import VersionInfo, get_version_info
 def clear_version_env(monkeypatch: pytest.MonkeyPatch):
     """Ensure version-related environment variables do not leak between tests."""
 
-    monkeypatch.delenv("FLOWBIZ_VERSION", raising=False)
-    monkeypatch.delenv("FLOWBIZ_GIT_SHA", raising=False)
-    monkeypatch.delenv("FLOWBIZ_BUILD_TIME", raising=False)
-    monkeypatch.delenv("APP_VERSION", raising=False)
-    monkeypatch.delenv("GIT_SHA", raising=False)
-    monkeypatch.delenv("BUILD_TIME", raising=False)
+    vars_to_clear = (
+        "FLOWBIZ_VERSION",
+        "FLOWBIZ_GIT_SHA",
+        "FLOWBIZ_BUILD_TIME",
+        "APP_VERSION",
+        "GIT_SHA",
+        "BUILD_TIME",
+    )
+    for var in vars_to_clear:
+        monkeypatch.delenv(var, raising=False)
     yield
-    monkeypatch.delenv("FLOWBIZ_VERSION", raising=False)
-    monkeypatch.delenv("FLOWBIZ_GIT_SHA", raising=False)
-    monkeypatch.delenv("FLOWBIZ_BUILD_TIME", raising=False)
-    monkeypatch.delenv("APP_VERSION", raising=False)
-    monkeypatch.delenv("GIT_SHA", raising=False)
-    monkeypatch.delenv("BUILD_TIME", raising=False)
+    for var in vars_to_clear:
+        monkeypatch.delenv(var, raising=False)
 
 
 def test_version_info_defaults():
