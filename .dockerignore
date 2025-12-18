@@ -1,0 +1,20 @@
+# Ignore VCS and local env
+.git
+.venv
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Python packaging artifacts
+build/
+dist/
+.eggs/
+*.egg-info/
+
+# Local env/config
+.env
+*.local
+.DS_Store
+.vscode/
+.idea/

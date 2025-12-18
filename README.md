@@ -41,3 +41,28 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
    Copy `.env.example` to `.env` and adjust values as needed for your setup. The defaults are suitable for local development.
 
 The API currently exposes a minimal root endpoint and will expand in later PRs.
+
+## Docker
+
+1. Build image
+
+   ```bash
+   docker build -t flowbiz-ai-core:dev .
+   ```
+
+2. Run container
+
+   ```bash
+   docker run --rm -p 8000:8000 --env-file .env flowbiz-ai-core:dev
+   ```
+
+3. Verify endpoints
+
+   ```bash
+   curl -s http://127.0.0.1:8000/healthz
+   curl -s http://127.0.0.1:8000/v1/meta
+   ```
+
+Notes:
+- Ensure Docker Desktop is running. On Windows, enable WSL2 backend for best performance.
+- Do not commit `.env` (already ignored by `.gitignore`).
