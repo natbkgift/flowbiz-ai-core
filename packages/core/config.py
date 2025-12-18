@@ -12,11 +12,11 @@ from typing import Any
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic_settings.sources import EnvSettingsSource
+from pydantic_settings.sources import EnvSettingsSource, DotEnvSettingsSource
 
 
-class CommaSeparatedListEnvSource(EnvSettingsSource):
-    """Custom env source that handles comma-separated lists without requiring JSON."""
+class CommaSeparatedListMixin:
+    """Mixin to handle comma-separated lists for settings sources."""
 
     _list_fields = {
         "cors_allow_origins",
@@ -36,13 +36,22 @@ class CommaSeparatedListEnvSource(EnvSettingsSource):
         return super().prepare_field_value(field_name, field, value, value_is_complex)
 
 
+class CommaSeparatedListSettingsSource(CommaSeparatedListMixin, EnvSettingsSource):
+    """Custom env source that handles comma-separated lists without requiring JSON."""
+
+
+class CommaSeparatedListDotEnvSource(CommaSeparatedListMixin, DotEnvSettingsSource):
+    """Custom dotenv source that handles comma-separated lists without requiring JSON."""
+
+
 class AppSettings(BaseSettings):
     """Application settings sourced from environment variables."""
 
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        env_prefix="APP_"
+        env_prefix="APP_",
+        extra="ignore"
     )
 
     env: str = Field(default="development")
@@ -87,8 +96,8 @@ class AppSettings(BaseSettings):
         """Customize settings sources to use our custom env source."""
         return (
             init_settings,
-            CommaSeparatedListEnvSource(settings_cls),
-            dotenv_settings,
+            CommaSeparatedListSettingsSource(settings_cls),
+            CommaSeparatedListDotEnvSource(settings_cls),
             file_secret_settings,
         )
 
