@@ -15,46 +15,33 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic_settings.sources import EnvSettingsSource, DotEnvSettingsSource
 
 
-class CommaSeparatedListSettingsSource(EnvSettingsSource):
+class CommaSeparatedListMixin:
+    """Mixin to handle comma-separated lists for settings sources."""
+
+    _list_fields = {
+        "cors_allow_origins",
+        "cors_allow_methods",
+        "cors_allow_headers",
+    }
+
+    def prepare_field_value(
+        self, field_name: str, field, value: Any, value_is_complex: bool
+    ) -> Any:
+        """Override to handle comma-separated lists specially."""
+        if field_name in self._list_fields and isinstance(value, str):
+            # Return the raw string for list fields, skip the parent's JSON parsing
+            # The field_validator will handle the string-to-list conversion
+            return value
+        # For other fields, use the parent implementation
+        return super().prepare_field_value(field_name, field, value, value_is_complex)
+
+
+class CommaSeparatedListSettingsSource(CommaSeparatedListMixin, EnvSettingsSource):
     """Custom env source that handles comma-separated lists without requiring JSON."""
 
-    _list_fields = {
-        "cors_allow_origins",
-        "cors_allow_methods",
-        "cors_allow_headers",
-    }
 
-    def prepare_field_value(
-        self, field_name: str, field, value: Any, value_is_complex: bool
-    ) -> Any:
-        """Override to handle comma-separated lists specially."""
-        if field_name in self._list_fields and isinstance(value, str):
-            # Return the raw string for list fields, skip the parent's JSON parsing
-            # The field_validator will handle the string-to-list conversion
-            return value
-        # For other fields, use the parent implementation
-        return super().prepare_field_value(field_name, field, value, value_is_complex)
-
-
-class CommaSeparatedListDotEnvSource(DotEnvSettingsSource):
+class CommaSeparatedListDotEnvSource(CommaSeparatedListMixin, DotEnvSettingsSource):
     """Custom dotenv source that handles comma-separated lists without requiring JSON."""
-
-    _list_fields = {
-        "cors_allow_origins",
-        "cors_allow_methods",
-        "cors_allow_headers",
-    }
-
-    def prepare_field_value(
-        self, field_name: str, field, value: Any, value_is_complex: bool
-    ) -> Any:
-        """Override to handle comma-separated lists specially."""
-        if field_name in self._list_fields and isinstance(value, str):
-            # Return the raw string for list fields, skip the parent's JSON parsing
-            # The field_validator will handle the string-to-list conversion
-            return value
-        # For other fields, use the parent implementation
-        return super().prepare_field_value(field_name, field, value, value_is_complex)
 
 
 class AppSettings(BaseSettings):
