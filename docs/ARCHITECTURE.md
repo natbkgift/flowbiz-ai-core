@@ -386,7 +386,7 @@ This approach allows backward compatibility while introducing new API versions.
 ### Nginx Configuration
 
 **Key Features:**
-- Dynamic DNS resolution using Docker's internal DNS (127.0.0.11)
+- Dynamic DNS resolution using Docker's embedded DNS resolver (127.0.0.11 is Docker's internal DNS service)
 - Upstream variable `$upstream_api` pointing to `api:8000`
 - WebSocket support with connection upgrade handling
 - Standard proxy headers forwarding

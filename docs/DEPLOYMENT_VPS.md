@@ -206,8 +206,9 @@ APP_NAME=FlowBiz AI Core
 APP_VERSION=0.1.0
 APP_LOG_LEVEL=INFO
 
-# Set GIT_SHA to current commit (optional)
-GIT_SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+# Set GIT_SHA to current commit (optional - use shell command to get value)
+# Example: GIT_SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+GIT_SHA=unknown
 
 # Database Configuration (change password!)
 POSTGRES_USER=flowbiz
