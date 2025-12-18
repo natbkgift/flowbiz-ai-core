@@ -192,7 +192,7 @@ The infrastructure layer handles deployment, orchestration, and external depende
 
 ### Environment Variables
 
-Configuration is managed through environment variables with the `APP_` prefix. Variables are loaded from `.env` file or system environment.
+Configuration is managed through environment variables with the `APP_` prefix. Variables are loaded from `.env` file or system environment. Version metadata now prefers the `FLOWBIZ_` prefix while continuing to fall back to the legacy `APP_` variables for compatibility.
 
 **Key Configuration Options:**
 
@@ -200,8 +200,9 @@ Configuration is managed through environment variables with the `APP_` prefix. V
 |----------|---------|-------------|
 | `APP_ENV` | `development` | Environment name |
 | `APP_NAME` | `FlowBiz AI Core` | Application name |
-| `APP_VERSION` | `0.1.0` | Application version |
-| `GIT_SHA` | `local-dev` | Git commit SHA |
+| `FLOWBIZ_VERSION` | `0.1.0` | Application version (falls back to `APP_VERSION`) |
+| `FLOWBIZ_GIT_SHA` | `local-dev` | Git commit SHA (falls back to `GIT_SHA`) |
+| `FLOWBIZ_BUILD_TIME` | `-` | Optional build timestamp (falls back to `BUILD_TIME`) |
 | `APP_LOG_LEVEL` | `INFO` | Logging level |
 | `APP_DATABASE_URL` | `postgresql://localhost:5432/flowbiz` | Database connection string |
 | `APP_CORS_ALLOW_ORIGINS` | `http://localhost:3000` | Allowed CORS origins (comma-separated) |
@@ -293,12 +294,12 @@ Every HTTP request is automatically logged with:
 
 ### Version Information
 
-Version metadata is sourced from environment variables and exposed via API:
+Version metadata is sourced from environment variables and exposed via API. The preferred variables use the `FLOWBIZ_` prefix, with legacy `APP_` variables supported as fallbacks for compatibility:
 
 **Environment Variables:**
-- `APP_VERSION`: Application version (e.g., "0.1.0")
-- `GIT_SHA`: Git commit hash for traceability
-- `BUILD_TIME`: ISO 8601 timestamp of build (optional)
+- `FLOWBIZ_VERSION` (falls back to `APP_VERSION`): Application version (e.g., "0.1.0")
+- `FLOWBIZ_GIT_SHA` (falls back to `GIT_SHA`): Git commit hash for traceability
+- `FLOWBIZ_BUILD_TIME` (falls back to `BUILD_TIME`): ISO 8601 timestamp of build (optional)
 
 **API Endpoints:**
 - `/healthz`: Returns status, service name, and version
@@ -314,9 +315,9 @@ class VersionInfo:
 
 def get_version_info() -> VersionInfo:
     return VersionInfo(
-        version=os.getenv("APP_VERSION") or "dev",
-        git_sha=os.getenv("GIT_SHA") or "unknown",
-        build_time=os.getenv("BUILD_TIME"),
+        version=os.getenv("FLOWBIZ_VERSION") or os.getenv("APP_VERSION") or "dev",
+        git_sha=os.getenv("FLOWBIZ_GIT_SHA") or os.getenv("GIT_SHA") or "unknown",
+        build_time=os.getenv("FLOWBIZ_BUILD_TIME") or os.getenv("BUILD_TIME"),
     )
 ```
 
