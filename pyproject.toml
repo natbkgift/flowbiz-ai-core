@@ -17,8 +17,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest",
     "httpx",
+    "pytest",
     "ruff",
 ]
 
