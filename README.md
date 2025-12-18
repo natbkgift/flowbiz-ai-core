@@ -36,17 +36,23 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
    uvicorn apps.api.main:app --reload --host 0.0.0.0 --port 8000
    ```
 
-3. **Run tests**
+3. **Lint**
 
    ```bash
-   pytest
+   ruff check .
+   ```
+
+4. **Run tests**
+
+   ```bash
+   pytest -q
    ```
 
 ## Continuous integration
 
-GitHub Actions runs the test suite (pytest) on every push and pull request to ensure changes remain healthy.
+GitHub Actions runs Ruff and pytest on every push and pull request to ensure changes remain healthy.
 
-4. **Configure environment**
+5. **Configure environment**
 
    Copy `.env.example` to `.env` and adjust values as needed for your setup. The defaults are suitable for local development. Environment variables use the `APP_` prefix. Example CORS configuration:
 
