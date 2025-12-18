@@ -1,4 +1,4 @@
-from packages.core import AppSettings, get_settings, reset_settings_cache
+from packages.core import get_settings, reset_settings_cache
 
 
 def teardown_function():

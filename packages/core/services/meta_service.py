@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Provide service metadata lookups."""
+
+from __future__ import annotations
 
 from packages.core import get_settings, get_version_info
 
