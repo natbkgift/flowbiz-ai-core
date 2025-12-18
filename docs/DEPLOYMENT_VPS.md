@@ -203,12 +203,15 @@ Update the following variables in `.env`:
 # Application Configuration
 APP_ENV=production
 APP_NAME=FlowBiz AI Core
-APP_VERSION=0.1.0
+FLOWBIZ_VERSION=0.1.0
 APP_LOG_LEVEL=INFO
 
 # Set GIT_SHA to current commit (optional - use shell command to get value)
-# Example: GIT_SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
-GIT_SHA=unknown
+# Example: FLOWBIZ_GIT_SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+FLOWBIZ_GIT_SHA=unknown
+# Optional build metadata
+# FLOWBIZ_BUILD_TIME=2024-01-01T00:00:00Z
+# Legacy APP_VERSION/GIT_SHA/BUILD_TIME remain supported for backward compatibility but are deprecated.
 
 # Database Configuration (change password!)
 POSTGRES_USER=flowbiz
