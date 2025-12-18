@@ -5,7 +5,9 @@ def teardown_function():
     reset_settings_cache()
 
 
-def test_get_settings_returns_defaults(monkeypatch):
+def test_get_settings_returns_defaults(monkeypatch, tmp_path):
+    # Ensure defaults are tested without project .env influencing values
+    monkeypatch.chdir(tmp_path)
     reset_settings_cache()
     settings = get_settings()
 

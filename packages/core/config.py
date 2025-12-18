@@ -12,11 +12,32 @@ from typing import Any
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic_settings.sources import EnvSettingsSource
+from pydantic_settings.sources import EnvSettingsSource, DotEnvSettingsSource
 
 
-class CommaSeparatedListEnvSource(EnvSettingsSource):
+class CommaSeparatedListSettingsSource(EnvSettingsSource):
     """Custom env source that handles comma-separated lists without requiring JSON."""
+
+    _list_fields = {
+        "cors_allow_origins",
+        "cors_allow_methods",
+        "cors_allow_headers",
+    }
+
+    def prepare_field_value(
+        self, field_name: str, field, value: Any, value_is_complex: bool
+    ) -> Any:
+        """Override to handle comma-separated lists specially."""
+        if field_name in self._list_fields and isinstance(value, str):
+            # Return the raw string for list fields, skip the parent's JSON parsing
+            # The field_validator will handle the string-to-list conversion
+            return value
+        # For other fields, use the parent implementation
+        return super().prepare_field_value(field_name, field, value, value_is_complex)
+
+
+class CommaSeparatedListDotEnvSource(DotEnvSettingsSource):
+    """Custom dotenv source that handles comma-separated lists without requiring JSON."""
 
     _list_fields = {
         "cors_allow_origins",
@@ -42,7 +63,8 @@ class AppSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        env_prefix="APP_"
+        env_prefix="APP_",
+        extra="ignore"
     )
 
     env: str = Field(default="development")
@@ -87,8 +109,8 @@ class AppSettings(BaseSettings):
         """Customize settings sources to use our custom env source."""
         return (
             init_settings,
-            CommaSeparatedListEnvSource(settings_cls),
-            dotenv_settings,
+            CommaSeparatedListSettingsSource(settings_cls),
+            CommaSeparatedListDotEnvSource(settings_cls),
             file_secret_settings,
         )
 
