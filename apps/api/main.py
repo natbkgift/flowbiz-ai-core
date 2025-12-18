@@ -4,38 +4,56 @@ from __future__ import annotations
 
 import logging
 import os
+from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from apps.api.middleware import RequestIdMiddleware, RequestLoggingMiddleware
 from apps.api.routes.health import router as health_router
 from apps.api.routes.v1.meta import router as meta_v1_router
 from packages.core import build_error_response, get_logger, get_settings
 
-settings = get_settings()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.logger = get_logger("flowbiz.api")
+    app.state.logger.info("Logger initialized")
+    yield
 
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
 
-    app = FastAPI(title=settings.name)
-    app.add_middleware(RequestLoggingMiddleware)
-    app.add_middleware(RequestIdMiddleware)
+    settings = get_settings()
 
-    @app.on_event("startup")
-    async def configure_logging() -> None:
-        app.state.logger = get_logger("flowbiz.api")
-        app.state.logger.info("Logger initialized")
+    app = FastAPI(title=settings.name, lifespan=lifespan)
+
+    # innermost
+    app.add_middleware(RequestLoggingMiddleware)
+
+    # middle
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_allow_origins,
+        allow_methods=settings.cors_allow_methods,
+        allow_headers=settings.cors_allow_headers,
+        allow_credentials=settings.cors_allow_credentials,
+    )
+
+    # outermost
+    app.add_middleware(RequestIdMiddleware)
 
     def _log_error(status_code: int, code: str, message: str) -> None:
         logger = getattr(app.state, "logger", get_logger("flowbiz.api"))
         level = logging.ERROR if status_code >= 500 else logging.WARNING
-        logger.log(level, "request error", extra={"status": status_code, "code": code, "message": message})
+        logger.log(level, "request error", extra={"status": status_code, "code": code, "error_message": message})
 
-    @app.exception_handler(HTTPException)
-    async def handle_http_exception(request: Request, exc: HTTPException):
+    @app.exception_handler(StarletteHTTPException)
+    async def handle_http_exception(_request: Request, exc: StarletteHTTPException) -> JSONResponse:
         status_code = exc.status_code
         code = f"HTTP_{status_code}"
         message = exc.detail if isinstance(exc.detail, str) else str(exc.detail)
@@ -58,7 +76,7 @@ def create_app() -> FastAPI:
         logger = getattr(app.state, "logger", get_logger("flowbiz.api"))
         logger.error(
             "request error",
-            extra={"status": status_code, "code": code, "message": message},
+            extra={"status": status_code, "code": code, "error_message": message},
             exc_info=exc,
         )
         return JSONResponse(status_code=status_code, content=build_error_response(code, message))

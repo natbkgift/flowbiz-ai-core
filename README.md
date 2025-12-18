@@ -36,8 +36,35 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
    pytest
    ```
 
+## Continuous integration
+
+GitHub Actions runs the test suite (pytest) on every push and pull request to ensure changes remain healthy.
+
 4. **Configure environment**
 
-   Copy `.env.example` to `.env` and adjust values as needed for your setup. The defaults are suitable for local development.
+   Copy `.env.example` to `.env` and adjust values as needed for your setup. The defaults are suitable for local development. Environment variables use the `APP_` prefix. Example CORS configuration:
+
+   ```bash
+   APP_CORS_ALLOW_ORIGINS=https://example.com,http://localhost:3000
+   APP_CORS_ALLOW_METHODS=GET,POST
+   APP_CORS_ALLOW_HEADERS=Content-Type,Authorization
+   APP_CORS_ALLOW_CREDENTIALS=false
+   ```
 
 The API currently exposes a minimal root endpoint and will expand in later PRs.
+
+## Docker usage
+
+Build and run the FastAPI service in Docker:
+
+```bash
+docker build -t flowbiz-ai-core .
+docker run --rm -d --name flowbiz-ai-core-app -p 8000:8000 flowbiz-ai-core
+```
+
+Verify the container is healthy:
+
+```bash
+curl http://localhost:8000/healthz
+curl http://localhost:8000/v1/meta
+```
