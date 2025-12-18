@@ -63,6 +63,29 @@ The API currently exposes a minimal root endpoint and will expand in later PRs.
    curl -s http://127.0.0.1:8000/v1/meta
    ```
 
+## Docker Compose (API + Postgres)
+
+1. Prepare environment
+
+   ```bash
+   cp .env.example .env
+   # Edit values as needed
+   ```
+
+2. Start services
+
+   ```bash
+   docker compose up --build -d
+   ```
+
+3. Verify endpoints
+
+   ```bash
+   curl -s http://127.0.0.1:8000/healthz
+   curl -s http://127.0.0.1:8000/v1/meta
+   ```
+
 Notes:
 - Ensure Docker Desktop is running. On Windows, enable WSL2 backend for best performance.
 - Do not commit `.env` (already ignored by `.gitignore`).
+- Postgres data persisted in `postgres-data` volume.
