@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Minimal FastAPI application entrypoint for FlowBiz AI Core."""
+
+from __future__ import annotations
 
 import logging
 import os

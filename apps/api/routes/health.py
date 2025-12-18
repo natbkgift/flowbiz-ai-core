@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Health check endpoint for FlowBiz AI Core."""
+
+from __future__ import annotations
 
 from fastapi import APIRouter
 
