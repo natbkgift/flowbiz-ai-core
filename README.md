@@ -69,7 +69,7 @@ curl http://localhost:8000/healthz
 curl http://localhost:8000/v1/meta
 ```
 
-## Docker Compose (API + PostgreSQL)
+## Docker Compose (Nginx reverse proxy + API + PostgreSQL)
 
 Start the full stack locally:
 
@@ -78,11 +78,11 @@ cp .env.example .env
 docker compose up --build -d
 ```
 
-Verify endpoints:
+Verify endpoints through the Nginx proxy:
 
 ```bash
-curl http://127.0.0.1:8000/healthz
-curl http://127.0.0.1:8000/v1/meta
+curl http://127.0.0.1/healthz
+curl http://127.0.0.1/v1/meta
 ```
 
 Stop the stack:
@@ -92,5 +92,6 @@ docker compose down
 ```
 
 Notes:
+- Nginx forwards traffic on port 80 to the API service on port 8000
 - PostgreSQL data persists in the `postgres-data` volume
 - Compose waits for db healthcheck before starting the API
