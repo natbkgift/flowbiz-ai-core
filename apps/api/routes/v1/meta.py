@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Versioned metadata endpoints."""
+
+from __future__ import annotations
 
 from fastapi import APIRouter
 

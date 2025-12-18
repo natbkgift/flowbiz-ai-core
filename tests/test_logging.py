@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from apps.api.main import app
 from packages.core import get_settings
-from packages.core.logging import LOG_FORMAT, RequestIdFormatter, get_logger
+from packages.core.logging import RequestIdFormatter, get_logger
 
 
 def test_get_logger_configures_structured_handler():

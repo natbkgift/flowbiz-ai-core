@@ -1,11 +1,8 @@
-import io
-import logging
 import uuid
 
 from fastapi.testclient import TestClient
 
 from apps.api.main import app
-from packages.core.logging import LOG_FORMAT, RequestIdFormatter, get_logger
 
 
 def _client() -> TestClient:
