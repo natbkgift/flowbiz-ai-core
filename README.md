@@ -2,11 +2,17 @@
 
 FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This repository uses a simple monorepo layout to host the API gateway and shared packages.
 
+## Documentation
+
+- **[Architecture](docs/ARCHITECTURE.md)** – System design, layers, data flow, configuration, logging, and infrastructure
+- **[Deployment Guide](docs/DEPLOYMENT_VPS.md)** – Step-by-step VPS deployment with Docker Compose and Nginx
+- **[PR Log](docs/PR_LOG.md)** – History of pull requests (PR-001 to PR-120)
+
 ## Project structure
 
 - `apps/api/` – FastAPI application entrypoint and related modules
 - `packages/core/` – Shared core utilities and domain modules
-- `infra/` – Infrastructure and deployment assets (placeholder)
+- `docs/` – Project documentation
 - `tests/` – Automated tests
 
 ## Branching conventions
