@@ -99,6 +99,12 @@ curl http://127.0.0.1/healthz
 curl http://127.0.0.1/v1/meta
 ```
 
+Check that security headers are returned (use `APP_ENV=production` to enable Content-Security-Policy):
+
+```bash
+curl -I http://127.0.0.1/healthz
+```
+
 Stop the stack:
 
 ```bash

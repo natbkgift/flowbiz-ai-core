@@ -323,7 +323,22 @@ curl http://localhost/
 # {"message":"FlowBiz AI Core API"}
 ```
 
-### 4. Test from External Client
+### 4. Verify Security Headers via Nginx
+
+Use `curl -I` to confirm the reverse proxy returns the hardened headers. Set `APP_ENV=production` when you want Content-Security-Policy enforced.
+
+```bash
+curl -I http://localhost/healthz
+
+# Example headers:
+# X-Content-Type-Options: nosniff
+# X-Frame-Options: DENY
+# Referrer-Policy: strict-origin-when-cross-origin
+# Permissions-Policy: geolocation=(), microphone=(), camera=()
+# Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; connect-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';
+```
+
+### 5. Test from External Client
 
 From your local machine:
 
@@ -335,7 +350,7 @@ curl http://YOUR_VPS_IP/healthz
 curl http://api.yourdomain.com/healthz
 ```
 
-### 5. Check Request ID Header
+### 6. Check Request ID Header
 
 ```bash
 curl -i http://localhost/healthz | grep X-Request-ID

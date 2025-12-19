@@ -2,6 +2,8 @@ version: "3.9"
 services:
   nginx:
     image: nginx:alpine
+    environment:
+      - APP_ENV=${APP_ENV:-development}
     ports:
       - "80:80"
     volumes:
