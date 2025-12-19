@@ -325,7 +325,7 @@ curl http://localhost/
 
 ### 4. Verify Security Headers via Nginx
 
-Use `curl -I` to confirm the reverse proxy returns the hardened headers. Content-Security-Policy is injected via `CSP_HEADER` (keep it empty in development, set your production policy when deploying).
+Use `curl -I` to confirm the reverse proxy returns the hardened headers. Content-Security-Policy is injected via `CSP_API` (strict) and `CSP_DOCS` (relaxed for Swagger). Keep them empty in development, set your production policies when deploying.
 
 ```bash
 curl -I http://localhost/healthz
@@ -361,24 +361,33 @@ curl -i http://localhost/healthz | grep X-Request-ID
 ### Security Headers & CSP
 
 - Security headers are always enabled at Nginx.
-- Content-Security-Policy (CSP) is enabled **only in production** via `CSP_HEADER`.
+- Path-specific CSP is enabled **only in production** via `CSP_API` (strict for API paths) and `CSP_DOCS` (relaxed for `/docs` and `/openapi.json`).
 
 Dev:
 
 ```bash
-CSP_HEADER=""
+CSP_API=""
+CSP_DOCS=""
 ```
 
 Prod:
 
 ```bash
-CSP_HEADER="default-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';"
+CSP_API="default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; img-src 'self'; connect-src 'self'; style-src 'self'; script-src 'self'"
+CSP_DOCS="default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'"
+```
+
+Recommended production override:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.override.prod.yml up --build -d
 ```
 
 Verify headers at any time:
 
 ```bash
-curl -I http://localhost/healthz
+curl -I http://localhost/healthz | grep -i content-security-policy
+curl -I http://localhost/docs | grep -i content-security-policy
 ```
 
 ---
@@ -441,16 +450,32 @@ server {
   add_header X-Frame-Options "DENY" always;
   add_header Referrer-Policy "strict-origin-when-cross-origin" always;
   add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
-  add_header Content-Security-Policy "${CSP_HEADER}" always;
+  
+  set $csp_api "${CSP_API}";
+  set $csp_docs "${CSP_DOCS}";
+
+  location = /docs {
+    add_header Content-Security-Policy "$csp_docs" always;
+    proxy_pass http://api:8000;
+    include /etc/nginx/proxy_params;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+
+  location = /openapi.json {
+    add_header Content-Security-Policy "$csp_docs" always;
+    proxy_pass http://api:8000;
+    include /etc/nginx/proxy_params;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
 
   location / {
+    add_header Content-Security-Policy "$csp_api" always;
     proxy_pass http://api:8000;
-
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-
+    include /etc/nginx/proxy_params;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";

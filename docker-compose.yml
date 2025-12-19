@@ -3,7 +3,8 @@ services:
   nginx:
     image: nginx:1.25-alpine
     environment:
-      CSP_HEADER: ""
+      CSP_API: ""
+      CSP_DOCS: ""
     ports:
       - "80:80"
     volumes:

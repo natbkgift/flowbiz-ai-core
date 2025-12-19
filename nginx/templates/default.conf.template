@@ -10,17 +10,32 @@ server {
   add_header Referrer-Policy "strict-origin-when-cross-origin" always;
   add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
 
-  # CSP (prod-only via env)
-  add_header Content-Security-Policy "${CSP_HEADER}" always;
+  # CSP (path-specific)
+  set $csp_api "${CSP_API}";
+  set $csp_docs "${CSP_DOCS}";
+
+  location = /docs {
+    add_header Content-Security-Policy "$csp_docs" always;
+    proxy_pass http://api:8000;
+    include /etc/nginx/proxy_params;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+
+  location = /openapi.json {
+    add_header Content-Security-Policy "$csp_docs" always;
+    proxy_pass http://api:8000;
+    include /etc/nginx/proxy_params;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
 
   location / {
+    add_header Content-Security-Policy "$csp_api" always;
     proxy_pass http://api:8000;
-
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-
+    include /etc/nginx/proxy_params;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";

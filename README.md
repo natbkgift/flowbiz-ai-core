@@ -99,7 +99,7 @@ curl http://127.0.0.1/healthz
 curl http://127.0.0.1/v1/meta
 ```
 
-Check that security headers are returned. Content-Security-Policy is enabled only when `CSP_HEADER` is set (keep it empty in development):
+Check that security headers are returned. Content-Security-Policy is enabled only when CSP values are set (keep them empty in development):
 
 ```bash
 curl -I http://127.0.0.1/healthz
@@ -121,22 +121,31 @@ Notes:
 ### Security Headers & CSP
 
 - Security headers are always enabled at Nginx.
-- Content-Security-Policy (CSP) is enabled **only in production** via `CSP_HEADER`.
+- Path-specific Content-Security-Policy (CSP) is enabled **only in production** via environment variables.
 
-Dev:
+Dev (keep CSP disabled for easy Swagger usage):
 
 ```bash
-CSP_HEADER=""
+CSP_API=""
+CSP_DOCS=""
 ```
 
-Prod:
+Prod (strict for API, relaxed for Swagger):
 
 ```bash
-CSP_HEADER="default-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';"
+CSP_API="default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; img-src 'self'; connect-src 'self'; style-src 'self'; script-src 'self'"
+CSP_DOCS="default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'"
+```
+
+Recommended production run command with override file:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.override.prod.yml up --build -d
 ```
 
 Verify:
 
 ```bash
-curl -I http://127.0.0.1/healthz
+curl -I http://127.0.0.1/healthz | grep -i content-security-policy
+curl -I http://127.0.0.1/docs | grep -i content-security-policy
 ```
