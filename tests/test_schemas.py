@@ -1,0 +1,62 @@
+"""Tests for Pydantic schemas."""
+
+from __future__ import annotations
+
+import pytest
+from pydantic import ValidationError
+
+from packages.core.schemas import ErrorPayload, ErrorResponse, HealthResponse, MetaResponse
+
+
+def test_health_response_dump_matches_payload():
+    response = HealthResponse(status="ok", service="flowbiz", version="1.0.0")
+
+    assert response.model_dump() == {
+        "status": "ok",
+        "service": "flowbiz",
+        "version": "1.0.0",
+    }
+
+
+def test_meta_response_dump_matches_payload():
+    response = MetaResponse(service="flowbiz", env="test", version="1.0.0")
+
+    assert response.model_dump() == {
+        "service": "flowbiz",
+        "env": "test",
+        "version": "1.0.0",
+    }
+
+
+def test_error_response_excludes_none_details():
+    payload = ErrorPayload(code="HTTP_500", message="boom", request_id="abc-123")
+    response = ErrorResponse(error=payload)
+
+    assert response.model_dump() == {
+        "error": {
+            "code": "HTTP_500",
+            "message": "boom",
+            "request_id": "abc-123",
+        }
+    }
+
+
+def test_error_response_includes_details_when_provided():
+    payload = ErrorPayload(
+        code="HTTP_400", message="bad", request_id="abc-123", details=["detail"]
+    )
+    response = ErrorResponse(error=payload)
+
+    assert response.model_dump() == {
+        "error": {
+            "code": "HTTP_400",
+            "message": "bad",
+            "request_id": "abc-123",
+            "details": ["detail"],
+        }
+    }
+
+
+def test_schema_forbids_extra_fields():
+    with pytest.raises(ValidationError):
+        HealthResponse(status="ok", service="flowbiz", version="1.0.0", extra="x")

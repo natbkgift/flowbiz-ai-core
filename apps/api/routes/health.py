@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
+from packages.core.schemas import HealthResponse
 from packages.core.services import MetaService
 
 meta_service = MetaService()
@@ -11,7 +12,7 @@ meta_service = MetaService()
 router = APIRouter()
 
 
-@router.get("/healthz", summary="Health check")
+@router.get("/healthz", summary="Health check", response_model=HealthResponse)
 def health_check() -> dict[str, str]:
     """Return service health information."""
 
