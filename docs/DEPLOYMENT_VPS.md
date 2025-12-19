@@ -325,7 +325,7 @@ curl http://localhost/
 
 ### 4. Verify Security Headers via Nginx
 
-Use `curl -I` to confirm the reverse proxy returns the hardened headers. Set `APP_ENV=production` when you want Content-Security-Policy enforced.
+Use `curl -I` to confirm the reverse proxy returns the hardened headers. Set `APP_ENV=production` when you want Content-Security-Policy enforced. The production policy removes `unsafe-inline`; if you add inline scripts or styles, compute and include the required hashes instead of loosening the policy.
 
 ```bash
 curl -I http://localhost/healthz
@@ -335,7 +335,7 @@ curl -I http://localhost/healthz
 # X-Frame-Options: DENY
 # Referrer-Policy: strict-origin-when-cross-origin
 # Permissions-Policy: geolocation=(), microphone=(), camera=()
-# Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; connect-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';
+# Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; connect-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self';
 ```
 
 ### 5. Test from External Client
