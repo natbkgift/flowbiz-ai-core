@@ -48,13 +48,11 @@ class StrictEnvValidationMixin:
     """Raise an error when unexpected APP_* environment variables are present."""
 
     def _expected_env_keys(self) -> set[str]:
-        expected: set[str] = set()
-
-        for field_name, field in self.settings_cls.model_fields.items():
-            for _, env_name, _ in self._extract_field_info(field, field_name):
-                expected.add(env_name)
-
-        return expected
+        return {
+            env_name
+            for field_name, field in self.settings_cls.model_fields.items()
+            for _, env_name, _ in self._extract_field_info(field, field_name)
+        }
 
     def _validate_unknown_env_vars(self) -> None:
         if not getattr(self, "env_prefix", None):
