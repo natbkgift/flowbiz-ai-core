@@ -383,7 +383,7 @@ Recommended production override (renders prod CSP values into the Nginx template
 docker compose -f docker-compose.yml -f docker-compose.override.prod.yml up --build -d
 ```
 
-Verify headers at any time (Windows-friendly filter shown):
+Verify headers at any time (use `findstr` on Windows or `grep` on Linux/macOS):
 
 ```bash
 curl -I http://localhost/healthz | findstr /I "content-security-policy"
