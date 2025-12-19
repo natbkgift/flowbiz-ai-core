@@ -60,7 +60,7 @@ class StrictEnvValidationMixin:
 
         prefix = self.env_prefix.upper()
         allowed_keys = {key.upper() for key in self._expected_env_keys()}.union(
-            key.upper() for key in getattr(self.settings_cls, "allowed_unknown_env_keys", set())
+            f"{prefix}{key.upper()}" for key in getattr(self.settings_cls, "allowed_unknown_env_keys", set())
         )
         unexpected_keys = {
             key
@@ -96,13 +96,13 @@ class AppSettings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         env_prefix="APP_",
-        extra="forbid",
+        extra="ignore",
     )
 
     # Environment keys prefixed with APP_ that should be tolerated even if not
     # defined as model fields. This allows utilities such as version providers
     # to read their own variables without breaking strict validation.
-    allowed_unknown_env_keys: ClassVar[set[str]] = {"APP_VERSION"}
+    allowed_unknown_env_keys: ClassVar[set[str]] = {"VERSION", "GIT_SHA", "BUILD_TIME"}
 
     env: str = Field(default="development")
     name: str = Field(default="FlowBiz AI Core")
