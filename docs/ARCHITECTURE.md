@@ -361,7 +361,7 @@ This approach allows backward compatibility while introducing new API versions.
 1. **`nginx`** (Port 80)
    - Image: `nginx:alpine`
    - Reverse proxy to API service
-   - Mounts: `nginx/nginx.conf` as read-only
+   - Mounts: `nginx/default.conf.template` for environment-based templating
    - Health check: `curl -f http://localhost/healthz`
    - Depends on: `api`
 
