@@ -9,6 +9,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx/templates:/etc/nginx/templates:ro
+      - ./nginx/snippets:/etc/nginx/snippets:ro
     depends_on:
       - api
     healthcheck:
