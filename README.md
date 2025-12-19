@@ -143,7 +143,7 @@ Recommended production run command with override file (renders the Nginx templat
 docker compose -f docker-compose.yml -f docker-compose.override.prod.yml up --build -d
 ```
 
-Verify (Windows-friendly filter shown):
+Verify (use `findstr` on Windows or `grep` on Linux/macOS):
 
 ```bash
 curl -I http://127.0.0.1/healthz | findstr /I "content-security-policy"
