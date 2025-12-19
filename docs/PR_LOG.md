@@ -183,7 +183,7 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 **Key Changes:**
 - Added Nginx service to `docker-compose.yml`
-- Created `nginx/nginx.conf` with reverse proxy configuration
+- Created `nginx/default.conf.template` with reverse proxy configuration
 - Implemented dynamic DNS resolution for Docker services
 - Added WebSocket support with connection upgrade handling
 - Configured standard proxy headers (Host, X-Real-IP, X-Forwarded-For, X-Forwarded-Proto)
