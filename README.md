@@ -99,7 +99,7 @@ curl http://127.0.0.1/healthz
 curl http://127.0.0.1/v1/meta
 ```
 
-Check that security headers are returned (use `APP_ENV=production` to enable Content-Security-Policy):
+Check that security headers are returned. Content-Security-Policy is enabled only when `CSP_HEADER` is set (keep it empty in development):
 
 ```bash
 curl -I http://127.0.0.1/healthz
@@ -117,3 +117,26 @@ Notes:
 - Nginx reverse proxy listens on port 80 and forwards requests to the API service
 - All requests are proxied with standard headers (Host, X-Real-IP, X-Forwarded-For, X-Forwarded-Proto)
 - WebSocket connections are supported through the proxy
+
+### Security Headers & CSP
+
+- Security headers are always enabled at Nginx.
+- Content-Security-Policy (CSP) is enabled **only in production** via `CSP_HEADER`.
+
+Dev:
+
+```bash
+CSP_HEADER=""
+```
+
+Prod:
+
+```bash
+CSP_HEADER="default-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';"
+```
+
+Verify:
+
+```bash
+curl -I http://127.0.0.1/healthz
+```

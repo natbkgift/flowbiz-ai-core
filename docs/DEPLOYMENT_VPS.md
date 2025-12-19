@@ -325,7 +325,7 @@ curl http://localhost/
 
 ### 4. Verify Security Headers via Nginx
 
-Use `curl -I` to confirm the reverse proxy returns the hardened headers. Set `APP_ENV=production` when you want Content-Security-Policy enforced. The production policy removes `unsafe-inline`; if you add inline scripts or styles, compute and include the required hashes instead of loosening the policy.
+Use `curl -I` to confirm the reverse proxy returns the hardened headers. Content-Security-Policy is injected via `CSP_HEADER` (keep it empty in development, set your production policy when deploying).
 
 ```bash
 curl -I http://localhost/healthz
@@ -335,7 +335,7 @@ curl -I http://localhost/healthz
 # X-Frame-Options: DENY
 # Referrer-Policy: strict-origin-when-cross-origin
 # Permissions-Policy: geolocation=(), microphone=(), camera=()
-# Content-Security-Policy: default-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; connect-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self';
+# Content-Security-Policy: default-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';
 ```
 
 ### 5. Test from External Client
@@ -356,6 +356,29 @@ curl http://api.yourdomain.com/healthz
 curl -i http://localhost/healthz | grep X-Request-ID
 
 # Should see: X-Request-ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
+
+### Security Headers & CSP
+
+- Security headers are always enabled at Nginx.
+- Content-Security-Policy (CSP) is enabled **only in production** via `CSP_HEADER`.
+
+Dev:
+
+```bash
+CSP_HEADER=""
+```
+
+Prod:
+
+```bash
+CSP_HEADER="default-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';"
+```
+
+Verify headers at any time:
+
+```bash
+curl -I http://localhost/healthz
 ```
 
 ---
@@ -389,63 +412,49 @@ sudo certbot certonly --standalone -d api.yourdomain.com
 Create a new Nginx configuration template for HTTPS (the template is rendered with environment variables at container startup):
 
 ```bash
-nano ~/flowbiz-ai-core/nginx/default.conf.template
+nano ~/flowbiz-ai-core/nginx/templates/default.conf.template
 ```
 
-Add HTTPS server block:
+Add HTTP → HTTPS redirect and HTTPS server block:
 
 ```nginx
-set $app_env "${APP_ENV}";
-
-map $app_env $csp_policy {
-    production "default-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; connect-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self';";
-    default "";
-}
-
-map $http_upgrade $connection_upgrade {
-    default upgrade;
-    '' close;
-}
-
-# Redirect HTTP to HTTPS
 server {
-    listen 80;
-    server_name api.yourdomain.com;
-    return 301 https://$server_name$request_uri;
+  listen 80;
+  server_name api.yourdomain.com;
+  return 301 https://$server_name$request_uri;
 }
 
-# HTTPS server
 server {
-    listen 443 ssl http2;
-    server_name api.yourdomain.com;
+  listen 443 ssl http2;
+  server_name api.yourdomain.com;
 
-    ssl_certificate /etc/letsencrypt/live/api.yourdomain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/api.yourdomain.com/privkey.pem;
+  server_tokens off;
 
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-    ssl_prefer_server_ciphers on;
+  ssl_certificate /etc/letsencrypt/live/api.yourdomain.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/api.yourdomain.com/privkey.pem;
 
-    resolver 127.0.0.11 valid=30s;
-    set $upstream_api api:8000;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers HIGH:!aNULL:!MD5;
+  ssl_prefer_server_ciphers on;
 
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-Frame-Options "DENY" always;
-    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-    add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
-    add_header Content-Security-Policy $csp_policy always;
+  add_header X-Content-Type-Options "nosniff" always;
+  add_header X-Frame-Options "DENY" always;
+  add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+  add_header Content-Security-Policy "${CSP_HEADER}" always;
 
-    location / {
-        proxy_pass http://$upstream_api;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+  location / {
+    proxy_pass http://api:8000;
 
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection $connection_upgrade;
-    }
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
 }
 ```
 
@@ -461,12 +470,12 @@ Update nginx service:
 
 ```yaml
   nginx:
-    image: nginx:alpine
+    image: nginx:1.25-alpine
     ports:
       - "80:80"
       - "443:443"  # Add HTTPS port
     volumes:
-      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro  # Mount certificates
     depends_on:
       - api
