@@ -59,17 +59,13 @@ class StrictEnvValidationMixin:
             return
 
         prefix = self.env_prefix.upper()
-        expected_keys = {key.upper() for key in self._expected_env_keys()}
-        allowed_unknown_keys = {
-            key.upper()
-            for key in getattr(self.settings_cls, "allowed_unknown_env_keys", set())
-        }
+        allowed_keys = {key.upper() for key in self._expected_env_keys()}.union(
+            key.upper() for key in getattr(self.settings_cls, "allowed_unknown_env_keys", set())
+        )
         unexpected_keys = {
             key
             for key in self.env_vars.keys()
-            if key.upper().startswith(prefix)
-            and key.upper() not in expected_keys
-            and key.upper() not in allowed_unknown_keys
+            if key.upper().startswith(prefix) and key.upper() not in allowed_keys
         }
 
         if unexpected_keys:
