@@ -8,11 +8,11 @@ through :func:`get_settings`. Environment variables can be loaded from a
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Any
+from typing import Any, ClassVar
 
 from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic_settings.sources import EnvSettingsSource, DotEnvSettingsSource
+from pydantic_settings import BaseSettings, SettingsConfigDict, SettingsError
+from pydantic_settings.sources import DotEnvSettingsSource, EnvSettingsSource
 
 
 class CommaSeparatedListMixin:
@@ -44,6 +44,51 @@ class CommaSeparatedListDotEnvSource(CommaSeparatedListMixin, DotEnvSettingsSour
     """Custom dotenv source that handles comma-separated lists without requiring JSON."""
 
 
+class StrictEnvValidationMixin:
+    """Raise an error when unexpected APP_* environment variables are present."""
+
+    def _expected_env_keys(self) -> set[str]:
+        return {
+            env_name
+            for field_name, field in self.settings_cls.model_fields.items()
+            for _, env_name, _ in self._extract_field_info(field, field_name)
+        }
+
+    def _validate_unknown_env_vars(self) -> None:
+        if not getattr(self, "env_prefix", None):
+            return
+
+        prefix = self.env_prefix.upper()
+        allowed_keys = {key.upper() for key in self._expected_env_keys()}.union(
+            key.upper() for key in getattr(self.settings_cls, "allowed_unknown_env_keys", set())
+        )
+        unexpected_keys = {
+            key
+            for key in self.env_vars.keys()
+            if key.upper().startswith(prefix) and key.upper() not in allowed_keys
+        }
+
+        if unexpected_keys:
+            message = ", ".join(sorted(unexpected_keys))
+            raise SettingsError(f"Unexpected environment variables for {self.settings_cls.__name__}: {message}")
+
+
+class StrictEnvSettingsSource(StrictEnvValidationMixin, CommaSeparatedListSettingsSource):
+    """Env source that enforces known APP_* keys before parsing."""
+
+    def __call__(self) -> dict[str, Any]:
+        self._validate_unknown_env_vars()
+        return super().__call__()
+
+
+class StrictDotEnvSettingsSource(StrictEnvValidationMixin, CommaSeparatedListDotEnvSource):
+    """Dotenv source that enforces known APP_* keys before parsing."""
+
+    def __call__(self) -> dict[str, Any]:
+        self._validate_unknown_env_vars()
+        return super().__call__()
+
+
 class AppSettings(BaseSettings):
     """Application settings sourced from environment variables."""
 
@@ -51,8 +96,13 @@ class AppSettings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         env_prefix="APP_",
-        extra="ignore"
+        extra="forbid",
     )
+
+    # Environment keys prefixed with APP_ that should be tolerated even if not
+    # defined as model fields. This allows utilities such as version providers
+    # to read their own variables without breaking strict validation.
+    allowed_unknown_env_keys: ClassVar[set[str]] = {"APP_VERSION"}
 
     env: str = Field(default="development")
     name: str = Field(default="FlowBiz AI Core")
@@ -96,8 +146,8 @@ class AppSettings(BaseSettings):
         """Customize settings sources to use our custom env source."""
         return (
             init_settings,
-            CommaSeparatedListSettingsSource(settings_cls),
-            CommaSeparatedListDotEnvSource(settings_cls),
+            StrictEnvSettingsSource(settings_cls),
+            StrictDotEnvSettingsSource(settings_cls),
             file_secret_settings,
         )
 

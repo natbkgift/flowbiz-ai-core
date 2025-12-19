@@ -56,6 +56,8 @@ GitHub Actions runs Ruff and pytest on every push and pull request to ensure cha
 
    Copy `.env.example` to `.env` and adjust values as needed for your setup. The defaults are suitable for local development. Most environment variables use the `APP_` prefix, while version metadata now prefers `FLOWBIZ_VERSION`, `FLOWBIZ_GIT_SHA`, and `FLOWBIZ_BUILD_TIME` (with legacy `APP_VERSION`/`GIT_SHA`/`BUILD_TIME` still supported). Example CORS configuration:
 
+   Application settings are strict and only read variables with the `APP_` prefix. Version and build metadata must use the `FLOWBIZ_*` variables above (or their legacy fallbacks) and will not be consumed by `AppSettings`.
+
    ```bash
    APP_CORS_ALLOW_ORIGINS=https://example.com,http://localhost:3000
    APP_CORS_ALLOW_METHODS=GET,POST
