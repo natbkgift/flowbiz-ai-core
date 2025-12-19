@@ -1,13 +1,14 @@
 version: "3.9"
 services:
   nginx:
-    image: nginx:alpine
+    image: nginx:1.25-alpine
     environment:
-      - APP_ENV=${APP_ENV:-development}
+      CSP_API: ""
+      CSP_DOCS: ""
     ports:
       - "80:80"
     volumes:
-      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template:ro
     depends_on:
       - api
     healthcheck:
