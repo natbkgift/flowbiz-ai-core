@@ -8,7 +8,7 @@ through :func:`get_settings`. Environment variables can be loaded from a
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Any
+from typing import Any, ClassVar
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict, SettingsError
@@ -60,8 +60,16 @@ class StrictEnvValidationMixin:
 
         prefix = self.env_prefix.upper()
         expected_keys = {key.upper() for key in self._expected_env_keys()}
+        allowed_unknown_keys = {
+            key.upper()
+            for key in getattr(self.settings_cls, "allowed_unknown_env_keys", set())
+        }
         unexpected_keys = {
-            key for key in self.env_vars.keys() if key.upper().startswith(prefix) and key.upper() not in expected_keys
+            key
+            for key in self.env_vars.keys()
+            if key.upper().startswith(prefix)
+            and key.upper() not in expected_keys
+            and key.upper() not in allowed_unknown_keys
         }
 
         if unexpected_keys:
@@ -94,6 +102,11 @@ class AppSettings(BaseSettings):
         env_prefix="APP_",
         extra="forbid",
     )
+
+    # Environment keys prefixed with APP_ that should be tolerated even if not
+    # defined as model fields. This allows utilities such as version providers
+    # to read their own variables without breaking strict validation.
+    allowed_unknown_env_keys: ClassVar[set[str]] = {"APP_VERSION"}
 
     env: str = Field(default="development")
     name: str = Field(default="FlowBiz AI Core")
