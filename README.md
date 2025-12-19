@@ -99,7 +99,7 @@ curl http://127.0.0.1/healthz
 curl http://127.0.0.1/v1/meta
 ```
 
-Check that security headers are returned. Content-Security-Policy is enabled only when CSP values are set (keep them empty in development):
+Check that security headers are returned. Content-Security-Policy is enabled only when CSP values are set (the default compose file leaves them empty for development):
 
 ```bash
 curl -I http://127.0.0.1/healthz
@@ -137,15 +137,15 @@ CSP_API="default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-actio
 CSP_DOCS="default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'"
 ```
 
-Recommended production run command with override file:
+Recommended production run command with override file (renders the Nginx template with prod CSP values):
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.override.prod.yml up --build -d
 ```
 
-Verify:
+Verify (Windows-friendly filter shown):
 
 ```bash
-curl -I http://127.0.0.1/healthz | grep -i content-security-policy
-curl -I http://127.0.0.1/docs | grep -i content-security-policy
+curl -I http://127.0.0.1/healthz | findstr /I "content-security-policy"
+curl -I http://127.0.0.1/docs | findstr /I "content-security-policy"
 ```
