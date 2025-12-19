@@ -427,6 +427,11 @@ nano ~/flowbiz-ai-core/nginx/templates/default.conf.template
 Add HTTP → HTTPS redirect and HTTPS server block:
 
 ```nginx
+map $http_upgrade $connection_upgrade {
+  default upgrade;
+  ''      close;
+}
+
 server {
   listen 80;
   server_name api.yourdomain.com;
@@ -439,6 +444,10 @@ server {
 
   server_tokens off;
 
+  # Use Docker's internal resolver to handle dynamic IP addresses for upstream services.
+  resolver 127.0.0.11 valid=30s;
+  set $upstream_api http://api:8000;
+
   ssl_certificate /etc/letsencrypt/live/api.yourdomain.com/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/api.yourdomain.com/privkey.pem;
 
@@ -450,35 +459,35 @@ server {
   add_header X-Frame-Options "DENY" always;
   add_header Referrer-Policy "strict-origin-when-cross-origin" always;
   add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
-  
+
   set $csp_api "${CSP_API}";
   set $csp_docs "${CSP_DOCS}";
 
   location = /docs {
     add_header Content-Security-Policy "$csp_docs" always;
-    proxy_pass http://api:8000;
+    proxy_pass $upstream_api;
     include /etc/nginx/proxy_params;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
+    proxy_set_header Connection $connection_upgrade;
   }
 
   location = /openapi.json {
     add_header Content-Security-Policy "$csp_docs" always;
-    proxy_pass http://api:8000;
+    proxy_pass $upstream_api;
     include /etc/nginx/proxy_params;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
+    proxy_set_header Connection $connection_upgrade;
   }
 
   location / {
     add_header Content-Security-Policy "$csp_api" always;
-    proxy_pass http://api:8000;
+    proxy_pass $upstream_api;
     include /etc/nginx/proxy_params;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
+    proxy_set_header Connection $connection_upgrade;
   }
 }
 ```
