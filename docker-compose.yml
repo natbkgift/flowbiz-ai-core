@@ -8,7 +8,8 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./nginx/snippets:/etc/nginx/snippets:ro
     depends_on:
       - api
     healthcheck:

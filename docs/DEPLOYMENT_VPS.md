@@ -361,7 +361,7 @@ curl -i http://localhost/healthz | grep X-Request-ID
 ### Security Headers & CSP
 
 - Security headers are always enabled at Nginx.
-- Path-specific CSP is enabled **only in production** via `CSP_API` (strict for API paths) and `CSP_DOCS` (relaxed for `/docs` and `/openapi.json`).
+- Path-specific CSP is enabled **only in production** via `CSP_API` (strict for API paths) and `CSP_DOCS` (relaxed for `/docs` and `/openapi.json`). The base compose file leaves these empty for development and renders the template automatically at container startup.
 
 Dev:
 
@@ -377,17 +377,17 @@ CSP_API="default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-actio
 CSP_DOCS="default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'"
 ```
 
-Recommended production override:
+Recommended production override (renders prod CSP values into the Nginx template):
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.override.prod.yml up --build -d
 ```
 
-Verify headers at any time:
+Verify headers at any time (use `findstr` on Windows or `grep` on Linux/macOS):
 
 ```bash
-curl -I http://localhost/healthz | grep -i content-security-policy
-curl -I http://localhost/docs | grep -i content-security-policy
+curl -I http://localhost/healthz | findstr /I "content-security-policy"
+curl -I http://localhost/docs | findstr /I "content-security-policy"
 ```
 
 ---
