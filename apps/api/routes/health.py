@@ -19,6 +19,6 @@ def health_check() -> HealthResponse:
     meta = meta_service.get_meta()
     return HealthResponse(
         status="ok",
-        service=meta["service"],
-        version=meta["version"],
+        service=meta.get("service"),
+        version=meta.get("version"),
     )
