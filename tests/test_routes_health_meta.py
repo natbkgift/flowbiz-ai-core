@@ -15,7 +15,7 @@ pytestmark = [requires_httpx]
 
 
 @pytest.fixture
-def client() -> "TestClient":
+def client() -> TestClient:
     from fastapi.testclient import TestClient
 
     return TestClient(app)
