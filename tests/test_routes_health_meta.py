@@ -21,7 +21,7 @@ def client() -> TestClient:
     return TestClient(app)
 
 
-def test_health_endpoint_returns_status(client: "TestClient"):
+def test_health_endpoint_returns_status(client: TestClient):
     """Ensure the health check reports expected fields."""
 
     response = client.get("/healthz")
