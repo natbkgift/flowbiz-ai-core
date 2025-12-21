@@ -13,7 +13,7 @@ router = APIRouter(prefix="/v1")
 
 
 @router.get("/meta", summary="Service metadata", response_model=MetaResponse)
-def get_meta() -> dict[str, str]:
+def get_meta() -> MetaResponse:
     """Return basic service metadata including version information."""
 
-    return meta_service.get_meta()
+    return MetaResponse(**meta_service.get_meta())

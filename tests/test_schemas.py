@@ -8,24 +8,17 @@ from pydantic import ValidationError
 from packages.core.schemas import ErrorPayload, ErrorResponse, HealthResponse, MetaResponse
 
 
-def test_health_response_dump_matches_payload():
-    response = HealthResponse(status="ok", service="flowbiz", version="1.0.0")
+@pytest.mark.parametrize(
+    "response_cls, data",
+    [
+        (HealthResponse, {"status": "ok", "service": "flowbiz", "version": "1.0.0"}),
+        (MetaResponse, {"service": "flowbiz", "env": "test", "version": "1.0.0"}),
+    ],
+)
+def test_response_dump_matches_payload(response_cls, data):
+    response = response_cls(**data)
 
-    assert response.model_dump() == {
-        "status": "ok",
-        "service": "flowbiz",
-        "version": "1.0.0",
-    }
-
-
-def test_meta_response_dump_matches_payload():
-    response = MetaResponse(service="flowbiz", env="test", version="1.0.0")
-
-    assert response.model_dump() == {
-        "service": "flowbiz",
-        "env": "test",
-        "version": "1.0.0",
-    }
+    assert response.model_dump() == data
 
 
 def test_error_response_excludes_none_details():
