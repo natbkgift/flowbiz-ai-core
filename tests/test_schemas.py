@@ -11,8 +11,8 @@ from packages.core.schemas import ErrorPayload, ErrorResponse, HealthResponse, M
 @pytest.mark.parametrize(
     "response_cls, data",
     [
-        (HealthResponse, {"status": "ok", "service": "flowbiz", "version": "1.0.0"}),
-        (MetaResponse, {"service": "flowbiz", "env": "test", "version": "1.0.0"}),
+        pytest.param(HealthResponse, {"status": "ok", "service": "flowbiz", "version": "1.0.0"}, id="health-response"),
+        pytest.param(MetaResponse, {"service": "flowbiz", "env": "test", "version": "1.0.0"}, id="meta-response"),
     ],
 )
 def test_response_dump_matches_payload(response_cls, data):
