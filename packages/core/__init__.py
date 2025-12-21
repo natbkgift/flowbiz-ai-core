@@ -8,8 +8,8 @@ from .version import VersionInfo, get_version_info
 
 __all__ = [
     "AppSettings",
-    "build_error_response",
     "BaseSchema",
+    "build_error_response",
     "ErrorPayload",
     "ErrorResponse",
     "get_logger",
