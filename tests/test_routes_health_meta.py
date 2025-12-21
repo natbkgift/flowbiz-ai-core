@@ -1,18 +1,27 @@
-from fastapi.testclient import TestClient
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import pytest
 
 from apps.api.main import app
 from packages.core import get_settings
+from tests._requires import requires_httpx
+
+if TYPE_CHECKING:
+    from fastapi.testclient import TestClient
+
+pytestmark = [requires_httpx]
 
 
 @pytest.fixture
-def client() -> TestClient:
-    """Provides a TestClient instance for the API."""
+def client() -> "TestClient":
+    from fastapi.testclient import TestClient
 
     return TestClient(app)
 
 
-def test_health_endpoint_returns_status(client: TestClient):
+def test_health_endpoint_returns_status(client: "TestClient"):
     """Ensure the health check reports expected fields."""
 
     response = client.get("/healthz")
@@ -31,7 +40,7 @@ def test_health_endpoint_returns_status(client: TestClient):
     ],
 )
 def test_health_endpoint_version(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch, app_version: str | None, expected: str
+    client: "TestClient", monkeypatch: pytest.MonkeyPatch, app_version: str | None, expected: str
 ):
     """Ensure the health check reports the correct version."""
 
@@ -52,7 +61,7 @@ def test_health_endpoint_version(
     ],
 )
 def test_meta_endpoint_returns_env(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch, app_version: str | None, expected_version: str
+    client: "TestClient", monkeypatch: pytest.MonkeyPatch, app_version: str | None, expected_version: str
 ):
     """Ensure the meta endpoint reports service name, environment, and version."""
 

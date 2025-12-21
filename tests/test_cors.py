@@ -1,9 +1,14 @@
-from fastapi.testclient import TestClient
+from __future__ import annotations
 
 from apps.api.main import create_app
+from tests._requires import requires_httpx
+
+pytestmark = [requires_httpx]
 
 
 def test_cors_simple_request_reflects_allowed_origin(monkeypatch):
+    from fastapi.testclient import TestClient
+
     monkeypatch.setenv("APP_ENV", "test")
     monkeypatch.setenv("APP_CORS_ALLOW_ORIGINS", "https://example.com")
 
@@ -16,6 +21,8 @@ def test_cors_simple_request_reflects_allowed_origin(monkeypatch):
 
 
 def test_cors_preflight_options(monkeypatch):
+    from fastapi.testclient import TestClient
+
     monkeypatch.setenv("APP_ENV", "test")
     monkeypatch.setenv("APP_CORS_ALLOW_ORIGINS", "https://example.com")
 

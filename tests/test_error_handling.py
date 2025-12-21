@@ -1,11 +1,21 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import uuid
 
-from fastapi.testclient import TestClient
-
 from apps.api.main import create_app
+from tests._requires import requires_httpx
+
+if TYPE_CHECKING:
+    from fastapi.testclient import TestClient
+
+pytestmark = [requires_httpx]
 
 
 def _client() -> TestClient:
+    from fastapi.testclient import TestClient
+
     return TestClient(create_app())
 
 
@@ -36,6 +46,8 @@ def test_validation_error_response():
 
 
 def test_internal_server_error_response(monkeypatch):
+    from fastapi.testclient import TestClient
+
     monkeypatch.setenv("APP_ENV", "test")
     with TestClient(create_app(), raise_server_exceptions=False) as client:
         response = client.get("/__test__/raise")
