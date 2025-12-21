@@ -1,12 +1,22 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import logging
 import uuid
 
-from fastapi.testclient import TestClient
-
 from apps.api.main import app
+from tests._requires import requires_httpx
+
+if TYPE_CHECKING:
+    from fastapi.testclient import TestClient
+
+pytestmark = [requires_httpx]
 
 
 def _client() -> TestClient:
+    from fastapi.testclient import TestClient
+
     return TestClient(app)
 
 

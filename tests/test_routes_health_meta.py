@@ -1,13 +1,22 @@
-from fastapi.testclient import TestClient
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import pytest
 
 from apps.api.main import app
 from packages.core import get_settings
+from tests._requires import requires_httpx
+
+if TYPE_CHECKING:
+    from fastapi.testclient import TestClient
+
+pytestmark = [requires_httpx]
 
 
 @pytest.fixture
 def client() -> TestClient:
-    """Provides a TestClient instance for the API."""
+    from fastapi.testclient import TestClient
 
     return TestClient(app)
 

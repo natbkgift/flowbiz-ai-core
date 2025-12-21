@@ -1,10 +1,8 @@
 import logging
-
-from fastapi.testclient import TestClient
-
 from apps.api.main import app
 from packages.core import get_settings
 from packages.core.logging import RequestIdFormatter, get_logger
+from tests._requires import requires_httpx
 
 
 def test_get_logger_configures_structured_handler():
@@ -26,7 +24,10 @@ def test_get_logger_configures_structured_handler():
     assert "request_id=-" in formatted
 
 
+@requires_httpx
 def test_app_startup_initializes_logger_state():
+    from fastapi.testclient import TestClient
+
     with TestClient(app) as client:
         assert hasattr(client.app.state, "logger")
         assert client.app.state.logger.name == "flowbiz.api"
