@@ -13,8 +13,12 @@ router = APIRouter()
 
 
 @router.get("/healthz", summary="Health check", response_model=HealthResponse)
-def health_check() -> dict[str, str]:
+def health_check() -> HealthResponse:
     """Return service health information."""
 
     meta = meta_service.get_meta()
-    return {"status": "ok", "service": meta["service"], "version": meta["version"]}
+    return HealthResponse(
+        status="ok",
+        service=meta.get("service"),
+        version=meta.get("version"),
+    )
