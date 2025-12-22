@@ -65,6 +65,26 @@ def find_section(body: str, header: str) -> str:
     return match.group(1) if match else ""
 
 
+def _has_meaningful_subsection(content: str, subheadings: list[str]) -> bool:
+    """Check if any subsection has meaningful content after its subheading.
+    
+    Args:
+        content: The section content to check.
+        subheadings: List of subsection names (e.g., ["in scope", "out of scope"]).
+    
+    Returns:
+        True if at least one subsection has non-empty content.
+    """
+    lowered_content = content.lower()
+    for sub in subheadings:
+        # Pattern to find e.g., '- in scope: some content'
+        pattern = rf"-\s*{re.escape(sub)}:\s*(.*)"
+        match = re.search(pattern, lowered_content)
+        if match and match.group(1).strip():
+            return True
+    return False
+
+
 def has_meaningful_content(header: str, content: str) -> bool:
     """Return True when the section contains more than template placeholders."""
 
@@ -75,24 +95,15 @@ def has_meaningful_content(header: str, content: str) -> bool:
     if template_default and content == template_default:
         return False
 
-    lowered = content.lower()
     if header == "In Scope / Out of Scope":
-        in_scope = re.search(r"-\s*in scope:\s*(.*)", lowered)
-        out_scope = re.search(r"-\s*out of scope:\s*(.*)", lowered)
-        in_scope_text = in_scope.group(1).strip() if in_scope else ""
-        out_scope_text = out_scope.group(1).strip() if out_scope else ""
-        return bool(in_scope_text or out_scope_text)
+        return _has_meaningful_subsection(content, ["in scope", "out of scope"])
 
     if header == "Verification / Testing":
         has_checked_item = bool(re.search(r"-\s*\[x\]\s+", content, flags=re.IGNORECASE))
         return has_checked_item
 
     if header == "Risk & Rollback":
-        risk_match = re.search(r"-\s*risks:\s*(.*)", lowered)
-        rollback_match = re.search(r"-\s*rollback plan:\s*(.*)", lowered)
-        risk_text = risk_match.group(1).strip() if risk_match else ""
-        rollback_text = rollback_match.group(1).strip() if rollback_match else ""
-        return bool(risk_text or rollback_text)
+        return _has_meaningful_subsection(content, ["risks", "rollback plan"])
 
     return bool(re.search(r"\w", content))
 
