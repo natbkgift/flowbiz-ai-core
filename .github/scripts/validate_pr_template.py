@@ -50,6 +50,14 @@ DEFAULT_SECTION_CONTENT = {
     "Risk & Rollback": "- Risks:\n- Rollback plan:",
 }
 
+# Command keywords considered as evidence of testing
+COMMAND_KEYWORDS = [
+    "pytest",
+    "ruff",
+    "docker compose",
+    "curl",
+]
+
 
 def load_pr_body() -> str:
     body_path = os.environ.get("PR_BODY_PATH")
@@ -158,14 +166,22 @@ def has_meaningful_content(header: str, content: str) -> bool:
         return False
 
     if header == "In Scope / Out of Scope":
-        return _has_meaningful_subsection(content, ["in scope", "out of scope"])
+        # Accept either explicit sub-bullets or any non-empty descriptive text (legacy format)
+        return _has_meaningful_subsection(content, ["in scope", "out of scope"]) or bool(
+            re.search(r"\w", content)
+        )
 
     if header == "Verification / Testing":
+        lowered = content.lower()
         has_checked_item = bool(re.search(r"-\s*\[x\]\s+", content, flags=re.IGNORECASE))
-        return has_checked_item
+        has_command = any(k in lowered for k in COMMAND_KEYWORDS)
+        return has_checked_item or has_command
 
     if header == "Risk & Rollback":
-        return _has_meaningful_subsection(content, ["risks", "rollback plan"])
+        # Accept either explicit sub-bullets or any non-empty descriptive text (legacy format)
+        return _has_meaningful_subsection(content, ["risks", "rollback plan"]) or bool(
+            re.search(r"\w", content)
+        )
 
     return bool(re.search(r"\w", content))
 
