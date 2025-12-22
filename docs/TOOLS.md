@@ -480,8 +480,8 @@ Every Tool must have tests that verify correct behavior in both success and fail
 
 ```python
 import pytest
+from packages.core.tools import ToolContext, ToolResult
 from packages.core.tools.examples import DummyTool
-from packages.core.tools.schemas import ToolContext, ToolResult
 
 
 class TestDummyTool:
