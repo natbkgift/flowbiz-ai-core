@@ -1,0 +1,28 @@
+name: Guardrails - PR description
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+  push:
+    branches: [main]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  guardrails:
+    name: Guardrails
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Skip enforcement on push events
+        if: github.event_name == 'push'
+        run: echo "Guardrails check is only enforced for pull_request events."
+
+      - name: Check out repository
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+
+      - name: Validate PR description guardrails
+        if: github.event_name == 'pull_request'
+        run: bash scripts/guardrails_check.sh
