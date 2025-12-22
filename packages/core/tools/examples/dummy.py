@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 from packages.core.tools import ToolBase, ToolContext, ToolError, ToolResult
 
 
@@ -13,21 +15,9 @@ class DummyTool(ToolBase):
     structured error when no parameters are supplied.
     """
 
-    _NAME = "dummy.echo"
-    _DESCRIPTION = "Echo back provided params for testing and examples"
-    _VERSION = "v1"
-
-    @property
-    def name(self) -> str:  # type: ignore[override]
-        return self._NAME
-
-    @property
-    def description(self) -> str:  # type: ignore[override]
-        return self._DESCRIPTION
-
-    @property
-    def version(self) -> str:  # type: ignore[override]
-        return self._VERSION
+    name: ClassVar[str] = "dummy.echo"
+    description: ClassVar[str] = "Echo back provided params for testing and examples"
+    version: ClassVar[str] = "v1"
 
     def run(self, context: ToolContext) -> ToolResult:
         """Echo provided params or return an explicit empty-params error."""
