@@ -22,6 +22,8 @@ jobs:
   tool-policy:
     name: Tool Policy Enforcement
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Check out repository
