@@ -18,7 +18,6 @@ import ast
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 
 # Allowlist paths that are excluded from enforcement
@@ -251,15 +250,6 @@ class ToolPolicyChecker(ast.NodeVisitor):
                 if isinstance(node.returns, ast.Name):
                     if node.returns.id == "ToolResult":
                         self.run_method_returns_tool_result = True
-                elif isinstance(node.returns, ast.Constant):
-                    # Check for dict return type
-                    if node.returns.value == dict:
-                        self.add_violation(
-                            node.lineno,
-                            "error",
-                            "invalid-return-type",
-                            "run() must return ToolResult, not dict",
-                        )
 
             # Check for type hints
             if not node.returns:
