@@ -78,9 +78,9 @@ def main() -> None:
     errors = validate_sections(body)
 
     if errors:
-        print("PR template validation failed:")
+        print("PR template validation failed:", file=sys.stderr)
         for error in errors:
-            print(f"- {error}")
+            print(f"- {error}", file=sys.stderr)
         sys.exit(1)
 
     print("PR template validation passed: all required sections are present and non-empty.")
