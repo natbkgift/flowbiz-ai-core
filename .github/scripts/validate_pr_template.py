@@ -23,8 +23,12 @@ def load_pr_body() -> str:
         print("GITHUB_EVENT_PATH is missing; cannot validate PR body.")
         sys.exit(1)
 
-    with open(event_path, "r", encoding="utf-8") as event_file:
-        event = json.load(event_file)
+    try:
+        with open(event_path, "r", encoding="utf-8") as event_file:
+            event = json.load(event_file)
+    except json.JSONDecodeError:
+        print(f"Error: Could not decode JSON from {event_path}.")
+        sys.exit(1)
 
     body = event.get("pull_request", {}).get("body")
     return body or ""
