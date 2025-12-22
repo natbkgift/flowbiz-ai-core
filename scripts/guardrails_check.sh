@@ -79,12 +79,21 @@ body = os.environ.get("PR_BODY_CONTENT", "")
 title = os.environ.get("PR_TITLE_CONTENT", "")
 
 required_sections = [
-    ("summary", "## Summary"),
-    ("scope", "## Scope"),
-    ("out of scope", "## Out of scope"),
-    ("testing", "## Testing"),
-    ("risks", "## Risks"),
-    ("rollback", "## Rollback"),
+    ("summary", ["summary"]),
+    ("scope", ["scope"]),
+    (
+        "in_scope_out_of_scope",
+        ["in scope / out of scope", "in scope/out of scope"],
+    ),
+    ("files_changed", ["files changed"]),
+    (
+        "verification_testing",
+        ["verification / testing", "verification/testing", "testing"],
+    ),
+    (
+        "risk_rollback",
+        ["risk & rollback", "risks & rollback", "risk and rollback"],
+    ),
 ]
 
 command_keywords = ["pytest", "ruff", "docker compose", "curl"]
@@ -95,12 +104,24 @@ warnings: list[str] = []
 if not body.strip():
     errors.append("PR description is required by Guardrails.")
 
-heading_pattern = re.compile(r"(?im)^\s*#{1,3}\s*(summary|scope|out of scope|testing|risks|rollback)\b.*$")
+all_heading_labels: list[str] = []
+heading_to_key: dict[str, str] = {}
+for key, labels in required_sections:
+    for label in labels:
+        normalized = label.lower()
+        heading_to_key[normalized] = key
+        all_heading_labels.append(normalized)
+
+heading_union = "|".join(re.escape(label) for label in all_heading_labels)
+heading_pattern = re.compile(rf"(?im)^\s*#{{1,3}}\s*({heading_union})\b.*$")
 
 sections: dict[str, tuple[int, int]] = {}
 for match in heading_pattern.finditer(body):
-    name = match.group(1).lower()
-    sections.setdefault(name, (match.start(), match.end()))
+    label = match.group(1).lower()
+    key = heading_to_key.get(label)
+    if not key:
+        continue
+    sections.setdefault(key, (match.start(), match.end()))
 
 sorted_sections = sorted(
     ((start, end, name) for name, (start, end) in sections.items()),
@@ -108,19 +129,20 @@ sorted_sections = sorted(
 )
 
 section_bodies: dict[str, str] = {}
-for idx, (heading_start, content_start, name) in enumerate(sorted_sections):
+for idx, (heading_start, content_start, key) in enumerate(sorted_sections):
     end = len(body)
     if idx + 1 < len(sorted_sections):
         end = sorted_sections[idx + 1][0]
-    section_bodies[name] = body[content_start:end].strip()
+    section_bodies[key] = body[content_start:end].strip()
 
-for key, label in required_sections:
+for key, labels in required_sections:
     if key not in sections:
-        errors.append(f"Missing section: {label}")
+        errors.append(f"Missing section: ## {labels[0]}")
         continue
 
-if "testing" in section_bodies:
-    testing_content = section_bodies.get("testing", "")
+testing_key = "verification_testing"
+if testing_key in section_bodies:
+    testing_content = section_bodies.get(testing_key, "")
     lowered_testing = testing_content.lower()
     if not testing_content.strip():
         errors.append("Testing section present but empty.")

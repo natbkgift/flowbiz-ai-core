@@ -5,7 +5,7 @@ These guardrails define how FlowBiz AI Core is maintained. Enforced rules are bl
 ## CI Enforcement
 Guardrails are enforced by GitHub Actions to stop PRs that do not follow the template. The workflow lives in `.github/workflows/guardrails.yml` and runs on pull requests (pushes to `main` are skipped). It fails when any of the following are missing from the PR description:
 
-- Required headings (any Markdown level `#`, `##`, or `###`): `Summary`, `Scope`, `Out of scope`, `Testing`, `Risks`, and `Rollback`.
+- Required headings (any Markdown level `#`, `##`, or `###`): `Summary`, `Scope`, `In Scope / Out of Scope`, `Files Changed`, `Verification / Testing`, and `Risk & Rollback`.
 - Evidence of a command in the Testing section (e.g., `pytest`, `ruff`, `docker compose`, or `curl`).
 - A checked acknowledgement line, such as `- [x] Guardrails followed`.
 
