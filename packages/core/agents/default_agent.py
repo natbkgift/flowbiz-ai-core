@@ -20,5 +20,8 @@ class DefaultAgent(AgentBase):
             output_text=f"OK: {ctx.input_text}",
             status="ok",
             reason=None,
-            trace={},
+            trace={
+                "agent_name": self.name,
+                "request_id": ctx.request_id,
+            },
         )

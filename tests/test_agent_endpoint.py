@@ -84,6 +84,27 @@ def test_agent_run_endpoint_extra_fields_rejected(client: TestClient):
     assert response.status_code == 422
 
 
+def test_agent_run_endpoint_trace_contract(client: TestClient):
+    """Ensure response trace dict includes contract fields (agent_name, request_id)."""
+
+    response = client.post(
+        "/v1/agent/run",
+        json={"input_text": "test trace"},
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Verify trace exists and has contract fields
+    assert "trace" in data
+    trace = data["trace"]
+    assert isinstance(trace, dict)
+    assert "agent_name" in trace
+    assert "request_id" in trace
+    assert trace["agent_name"] == "default"
+    assert len(trace["request_id"]) > 0  # Should be a UUID
+
+
 def test_agent_run_endpoint_includes_request_id(client: TestClient):
     """Ensure response includes X-Request-ID header."""
 

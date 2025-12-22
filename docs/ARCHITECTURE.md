@@ -124,6 +124,10 @@ The Agent Runtime system provides a foundational skeleton for executing agents w
    - Fields: `output_text`, `status` (ok/refused/error), `reason`, `trace`
    - Strict schema validation (extras forbidden)
    - Status is a literal type for compile-time safety
+   - **Trace Contract** (keys required for Phase 2+ metrics/logging correlation):
+     - `agent_name` (string): Name of the agent that produced this result
+     - `runtime_ms` (integer): Total execution time in milliseconds
+     - `request_id` (string, optional): Request ID for correlation with application logs
 
 3. **`AgentBase`** (`base.py`)
    - Abstract base class for all agents
@@ -158,6 +162,7 @@ The Agent Runtime system provides a foundational skeleton for executing agents w
   - `client_id` (optional): Client identifier
   - `channel` (optional, default "api"): Execution channel
   - `metadata` (optional): Additional context data
+    - **Size guidance**: Keep metadata <32KB to avoid storage/network overhead; use only for transient request context
 - **Response**: `AgentResult` schema
 - **Behavior**: Executes DefaultAgent and returns deterministic result
 
