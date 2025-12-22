@@ -56,11 +56,11 @@ Rollback command or action:
 ## 🧭 Codex Pre-Flight (Required)
 
 - Role: Core
-- PR: PR-021.2 — Add Codex pre-flight checklist
-- Type: Docs-only
+- PR: PR-123 — Add user authentication endpoint
+- Type: Feature
 
 ### Scope
-One-sentence scope: Add Codex pre-flight checklist documentation only.
+One-sentence scope: Add a new API endpoint for user login.
 
 - [x] I can state the scope in one sentence
 - [x] I listed files I expect to touch
