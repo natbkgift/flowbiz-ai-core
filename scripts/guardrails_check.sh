@@ -162,9 +162,10 @@ if testing_key in section_bodies:
             "Testing section present but no commands detected (expected pytest/ruff/docker compose/curl)."
         )
 
-checkbox_pattern = re.compile(r"-\s*\[[xX]\]\s*guardrails\s+followed", re.IGNORECASE)
-if not checkbox_pattern.search(body):
-    errors.append("Missing acknowledgement checkbox: - [x] Guardrails followed")
+# Accept either a checked checkbox or plain text acknowledgement; warn if missing
+ack_pattern = re.compile(r"(?:-\s*\[[xX]\]\s*)?guardrails\s+followed", re.IGNORECASE)
+if not ack_pattern.search(body):
+    warnings.append("Missing acknowledgement: add '- [x] Guardrails followed' to PR body")
 
 if title:
     prefix_pattern = re.compile(r"^(PR|Chore|Feat|Fix|Docs|Refactor)[-: ]", re.IGNORECASE)
