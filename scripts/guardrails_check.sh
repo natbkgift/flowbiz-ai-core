@@ -157,10 +157,13 @@ if testing_key in section_bodies:
     lowered_testing = testing_content.lower()
     if not testing_content.strip():
         errors.append("Testing section present but empty.")
-    elif not any(keyword in lowered_testing for keyword in command_keywords):
-        errors.append(
-            "Testing section present but no commands detected (expected pytest/ruff/docker compose/curl)."
-        )
+    else:
+        has_keyword = any(keyword in lowered_testing for keyword in command_keywords)
+        has_code = bool(re.search(r"`[^`]+`|```[\s\S]*?```", testing_content))
+        if not (has_keyword or has_code):
+            errors.append(
+                "Testing section present but no commands detected (expected pytest/ruff/docker compose/curl or any code snippet)."
+            )
 
 # Accept either a checked checkbox or plain text acknowledgement; warn if missing
 ack_pattern = re.compile(r"(?:-\s*\[[xX]\]\s*)?guardrails\s+followed", re.IGNORECASE)

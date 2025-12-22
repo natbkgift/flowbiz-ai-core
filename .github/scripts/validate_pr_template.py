@@ -174,8 +174,10 @@ def has_meaningful_content(header: str, content: str) -> bool:
     if header == "Verification / Testing":
         lowered = content.lower()
         has_checked_item = bool(re.search(r"-\s*\[x\]\s+", content, flags=re.IGNORECASE))
-        has_command = any(k in lowered for k in COMMAND_KEYWORDS)
-        return has_checked_item or has_command
+        has_keyword_command = any(k in lowered for k in COMMAND_KEYWORDS)
+        # Accept any inline or fenced code as executable evidence for docs-only or simple checks
+        has_code_snippet = bool(re.search(r"`[^`]+`|```[\s\S]*?```", content))
+        return has_checked_item or has_keyword_command or has_code_snippet
 
     if header == "Risk & Rollback":
         # Accept either explicit sub-bullets or any non-empty descriptive text (legacy format)
