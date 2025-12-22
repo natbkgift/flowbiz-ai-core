@@ -19,6 +19,26 @@ jobs:
       - name: Validate pull request template
         run: python3 .github/scripts/validate_pr_template.py
 
+  tool-policy:
+    name: Tool Policy Enforcement
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run tool policy checker
+        run: python scripts/check_tools.py
+
+      - name: Lint tools with Ruff (advisory only)
+        run: ruff check packages/core/tools || true
+        continue-on-error: true
+
   tests:
     runs-on: ubuntu-latest
     strategy:
