@@ -35,6 +35,9 @@ jobs:
       - name: Run tool policy checker
         run: python scripts/check_tools.py
 
+      - name: Install ruff
+        run: pip install ruff
+
       - name: Lint tools with Ruff (advisory only)
         run: ruff check packages/core/tools || true
         continue-on-error: true
