@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -22,7 +24,7 @@ class ToolContext(BaseModel):
     trace_id: str
     agent_id: str
     intent: str | None = None
-    params: dict = Field(default_factory=dict)
-    metadata: dict = Field(default_factory=dict)
+    params: dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
     model_config = ConfigDict(frozen=True)

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from pydantic import BaseModel, ConfigDict
 
 
@@ -33,7 +35,7 @@ class ToolResult(BaseModel):
     """
 
     ok: bool
-    data: dict | None = None
+    data: dict[str, Any] | None = None
     error: ToolError | None = None
     trace_id: str
     tool_name: str
