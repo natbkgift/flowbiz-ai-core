@@ -26,7 +26,7 @@ class AgentContext(BaseSchema):
         request_id: str | None = None,
         user_id: str | None = None,
         client_id: str | None = None,
-        channel: str | None = "api",
+        channel: str = "api",
         metadata: dict[str, Any] | None = None,
     ) -> AgentContext:
         """Create a new AgentContext with current UTC timestamp."""

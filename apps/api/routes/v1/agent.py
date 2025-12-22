@@ -19,7 +19,7 @@ class AgentRunRequest(BaseSchema):
     input_text: str
     user_id: str | None = None
     client_id: str | None = None
-    channel: str | None = "api"
+    channel: str = "api"
     metadata: dict[str, Any] = {}
 
 
