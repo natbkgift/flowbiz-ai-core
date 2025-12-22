@@ -1,0 +1,8 @@
+# Code owners for critical areas of the repository
+
+/packages/core/** @flowbiz/core
+/nginx/** @flowbiz/infra
+/docker-compose*.yml @flowbiz/infra
+/.github/** @flowbiz/ops
+/docs/ARCHITECTURE.md @flowbiz/architecture
+/docs/GUARDRAILS.md @flowbiz/architecture
