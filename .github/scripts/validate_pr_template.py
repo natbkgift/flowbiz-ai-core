@@ -17,8 +17,7 @@ REQUIRED_HEADERS = [
 def load_pr_body() -> str:
     event_path = os.environ.get("GITHUB_EVENT_PATH")
     if not event_path or not os.path.exists(event_path):
-        print("GITHUB_EVENT_PATH is missing; cannot validate PR body.")
-        sys.exit(1)
+        raise FileNotFoundError("GITHUB_EVENT_PATH is missing or does not exist; cannot validate PR body.")
 
     with open(event_path, "r", encoding="utf-8") as event_file:
         event = json.load(event_file)
