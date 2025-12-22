@@ -18,9 +18,21 @@ PLACEHOLDER_CONTENT_PATTERN = r"[-\s\[\]()*`'\"._,]*"
 
 
 def load_pr_body() -> str:
+    body_path = os.environ.get("PR_BODY_PATH")
+    if body_path:
+        if not os.path.exists(body_path):
+            print(f"PR_BODY_PATH is set but file does not exist: {body_path}")
+            sys.exit(1)
+
+        with open(body_path, "r", encoding="utf-8") as body_file:
+            return body_file.read()
+
     event_path = os.environ.get("GITHUB_EVENT_PATH")
     if not event_path or not os.path.exists(event_path):
-        print("GITHUB_EVENT_PATH is missing; cannot validate PR body.")
+        print(
+            "No PR body source found. Set PR_BODY_PATH for local runs or provide "
+            "GITHUB_EVENT_PATH from the workflow event."
+        )
         sys.exit(1)
 
     with open(event_path, "r", encoding="utf-8") as event_file:
