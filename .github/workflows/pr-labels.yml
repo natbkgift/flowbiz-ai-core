@@ -1,0 +1,66 @@
+name: PR Labels Required
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+      - unlabeled
+      - ready_for_review
+
+permissions:
+  pull-requests: read
+
+jobs:
+  validate-persona-label:
+    name: Validate Persona Label
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check persona labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const allowedLabels = [
+              'persona:core',
+              'persona:infra',
+              'persona:docs'
+            ];
+            const prLabels = context.payload.pull_request.labels.map(
+              label => label.name
+            );
+
+            // Find persona labels on this PR
+            const personaLabels = prLabels.filter(
+              label => allowedLabels.includes(label)
+            );
+
+            console.log('PR labels:', prLabels);
+            console.log('Persona labels found:', personaLabels);
+
+            if (personaLabels.length === 0) {
+              core.setFailed(
+                '❌ Missing persona label.\n\n' +
+                'Add exactly one of: ' +
+                'persona:core / persona:infra / persona:docs\n\n' +
+                'This ensures work is properly scoped and routed.'
+              );
+              return;
+            }
+
+            if (personaLabels.length > 1) {
+              core.setFailed(
+                `❌ Multiple persona labels found: ` +
+                `${personaLabels.join(', ')}\n\n` +
+                'Keep only one persona label.\n\n' +
+                'Allowed labels: ' +
+                'persona:core / persona:infra / persona:docs'
+              );
+              return;
+            }
+
+            console.log(
+              `✅ Valid persona label found: ${personaLabels[0]}`
+            );

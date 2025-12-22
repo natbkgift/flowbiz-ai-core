@@ -11,6 +11,16 @@ Guardrails are enforced by GitHub Actions to stop PRs that do not follow the tem
 
 The workflow also emits a warning (non-blocking) if the PR title does not start with a recognizable prefix such as `PR-123:` or `Feat:`.
 
+### Persona Label Requirement
+Every PR must declare exactly one **persona label** so work is scoped and routed correctly. The workflow in `.github/workflows/pr-labels.yml` enforces this requirement and fails when:
+- No persona label exists
+- More than one persona label exists
+
+Allowed persona labels:
+- `persona:core` — Core domain logic and business rules
+- `persona:infra` — Infrastructure, deployment, and operational changes
+- `persona:docs` — Documentation updates
+
 ## Pre-Flight Checklist (Required before coding)
 Complete the Codex Pre-Flight checklist in `docs/CODEX_PREFLIGHT.md` **before writing any code**. Copy the template into the PR description and fill it out. CI checks for the final confirmation line (`- [x] Pre-Flight completed before writing code`) as evidence that the pre-flight was done.
 
