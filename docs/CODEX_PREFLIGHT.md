@@ -56,15 +56,15 @@ Rollback command or action:
 ## 🧭 Codex Pre-Flight (Required)
 
 - Role: Core
-- PR: PR-021.2 — Add Codex pre-flight checklist
-- Type: Docs-only
+- PR: PR-123 — Add user authentication endpoint
+- Type: Feature
 
 ### Scope
-One-sentence scope: Add Codex pre-flight checklist documentation only.
+One-sentence scope: Add a new `/login` endpoint for user authentication with JWT token support.
 
 - [x] I can state the scope in one sentence
-- [x] I listed files I expect to touch
-- [x] I listed files I explicitly will NOT touch
+- [x] I listed files I expect to touch (`apps/api/routes/auth.py`, `packages/core/auth/jwt.py`, `tests/test_auth.py`)
+- [x] I listed files I explicitly will NOT touch (`packages/billing/`, `docker-compose.yml`, `apps/worker/`)
 - [x] I confirm no scope expansion without approval
 
 - [x] I have read docs/GUARDRAILS.md
@@ -72,15 +72,15 @@ One-sentence scope: Add Codex pre-flight checklist documentation only.
 - [x] I am not adding dependencies without approval
 - [x] I understand CI will fail if I violate Guardrails
 
-What test(s) will prove this works? Guardrail docs updated; no runtime impact.
+What test(s) will prove this works? Integration tests for `/login` endpoint, including success and failure cases.
 
-What command(s) will be run? N/A (documentation-only)
+What command(s) will be run? `pytest tests/test_auth.py -v` and `ruff check apps/api/routes/auth.py packages/core/auth/`
 
-- [x] Existing tests cover this
-- [ ] I will add tests
+- [ ] Existing tests cover this
+- [x] I will add tests
 - [ ] Manual verification only (explain why)
 
-What could break? None — documentation only.
+What could break? Login flow if JWT signing fails; existing auth middleware may need updates.
 
 Is rollback trivial? yes
 
