@@ -3,6 +3,25 @@ set -euo pipefail
 
 # shellcheck disable=SC2016
 
+_read_from_github_event() {
+    local key=$1
+    if [[ -n "${GITHUB_EVENT_PATH:-}" && -f "${GITHUB_EVENT_PATH}" ]]; then
+        python3 - "$GITHUB_EVENT_PATH" "$key" <<'PY'
+import json
+import sys
+
+path, key = sys.argv[1], sys.argv[2]
+with open(path, "r", encoding="utf-8") as event_file:
+        event = json.load(event_file)
+
+pr = event.get("pull_request") or {}
+print(pr.get(key) or "")
+PY
+        return 0
+    fi
+    return 1
+}
+
 read_pr_body() {
   if [[ -n "${PR_BODY:-}" ]]; then
     printf '%s' "$PR_BODY"
@@ -18,20 +37,7 @@ read_pr_body() {
     return
   fi
 
-  if [[ -n "${GITHUB_EVENT_PATH:-}" && -f "${GITHUB_EVENT_PATH}" ]]; then
-    python3 - "$GITHUB_EVENT_PATH" <<'PY'
-import json
-import sys
-
-path = sys.argv[1]
-with open(path, "r", encoding="utf-8") as event_file:
-    event = json.load(event_file)
-
-pr = event.get("pull_request") or {}
-print(pr.get("body") or "")
-PY
-    return
-  fi
+    _read_from_github_event "body" && return
 
   echo "No PR body available. Set PR_BODY, PR_BODY_PATH, or provide GITHUB_EVENT_PATH." >&2
   exit 1
@@ -43,20 +49,7 @@ read_pr_title() {
     return
   fi
 
-  if [[ -n "${GITHUB_EVENT_PATH:-}" && -f "${GITHUB_EVENT_PATH}" ]]; then
-    python3 - "$GITHUB_EVENT_PATH" <<'PY'
-import json
-import sys
-
-path = sys.argv[1]
-with open(path, "r", encoding="utf-8") as event_file:
-    event = json.load(event_file)
-
-pr = event.get("pull_request") or {}
-print(pr.get("title") or "")
-PY
-    return
-  fi
+    _read_from_github_event "title" && return
 
   printf ''
 }
