@@ -14,7 +14,7 @@ REQUIRED_HEADERS = [
 ]
 
 # Matches strings containing only whitespace, markdown list/task markers, and punctuation.
-PLACEHOLDER_CONTENT_PATTERN = r"[-\s\[\]()*`'\"._,]*"
+PLACEHOLDER_CONTENT_PATTERN = r"[-\s\[\]()*`'\"#._,>|~]*"
 
 
 def load_pr_body() -> str:
