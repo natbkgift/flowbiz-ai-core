@@ -74,7 +74,7 @@ One-sentence scope: Add a new API endpoint for user login.
 
 What test(s) will prove this works? Guardrail docs updated; no runtime impact.
 
-What command(s) will be run? `python -m pytest --maxfail=1` (include recognizable tools so CI can detect commands)
+What command(s) will be run? `python -m pytest --maxfail=1`
 
 - [x] Existing tests cover this
 - [ ] I will add tests
