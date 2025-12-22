@@ -12,6 +12,8 @@ def clear_version_env(monkeypatch: pytest.MonkeyPatch):
         "FLOWBIZ_GIT_SHA",
         "FLOWBIZ_BUILD_TIME",
         "APP_VERSION",
+        "APP_GIT_SHA",
+        "APP_BUILD_TIME",
         "GIT_SHA",
         "BUILD_TIME",
     )
@@ -44,16 +46,29 @@ def test_version_info_prefers_new_environment_variables(monkeypatch: pytest.Monk
     assert version_info.build_time == "2024-01-01T00:00:00Z"
 
 
-def test_version_info_falls_back_to_legacy_variables(monkeypatch: pytest.MonkeyPatch):
-    """Legacy APP_ variables should be used when new variables are absent."""
+def test_version_info_supports_app_prefixed_variables(monkeypatch: pytest.MonkeyPatch):
+    """APP_* variables should be used when FLOWBIZ_* variables are absent."""
 
     monkeypatch.setenv("APP_VERSION", "0.9.0")
+    monkeypatch.setenv("APP_GIT_SHA", "89abcde")
+    monkeypatch.setenv("APP_BUILD_TIME", "2023-12-30T23:59:59Z")
+
+    version_info = get_version_info()
+
+    assert version_info.version == "0.9.0"
+    assert version_info.git_sha == "89abcde"
+    assert version_info.build_time == "2023-12-30T23:59:59Z"
+
+
+def test_version_info_falls_back_to_legacy_variables(monkeypatch: pytest.MonkeyPatch):
+    """Legacy unprefixed variables should be used when newer ones are absent."""
+
     monkeypatch.setenv("GIT_SHA", "1234567")
     monkeypatch.setenv("BUILD_TIME", "2023-12-31T23:59:59Z")
 
     version_info = get_version_info()
 
-    assert version_info.version == "0.9.0"
+    assert version_info.version == "dev"
     assert version_info.git_sha == "1234567"
     assert version_info.build_time == "2023-12-31T23:59:59Z"
 

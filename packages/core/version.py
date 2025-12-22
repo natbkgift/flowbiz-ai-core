@@ -19,8 +19,17 @@ def get_version_info() -> VersionInfo:
     """Return version information resolved from the environment."""
 
     version = os.getenv("FLOWBIZ_VERSION") or os.getenv("APP_VERSION") or "dev"
-    git_sha = os.getenv("FLOWBIZ_GIT_SHA") or os.getenv("GIT_SHA") or "unknown"
-    build_time = os.getenv("FLOWBIZ_BUILD_TIME") or os.getenv("BUILD_TIME")
+    git_sha = (
+        os.getenv("FLOWBIZ_GIT_SHA")
+        or os.getenv("APP_GIT_SHA")
+        or os.getenv("GIT_SHA")
+        or "unknown"
+    )
+    build_time = (
+        os.getenv("FLOWBIZ_BUILD_TIME")
+        or os.getenv("APP_BUILD_TIME")
+        or os.getenv("BUILD_TIME")
+    )
 
     return VersionInfo(
         version=version,

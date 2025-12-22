@@ -102,7 +102,11 @@ class AppSettings(BaseSettings):
     # Environment keys prefixed with APP_ that should be tolerated even if not
     # defined as model fields. This allows utilities such as version providers
     # to read their own variables without breaking strict validation.
-    allowed_unknown_env_keys: ClassVar[set[str]] = {"APP_VERSION"}
+    allowed_unknown_env_keys: ClassVar[set[str]] = {
+        "APP_VERSION",
+        "APP_GIT_SHA",
+        "APP_BUILD_TIME",
+    }
 
     env: str = Field(default="development")
     name: str = Field(default="FlowBiz AI Core")
