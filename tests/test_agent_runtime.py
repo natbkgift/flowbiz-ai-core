@@ -84,7 +84,7 @@ def test_default_agent_deterministic():
     assert "hello world" in result.output_text
     assert result.output_text == "OK: hello world"
     assert result.reason is None
-    # Verify trace contract fields (agent_name always present, request_id mirrors context)
+    # Verify trace contract fields (agent_name present, request_id in context)
     assert result.trace.get("agent_name") == "default"
     assert "request_id" in result.trace
 
