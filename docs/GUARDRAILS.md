@@ -11,6 +11,9 @@ Guardrails are enforced by GitHub Actions to stop PRs that do not follow the tem
 
 The workflow also emits a warning (non-blocking) if the PR title does not start with a recognizable prefix such as `PR-123:` or `Feat:`.
 
+## Pre-Flight Checklist (Required before coding)
+Complete the Codex Pre-Flight checklist in `docs/CODEX_PREFLIGHT.md` **before writing any code**. Copy the template into the PR description and fill it out. CI checks for the final confirmation line (`- [x] Pre-Flight completed before writing code`) as evidence that the pre-flight was done.
+
 ## Enforced Rules (Hard Guardrails)
 The following rules are non-negotiable. PRs that violate them should be rejected or fixed before merge.
 
