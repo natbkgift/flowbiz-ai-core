@@ -14,7 +14,7 @@ class AgentContext(BaseSchema):
     request_id: str | None = None
     user_id: str | None = None
     client_id: str | None = None
-    channel: str | None = None
+    channel: str = "api"
     input_text: str
     metadata: dict[str, Any] = {}
     created_at: datetime

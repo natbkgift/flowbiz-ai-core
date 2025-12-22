@@ -126,9 +126,9 @@ def test_agent_run_endpoint_result_schema_strict(client: TestClient):
     assert "output_text" in data
     assert "status" in data
 
-    # May have these optional fields
-    assert "reason" in data or "reason" not in data
-    assert "trace" in data or "trace" not in data
-
     # Status must be valid literal
     assert data["status"] in ["ok", "refused", "error"]
+
+    # Verify expected values for this test case
+    assert data["status"] == "ok"
+    assert data["output_text"] == "OK: schema test"

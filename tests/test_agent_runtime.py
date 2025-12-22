@@ -100,7 +100,6 @@ def test_agent_runtime_default_agent_ok():
 
     assert result.status == "ok"
     assert result.output_text == "OK: test input"
-    assert "test input" in result.output_text
 
 
 def test_agent_runtime_with_metadata():
