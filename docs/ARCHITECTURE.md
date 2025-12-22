@@ -28,6 +28,14 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud, built as a 
 - **Structured logging** with request tracking
 - **Production-ready** with middleware, error handling, and health checks
 
+## Architecture Boundaries
+
+Explicit boundaries keep the dependency graph directional and the codebase maintainable. These rules summarize the enforced guardrails described in `docs/GUARDRAILS.md` and explain why each layer exists.
+
+- **API layer (`apps/api`)** handles HTTP transport, validation, and error mapping. It must not own domain rules or persistence so the transport surface stays thin and replaceable.
+- **Core domain (`packages/core`)** owns business logic and shared utilities. It cannot import API modules or transport-specific packages to prevent cycles and preserve portability to other interfaces.
+- **Infrastructure & deployment (`docker-compose*.yml`, `nginx/**`, CI)** configure runtime topology and automation. They should not embed business behavior and require explicit review to manage operational risk.
+
 ---
 
 ## System Layers
