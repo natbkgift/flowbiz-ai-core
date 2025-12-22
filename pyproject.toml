@@ -1,5 +1,7 @@
 [build-system]
-requires = ["setuptools>=61"]
+# Explicitly depend on wheel so editable/isolated installs have the
+# ``bdist_wheel`` command available during metadata generation.
+requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
