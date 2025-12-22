@@ -1,4 +1,4 @@
-# Codex Pre-Flight Checklist (PR-021.2)
+# Codex Pre-Flight Checklist
 
 Complete this checklist **before writing any code**. Answer with **Yes / No / N/A** and a brief justification where indicated. Keep the tone firm, calm, and professional. Copy the template below into your PR description and fill it in.
 
