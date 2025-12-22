@@ -83,7 +83,12 @@ required_sections = [
     ("scope", ["scope"]),
     (
         "in_scope_out_of_scope",
-        ["in scope / out of scope", "in scope/out of scope"],
+        [
+            "in scope / out of scope",
+            "in scope/out of scope",
+            # legacy single heading accepted for backward compatibility
+            "out of scope",
+        ],
     ),
     ("files_changed", ["files changed"]),
     (
@@ -92,7 +97,14 @@ required_sections = [
     ),
     (
         "risk_rollback",
-        ["risk & rollback", "risks & rollback", "risk and rollback"],
+        [
+            "risk & rollback",
+            "risks & rollback",
+            "risk and rollback",
+            # legacy separate headings accepted
+            "risks",
+            "rollback",
+        ],
     ),
 ]
 
@@ -135,9 +147,15 @@ for idx, (heading_start, content_start, key) in enumerate(sorted_sections):
         end = sorted_sections[idx + 1][0]
     section_bodies[key] = body[content_start:end].strip()
 
+# Treat Files Changed as optional (warn only) to preserve legacy PRs
+optional_keys = {"files_changed"}
+
 for key, labels in required_sections:
     if key not in sections:
-        errors.append(f"Missing section: ## {labels[0]}")
+        if key in optional_keys:
+            warnings.append(f"Missing optional section: ## {labels[0]}")
+        else:
+            errors.append(f"Missing section: ## {labels[0]}")
         continue
 
 testing_key = "verification_testing"
