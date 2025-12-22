@@ -221,6 +221,11 @@ def main() -> None:
     body = load_pr_body()
     errors = validate_sections(body)
 
+    # Non-blocking acknowledgement check for legacy PRs
+    ack_pattern = re.compile(r"(?:-\s*\[[xX]\]\s*)?guardrails\s+followed", re.IGNORECASE)
+    if not ack_pattern.search(body):
+        print("Warning: Missing acknowledgement: add '- [x] Guardrails followed' to PR body")
+
     if errors:
         print("PR template validation failed:")
         for error in errors:
