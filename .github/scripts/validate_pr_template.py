@@ -72,7 +72,7 @@ def has_meaningful_content(header: str, content: str) -> bool:
         return False
 
     template_default = DEFAULT_SECTION_CONTENT.get(header)
-    if template_default and content.strip() == template_default:
+    if template_default and content == template_default:
         return False
 
     lowered = content.lower()
