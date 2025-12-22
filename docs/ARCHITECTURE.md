@@ -94,11 +94,89 @@ The core layer provides shared utilities and domain logic used across the applic
 - **`services/`**: Business logic and domain services
   - `meta_service.py`: Provides service metadata
 
+- **`agents/`**: Agent runtime system (Phase 2)
+  - `context.py`: AgentContext schema for execution context
+  - `result.py`: AgentResult schema for execution results
+  - `base.py`: AgentBase abstract class for all agents
+  - `default_agent.py`: DefaultAgent stub implementation
+  - `runtime.py`: AgentRuntime orchestration and lifecycle logging
+
 **Responsibilities:**
 - Provide reusable utilities
 - Manage application configuration
 - Implement domain logic
 - Abstract infrastructure concerns
+
+### Agent Runtime System
+
+The Agent Runtime system provides a foundational skeleton for executing agents with structured lifecycle logging and testability.
+
+**Components:**
+
+1. **`AgentContext`** (`context.py`)
+   - Normalized context for agent execution
+   - Fields: `request_id`, `user_id`, `client_id`, `channel`, `input_text`, `metadata`, `created_at`
+   - Factory method `create()` generates UTC timestamps
+   - Based on `BaseSchema` with strict validation (extras forbidden)
+
+2. **`AgentResult`** (`result.py`)
+   - Typed result of agent execution
+   - Fields: `output_text`, `status` (ok/refused/error), `reason`, `trace`
+   - Strict schema validation (extras forbidden)
+   - Status is a literal type for compile-time safety
+
+3. **`AgentBase`** (`base.py`)
+   - Abstract base class for all agents
+   - Properties: `name` (string identifier)
+   - Methods: `run(ctx: AgentContext) -> AgentResult`
+   - Currently synchronous (async may be added later)
+
+4. **`DefaultAgent`** (`default_agent.py`)
+   - Minimal deterministic stub agent
+   - Returns echo-like response: `"OK: {input_text}"`
+   - Status always "ok"
+   - No external dependencies (no LLM, tools, or network calls)
+   - Used as default when no agent is specified
+
+5. **`AgentRuntime`** (`runtime.py`)
+   - Orchestrates agent execution lifecycle
+   - Builds `AgentContext` from API request
+   - Selects and runs agent (currently only DefaultAgent)
+   - Emits structured lifecycle logs:
+     - `runtime_start`: Runtime begins processing
+     - `agent_selected`: Agent chosen for execution
+     - `agent_done`: Agent completed execution
+     - `runtime_done`: Runtime finished processing
+   - All logs include `request_id` and `agent_name`
+
+**API Endpoint:**
+
+- **Route**: `POST /v1/agent/run`
+- **Request**: `AgentRunRequest` schema
+  - `input_text` (required): Text input for agent
+  - `user_id` (optional): User identifier
+  - `client_id` (optional): Client identifier
+  - `channel` (optional, default "api"): Execution channel
+  - `metadata` (optional): Additional context data
+- **Response**: `AgentResult` schema
+- **Behavior**: Executes DefaultAgent and returns deterministic result
+
+**Design Principles:**
+
+- **Minimal scope**: Only what's needed for a working skeleton
+- **Testable**: No external dependencies, fully testable without services
+- **Deterministic**: DefaultAgent produces predictable output
+- **Observable**: Structured logging at each lifecycle stage
+- **Extensible**: Base classes and runtime support future agents
+
+**Future Enhancements** (out of scope for this phase):
+
+- Multiple agent implementations
+- Agent selection logic
+- Async execution
+- Background task queues
+- Agent tool integration
+- LLM integration
 
 ### 3. Infrastructure Layer
 
