@@ -3,11 +3,40 @@ map $http_upgrade $connection_upgrade {
   ''      $http_connection;
 }
 
+# HTTP server - redirect to HTTPS
 server {
   listen 80;
   server_name _;
-
   server_tokens off;
+
+  location /.well-known/acme-challenge/ {
+    root /var/www/certbot;
+  }
+
+  location / {
+    return 301 https://$host$request_uri;
+  }
+}
+
+# HTTPS server (production)
+server {
+  listen 443 ssl http2;
+  server_name _;
+  server_tokens off;
+
+  # SSL certificates
+  ssl_certificate /etc/letsencrypt/live/flowbiz.cloud/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/flowbiz.cloud/privkey.pem;
+
+  # SSL configuration
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers HIGH:!aNULL:!MD5;
+  ssl_prefer_server_ciphers on;
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 10m;
+
+  # HSTS (HTTP Strict Transport Security)
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
 
   # --- Docs endpoints: relaxed CSP (optional, prod-only via env values) ---
   location = /docs {

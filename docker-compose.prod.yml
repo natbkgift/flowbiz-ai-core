@@ -1,0 +1,18 @@
+# Production SSL/HTTPS Override
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+version: "3.9"
+services:
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./nginx/snippets:/etc/nginx/snippets:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    environment:
+      CSP_API: ""
+      CSP_DOCS: ""
+      NGINX_HOST: "flowbiz.cloud"
+      NGINX_HTTPS: "on"
