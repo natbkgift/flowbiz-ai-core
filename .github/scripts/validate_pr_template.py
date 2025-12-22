@@ -2,16 +2,34 @@ import json
 import os
 import re
 import sys
-from typing import List
+from typing import List, Dict, Tuple
 
-REQUIRED_HEADERS = [
-    "Summary",
-    "Scope",
-    "In Scope / Out of Scope",
-    "Files Changed",
-    "Verification / Testing",
-    "Risk & Rollback",
-]
+# Backward-compatible heading groups: canonical header -> list of acceptable variants
+HEADING_GROUPS: Dict[str, List[str]] = {
+    "Summary": ["summary"],
+    "Scope": ["scope"],
+    # Accept combined or legacy single heading
+    "In Scope / Out of Scope": [
+        "in scope / out of scope",
+        "in scope/out of scope",
+        "out of scope",
+    ],
+    # Keep Files Changed as optional (non-blocking warning for legacy PRs)
+    "Files Changed": ["files changed"],
+    # Accept combined, plus legacy separate headings (handled specially below)
+    "Verification / Testing": ["verification / testing", "verification/testing", "testing"],
+    "Risk & Rollback": [
+        "risk & rollback",
+        "risks & rollback",
+        "risk and rollback",
+        # legacy separate headings (special handling below)
+        "risks",
+        "rollback",
+    ],
+}
+
+# Headers that should not block CI if missing (emit warning only)
+OPTIONAL_HEADERS = {"Files Changed"}
 
 # Matches strings containing only whitespace, markdown list/task markers, and punctuation.
 PLACEHOLDER_CONTENT_PATTERN = r"[-\s\[\]()*`'\"._,]*"
@@ -59,10 +77,54 @@ def load_pr_body() -> str:
     return body or ""
 
 
-def find_section(body: str, header: str) -> str:
-    pattern = rf"## {re.escape(header)}\s*(.*?)\s*(?=\n## |\Z)"
-    match = re.search(pattern, body, flags=re.DOTALL | re.IGNORECASE)
-    return match.group(1) if match else ""
+def _find_sections_by_variants(body: str, variants: List[str]) -> List[Tuple[str, str]]:
+    """Find sections by any acceptable heading variants.
+
+    Returns list of (matched_variant, content).
+    Supports markdown heading levels #, ##, or ### (case-insensitive).
+    """
+    results: List[Tuple[str, str]] = []
+    for v in variants:
+        # Accept #, ## or ###, allow extra spaces, match until next heading
+        pattern = rf"(?im)^\s*#{{1,3}}\s*{re.escape(v)}\s*(.*?)\s*(?=\n\s*#|\Z)"
+        match = re.search(pattern, body, flags=re.DOTALL | re.IGNORECASE | re.MULTILINE)
+        if match:
+            results.append((v, match.group(1)))
+    return results
+
+def find_section(body: str, canonical_header: str) -> str:
+    """Return content of the section for a canonical header using variants.
+
+    Special handling:
+      - Risk & Rollback: accept either a combined heading OR both separate
+        'Risks' and 'Rollback' headings; concatenate their contents.
+    """
+    variants = HEADING_GROUPS.get(canonical_header, [canonical_header.lower()])
+    found = _find_sections_by_variants(body, variants)
+    if canonical_header == "Risk & Rollback":
+        # If combined exists, prefer it
+        for name, content in found:
+            if name.lower() in {"risk & rollback", "risks & rollback", "risk and rollback"}:
+                return content
+        # Else, accept separate legacy headings if both present
+        legacy_map = {name.lower(): content for name, content in found}
+        if "risks" in legacy_map and "rollback" in legacy_map:
+            return (legacy_map["risks"].strip() + "\n\n" + legacy_map["rollback"].strip()).strip()
+        return ""
+
+    # For In Scope / Out of Scope: if only legacy 'out of scope' present, accept it
+    if canonical_header == "In Scope / Out of Scope":
+        if found:
+            # prefer combined if present
+            for name, content in found:
+                if name.lower() in {"in scope / out of scope", "in scope/out of scope"}:
+                    return content
+            # else return legacy 'out of scope' content
+            return found[0][1]
+        return ""
+
+    # Default: return first match content if any
+    return found[0][1] if found else ""
 
 
 def _has_meaningful_subsection(content: str, subheadings: list[str]) -> bool:
@@ -110,15 +172,19 @@ def has_meaningful_content(header: str, content: str) -> bool:
 
 def validate_sections(body: str) -> List[str]:
     errors: List[str] = []
+    warnings: List[str] = []
 
     if not body.strip():
         errors.append("PR body is empty; fill out the pull request template.")
         return errors
 
-    for header in REQUIRED_HEADERS:
+    for header in HEADING_GROUPS.keys():
         content = find_section(body, header)
         if not content:
-            errors.append(f"Missing required section: {header}")
+            if header in OPTIONAL_HEADERS:
+                warnings.append(f"Missing optional section: {header}")
+            else:
+                errors.append(f"Missing required section: {header}")
             continue
 
         cleaned = content.strip()
@@ -129,6 +195,9 @@ def validate_sections(body: str) -> List[str]:
         if not has_meaningful_content(header, cleaned):
             errors.append(f"Section '{header}' must include meaningful content.")
 
+    # Emit warnings (non-blocking) for visibility
+    for w in warnings:
+        print(f"Warning: {w}")
     return errors
 
 
