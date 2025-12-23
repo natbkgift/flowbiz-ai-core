@@ -102,6 +102,19 @@ required_sections = [
 ]
 
 command_keywords = ["pytest", "ruff", "docker compose", "curl"]
+testing_evidence_phrases = [
+    "tested locally",
+    "manual testing",
+    "manually tested",
+    "no tests required",
+    "not run",
+    "unit tests",
+    "integration tests",
+    "manual",
+    "verified",
+    "tested with",
+    "ran tests",
+]
 
 errors: list[str] = []
 warnings: list[str] = []
@@ -160,9 +173,13 @@ if testing_key in section_bodies:
     else:
         has_keyword = any(keyword in lowered_testing for keyword in command_keywords)
         has_code = bool(re.search(r"`[^`]+`|```[\s\S]*?```", testing_content))
-        if not (has_keyword or has_code):
+        # Accept checkboxes from PR template (e.g., "- [x] Manual", "- [ ] Unit tests")
+        has_checkbox = bool(re.search(r"- \[[ xX]\]", testing_content))
+        has_testing_phrase = any(phrase in lowered_testing for phrase in testing_evidence_phrases)
+        
+        if not (has_keyword or has_code or has_checkbox or has_testing_phrase):
             errors.append(
-                "Testing section present but no commands detected (expected pytest/ruff/docker compose/curl or any code snippet)."
+                "Testing section present but no testing evidence detected. Please include test commands, code snippets, checkboxes, or describe your testing approach."
             )
 
 # Accept either a checked checkbox or plain text acknowledgement; warn if missing

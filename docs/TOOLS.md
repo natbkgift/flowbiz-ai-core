@@ -17,9 +17,10 @@ Tools are deterministic, testable units of capability that execute specific acti
 5. [Error Design Guidelines](#error-design-guidelines)
 6. [Example: DummyTool (Reference)](#example-dummytool-reference)
 7. [Testing a Tool](#testing-a-tool)
-8. [Tool Readiness Checklist](#tool-readiness-checklist)
-9. [Future Extensions (Non-binding)](#future-extensions-non-binding)
-10. [Out of Scope](#out-of-scope)
+8. [Tool Policy Enforcement (CI)](#tool-policy-enforcement-ci)
+9. [Tool Readiness Checklist](#tool-readiness-checklist)
+10. [Future Extensions (Non-binding)](#future-extensions-non-binding)
+11. [Out of Scope](#out-of-scope)
 
 ---
 
@@ -566,6 +567,94 @@ tests/
 - **Mock external dependencies**: Don't make real API calls in tests
 - **Use parametrize** for testing multiple input combinations
 - **Test error messages**: Verify error codes and messages are correct
+
+---
+
+## Tool Policy Enforcement (CI)
+
+All Tools are automatically checked by CI to ensure they comply with critical safety and debuggability rules.
+
+### Enforcement Model
+
+The tool policy checker uses **two layers** of enforcement:
+
+#### 🔴 Layer 1 — Enforced (Fail CI)
+
+Violations in this layer will **fail CI immediately**:
+
+**Structural Requirements:**
+- Tool must inherit from `ToolBase`
+- Tool must define `name` property
+- Tool must define `description` property
+- Tool must implement `run()` method
+- `run()` must return `ToolResult` (not dict)
+
+**Forbidden Imports:**
+- `fastapi`
+- `apps.api`
+- `requests` (unless infra-backed tool)
+- `random`
+- Agent or registry modules
+
+**Forbidden Function Calls:**
+- `random.randint()`, `random.random()`, etc.
+- `datetime.datetime.now()`, `datetime.now()`
+- `os.getenv()`, `os.environ.get()`
+
+#### 🟡 Layer 2 — Recommended (Warnings Only)
+
+Violations here emit warnings but **do not fail CI**:
+
+- Missing `version` property (has default in base class)
+- Missing type hints on `run()` method
+- Missing docstrings
+
+### Running the Checker Locally
+
+Before submitting your Tool, run the policy checker locally:
+
+```bash
+python scripts/check_tools.py
+```
+
+Example output for violations:
+
+```
+======================================================================
+Tool Policy Enforcement Check
+======================================================================
+
+Checking 1 tool file(s)...
+
+packages/core/tools/my_tool.py:
+  ERROR [line 9] [forbidden-import] Forbidden import: random
+  ERROR [line 47] [forbidden-call] Forbidden function call: random.randint
+  WARNING [line 16] [missing-version] Tool MyTool should define 'version' property
+
+======================================================================
+Summary
+======================================================================
+Files checked: 1
+Errors: 2
+Warnings: 1
+
+❌ Policy enforcement failed!
+   Fix the errors above before merging.
+```
+
+### What Gets Checked
+
+The checker scans:
+- ✅ `packages/core/tools/**/*.py`
+
+The checker skips:
+- ❌ `packages/core/tools/__init__.py`
+- ❌ `packages/core/tools/examples/`
+- ❌ Infrastructure files (`base.py`, `context.py`, `result.py`)
+
+### CI Integration
+
+The tool policy check runs automatically as part of the `tool-policy` job in GitHub Actions CI. If the check fails, the PR cannot be merged until violations are fixed.
 
 ---
 
