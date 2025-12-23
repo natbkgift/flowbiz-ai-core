@@ -5,6 +5,7 @@ This is a canonical example tool that demonstrates:
 - ToolContext and ToolResult usage
 - Deterministic execution with zero side effects
 - Explicit error handling
+- Permission declaration pattern
 
 This tool is NOT used in production and exists solely as a template
 for creating new tools.
@@ -16,6 +17,7 @@ from typing import Any
 
 from ..base import ToolBase
 from ..context import ToolContext
+from ..permissions import ToolPermissions
 from ..result import ToolError, ToolResult
 
 
@@ -35,6 +37,9 @@ class DummyTool(ToolBase):
     - Deterministic: no randomness, no time-based output
     - Side-effect free: no external calls, no env reads, no mutations
     - Error-safe: no exceptions escape run()
+
+    Permissions:
+    - No permissions required (pure computation, no external access)
     """
 
     @property
@@ -51,6 +56,22 @@ class DummyTool(ToolBase):
     def version(self) -> str:
         """Return the version of this tool."""
         return "v1"
+
+    @property
+    def permissions(self) -> ToolPermissions:
+        """Return the permission requirements for this tool.
+
+        DummyTool performs pure computation (echo) with no external access,
+        so it requires no permissions. This demonstrates the pattern for
+        tools that don't need special privileges.
+
+        Note: This declaration is example-only and not enforced yet.
+        Future PRs (PR-024, PR-030) will integrate permission checks.
+        """
+        return ToolPermissions(
+            required_permissions=[],
+            optional_permissions=[],
+        )
 
     def run(self, context: ToolContext) -> ToolResult:
         """Execute the dummy echo tool.
