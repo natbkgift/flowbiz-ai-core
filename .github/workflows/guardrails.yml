@@ -75,43 +75,30 @@ jobs:
             
             if (missingPersona || missingDescription) {
               // Build comment with missing items
-              commentBody = `${marker}
-## ⚠️ Guardrails Check (Non-blocking)
-
-Some guardrails items are missing. These don't fail CI, but please address them:
-
-${details}
-
-### 📋 Quick Fixes
-
-**For missing persona label:**
-- Add exactly one label to this PR: \`persona:core\`, \`persona:infra\`, or \`persona:docs\`
-- Use the right sidebar → Labels
-
-**For missing PR description sections:**
-- Edit the PR description to include:
-  - \`## Summary\` - Brief description of your changes
-  - \`## Testing\` - How you verified the changes (commands, manual steps, etc.)
-- See the [PR template](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/.github/pull_request_template.md) for full structure
-
-**Reference:**
-- [Guardrails Documentation](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/docs/GUARDRAILS.md)
-
----
-*This is an automated comment. Guardrails checks are non-blocking but encouraged for consistency.*`;
+              commentBody = marker + '\n## ⚠️ Guardrails Check (Non-blocking)\n\n' +
+                'Some guardrails items are missing. These don\'t fail CI, but please address them:\n\n' +
+                details + '\n\n' +
+                '### 📋 Quick Fixes\n\n' +
+                '**For missing persona label:**\n' +
+                '- Add exactly one label to this PR: `persona:core`, `persona:infra`, or `persona:docs`\n' +
+                '- Use the right sidebar → Labels\n\n' +
+                '**For missing PR description sections:**\n' +
+                '- Edit the PR description to include:\n' +
+                '  - `## Summary` - Brief description of your changes\n' +
+                '  - `## Testing` - How you verified the changes (commands, manual steps, etc.)\n' +
+                '- See the [PR template](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/blob/main/.github/pull_request_template.md) for full structure\n\n' +
+                '**Reference:**\n' +
+                '- [Guardrails Documentation](https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/blob/main/docs/GUARDRAILS.md)\n\n' +
+                '---\n' +
+                '*This is an automated comment. Guardrails checks are non-blocking but encouraged for consistency.*';
             } else {
               // All checks passed
-              commentBody = `${marker}
-## ✅ Guardrails Check Passed
-
-All guardrails items are present:
-
-${details}
-
-Great job following the project conventions! 🎉
-
----
-*This is an automated comment.*`;
+              commentBody = marker + '\n## ✅ Guardrails Check Passed\n\n' +
+                'All guardrails items are present:\n\n' +
+                details + '\n\n' +
+                'Great job following the project conventions! 🎉\n\n' +
+                '---\n' +
+                '*This is an automated comment.*';
             }
             
             if (botComment) {
