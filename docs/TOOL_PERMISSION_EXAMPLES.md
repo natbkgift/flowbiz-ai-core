@@ -64,7 +64,7 @@ This table maps common tool categories to their typical permission requirements.
 
 ## 3. Example Tools
 
-Below are **5–8 illustrative examples** showing how different tool types should declare permissions.
+Below are **8 illustrative examples** showing how different tool types should declare permissions.
 
 ### Example 1: HTTP Fetch Tool
 
@@ -80,6 +80,10 @@ Below are **5–8 illustrative examples** showing how different tool types shoul
 - No environment variable reads (API keys passed via config layer)
 
 ```python
+from packages.core.tools.base import ToolBase
+from packages.core.tools.permissions import ToolPermissions, Permission
+
+
 class HTTPFetchTool(ToolBase):
     name = "http_fetch"
     description = "Fetch data from external HTTP APIs"
@@ -107,6 +111,10 @@ class HTTPFetchTool(ToolBase):
 - Safe for docs persona agents
 
 ```python
+from packages.core.tools.base import ToolBase
+from packages.core.tools.permissions import ToolPermissions, Permission
+
+
 class DocsGeneratorTool(ToolBase):
     name = "docs_generator"
     description = "Generate documentation from source code"
@@ -134,6 +142,10 @@ class DocsGeneratorTool(ToolBase):
 - **Infra persona only** due to `EXEC_SHELL` privilege
 
 ```python
+from packages.core.tools.base import ToolBase
+from packages.core.tools.permissions import ToolPermissions, Permission
+
+
 class InfraDiagnoseTool(ToolBase):
     name = "infra_diagnose"
     description = "Run infrastructure health diagnostics"
@@ -161,6 +173,10 @@ class InfraDiagnoseTool(ToolBase):
 - Safe for core persona agents
 
 ```python
+from packages.core.tools.base import ToolBase
+from packages.core.tools.permissions import ToolPermissions, Permission
+
+
 class ConfigReaderTool(ToolBase):
     name = "config_reader"
     description = "Read application configuration settings"
@@ -188,6 +204,10 @@ class ConfigReaderTool(ToolBase):
 - Appropriate for analytics/reporting workflows
 
 ```python
+from packages.core.tools.base import ToolBase
+from packages.core.tools.permissions import ToolPermissions, Permission
+
+
 class DatabaseExportTool(ToolBase):
     name = "database_export"
     description = "Export database query results to CSV"
@@ -215,6 +235,10 @@ class DatabaseExportTool(ToolBase):
 - Safe for all agents
 
 ```python
+from packages.core.tools.base import ToolBase
+from packages.core.tools.permissions import ToolPermissions
+
+
 class EmailValidatorTool(ToolBase):
     name = "email_validator"
     description = "Validate email address format"
@@ -242,6 +266,10 @@ class EmailValidatorTool(ToolBase):
 - Works without cache if `WRITE_FS` denied
 
 ```python
+from packages.core.tools.base import ToolBase
+from packages.core.tools.permissions import ToolPermissions, Permission
+
+
 class WebScraperTool(ToolBase):
     name = "web_scraper"
     description = "Scrape and parse web content"
@@ -270,6 +298,10 @@ class WebScraperTool(ToolBase):
 - **Infra persona only** — highest privilege level
 
 ```python
+from packages.core.tools.base import ToolBase
+from packages.core.tools.permissions import ToolPermissions, Permission
+
+
 class DeploymentTool(ToolBase):
     name = "deployment"
     description = "Deploy application to production"
