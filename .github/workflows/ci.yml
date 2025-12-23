@@ -8,16 +8,21 @@ on:
 
 jobs:
   guardrails:
-    name: Guardrails
+    name: Guardrails (Non-blocking)
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    continue-on-error: true
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate pull request template
-        run: python3 .github/scripts/validate_pr_template.py
+      - name: Validate pull request template (advisory)
+        run: |
+          echo "Running PR template validation (advisory only)..."
+          python3 .github/scripts/validate_pr_template.py || true
+          echo "PR template check completed (does not block CI)"
+        continue-on-error: true
 
   tool-policy:
     name: Tool Policy Enforcement

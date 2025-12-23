@@ -2,27 +2,151 @@ name: Guardrails - PR description
 
 on:
   pull_request:
-    types: [opened, edited, synchronize, reopened]
+    types: [opened, edited, synchronize, reopened, labeled, unlabeled]
   push:
     branches: [main]
 
 permissions:
-  pull-requests: read
+  pull-requests: write
 
 jobs:
-  guardrails:
-    name: Guardrails
+  guardrails-check:
+    name: Guardrails (Non-blocking)
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
 
     steps:
-      - name: Skip enforcement on push events
-        if: github.event_name == 'push'
-        run: echo "Guardrails check is only enforced for pull_request events."
-
       - name: Check out repository
-        if: github.event_name == 'pull_request'
         uses: actions/checkout@v4
 
-      - name: Validate PR description guardrails
-        if: github.event_name == 'pull_request'
-        run: bash scripts/guardrails_check.sh
+      - name: Run guardrails detection
+        id: check
+        run: |
+          python3 scripts/guardrails_pr_check.py > /tmp/guardrails_output.txt
+          cat /tmp/guardrails_output.txt
+          
+          # Parse output into GitHub Actions outputs
+          while IFS='=' read -r key value; do
+            if [[ "$key" == "MISSING_PERSONA_LABEL" ]]; then
+              echo "missing_persona=$value" >> $GITHUB_OUTPUT
+            elif [[ "$key" == "MISSING_PR_DESCRIPTION" ]]; then
+              echo "missing_description=$value" >> $GITHUB_OUTPUT
+            elif [[ "$key" == "DETAILS<<EOF" ]]; then
+              # Read multiline details
+              details=""
+              while IFS= read -r line; do
+                if [[ "$line" == "EOF" ]]; then
+                  break
+                fi
+                details="${details}${line}"$'\n'
+              done
+              echo "details<<EOF" >> $GITHUB_OUTPUT
+              echo "$details" >> $GITHUB_OUTPUT
+              echo "EOF" >> $GITHUB_OUTPUT
+            fi
+          done < /tmp/guardrails_output.txt
+          
+          # Always succeed (non-blocking)
+          exit 0
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+
+      - name: Post or update PR comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const missingPersona = '${{ steps.check.outputs.missing_persona }}' === 'true';
+            const missingDescription = '${{ steps.check.outputs.missing_description }}' === 'true';
+            const details = `${{ steps.check.outputs.details }}`;
+            
+            const marker = '<!-- flowbiz-guardrails-bot -->';
+            
+            // Find existing bot comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => comment.body.includes(marker));
+            
+            let commentBody;
+            
+            if (missingPersona || missingDescription) {
+              // Build comment with missing items
+              commentBody = `${marker}
+## ⚠️ Guardrails Check (Non-blocking)
+
+Some guardrails items are missing. These don't fail CI, but please address them:
+
+${details}
+
+### 📋 Quick Fixes
+
+**For missing persona label:**
+- Add exactly one label to this PR: \`persona:core\`, \`persona:infra\`, or \`persona:docs\`
+- Use the right sidebar → Labels
+
+**For missing PR description sections:**
+- Edit the PR description to include:
+  - \`## Summary\` - Brief description of your changes
+  - \`## Testing\` - How you verified the changes (commands, manual steps, etc.)
+- See the [PR template](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/.github/pull_request_template.md) for full structure
+
+**Reference:**
+- [Guardrails Documentation](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/docs/GUARDRAILS.md)
+
+---
+*This is an automated comment. Guardrails checks are non-blocking but encouraged for consistency.*`;
+            } else {
+              // All checks passed
+              commentBody = `${marker}
+## ✅ Guardrails Check Passed
+
+All guardrails items are present:
+
+${details}
+
+Great job following the project conventions! 🎉
+
+---
+*This is an automated comment.*`;
+            }
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody,
+              });
+              console.log('Updated existing guardrails comment');
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody,
+              });
+              console.log('Created new guardrails comment');
+            }
+  
+  legacy-check:
+    name: Legacy Guardrails Check (Advisory)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    continue-on-error: true
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run legacy guardrails check (advisory only)
+        run: |
+          echo "Running legacy guardrails check for reference..."
+          bash scripts/guardrails_check.sh || true
+          echo "Legacy check completed (advisory only, does not block CI)"
+        continue-on-error: true
