@@ -1,6 +1,6 @@
 # Codex Pre-Flight Checklist
 
-**MANDATORY: Complete this checklist BEFORE writing any code.** This is your killer pre-flight—short, brutal, executable. Answer every item. Copy the template below into your PR description and fill it in.
+**MANDATORY: Complete this checklist BEFORE writing any code.** This is your essential pre-flight—short, strict, executable. Answer every item. Copy the template below into your PR description and fill it in.
 
 ---
 

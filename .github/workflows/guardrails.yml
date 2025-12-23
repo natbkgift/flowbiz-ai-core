@@ -22,29 +22,8 @@ jobs:
       - name: Run guardrails detection
         id: check
         run: |
-          python3 scripts/guardrails_pr_check.py > /tmp/guardrails_output.txt
-          cat /tmp/guardrails_output.txt
-          
-          # Parse output into GitHub Actions outputs
-          while IFS='=' read -r key value; do
-            if [[ "$key" == "MISSING_PERSONA_LABEL" ]]; then
-              echo "missing_persona=$value" >> $GITHUB_OUTPUT
-            elif [[ "$key" == "MISSING_PR_DESCRIPTION" ]]; then
-              echo "missing_description=$value" >> $GITHUB_OUTPUT
-            elif [[ "$key" == "DETAILS<<EOF" ]]; then
-              # Read multiline details
-              details=""
-              while IFS= read -r line; do
-                if [[ "$line" == "EOF" ]]; then
-                  break
-                fi
-                details="${details}${line}"$'\n'
-              done
-              echo "details<<EOF" >> $GITHUB_OUTPUT
-              echo "$details" >> $GITHUB_OUTPUT
-              echo "EOF" >> $GITHUB_OUTPUT
-            fi
-          done < /tmp/guardrails_output.txt
+          # Run detection script which writes directly to $GITHUB_OUTPUT
+          python3 scripts/guardrails_pr_check.py
           
           # Always succeed (non-blocking)
           exit 0
@@ -54,11 +33,15 @@ jobs:
       - name: Post or update PR comment
         if: always()
         uses: actions/github-script@v7
+        env:
+          MISSING_PERSONA: ${{ steps.check.outputs.missing_persona }}
+          MISSING_DESCRIPTION: ${{ steps.check.outputs.missing_description }}
+          DETAILS: ${{ steps.check.outputs.details }}
         with:
           script: |
-            const missingPersona = '${{ steps.check.outputs.missing_persona }}' === 'true';
-            const missingDescription = '${{ steps.check.outputs.missing_description }}' === 'true';
-            const details = `${{ steps.check.outputs.details }}`;
+            const missingPersona = process.env.MISSING_PERSONA === 'true';
+            const missingDescription = process.env.MISSING_DESCRIPTION === 'true';
+            const details = process.env.DETAILS || '';
             
             const marker = '<!-- flowbiz-guardrails-bot -->';
             

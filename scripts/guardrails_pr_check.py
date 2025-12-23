@@ -10,13 +10,16 @@ Usage:
 
 Environment variables:
     GITHUB_EVENT_PATH: Path to GitHub event JSON (optional, for PR context)
+    GITHUB_OUTPUT: Path to GitHub Actions output file (optional, for direct output)
     PR_BODY: PR body text (optional, for testing)
     PR_LABELS: Comma-separated label names (optional, for testing)
 
 Outputs to stdout in format:
     MISSING_PERSONA_LABEL=true/false
     MISSING_PR_DESCRIPTION=true/false
-    DETAILS=<human readable details>
+    DETAILS_START
+    <human readable details line by line>
+    DETAILS_END
 """
 
 import json
@@ -116,24 +119,34 @@ def main():
         # Check PR description
         missing_description, description_issues = check_pr_description(pr_body)
         
-        # Output results for GitHub Actions
-        print(f"MISSING_PERSONA_LABEL={str(missing_persona).lower()}")
-        print(f"MISSING_PR_DESCRIPTION={str(missing_description).lower()}")
-        
         # Build details string
         details_lines = []
         details_lines.append(persona_details)
         details_lines.extend(description_issues)
         
-        details = "\n".join(details_lines)
-        print("DETAILS<<EOF")
-        print(details)
-        print("EOF")
+        # Output to GitHub Actions output file if available
+        github_output = os.environ.get("GITHUB_OUTPUT")
+        if github_output:
+            with open(github_output, "a", encoding="utf-8") as f:
+                f.write(f"missing_persona={str(missing_persona).lower()}\n")
+                f.write(f"missing_description={str(missing_description).lower()}\n")
+                f.write("details<<EOF\n")
+                f.write("\n".join(details_lines))
+                f.write("\nEOF\n")
+        
+        # Also output to stdout for visibility
+        print(f"MISSING_PERSONA_LABEL={str(missing_persona).lower()}")
+        print(f"MISSING_PR_DESCRIPTION={str(missing_description).lower()}")
+        print("DETAILS_START")
+        for line in details_lines:
+            print(line)
+        print("DETAILS_END")
         
         # Summary to stderr for visibility in logs
         if missing_persona or missing_description:
             print("\n⚠️  Guardrails Check Summary (Non-blocking):", file=sys.stderr)
-            print(details, file=sys.stderr)
+            for line in details_lines:
+                print(line, file=sys.stderr)
             print("\n💡 This check does not fail CI. See PR comment for remediation steps.", file=sys.stderr)
         else:
             print("\n✅ Guardrails Check Summary: All checks passed!", file=sys.stderr)
@@ -141,11 +154,17 @@ def main():
     except Exception as e:
         # Even on error, exit 0 (non-blocking)
         print(f"ERROR: {e}", file=sys.stderr)
+        github_output = os.environ.get("GITHUB_OUTPUT")
+        if github_output:
+            with open(github_output, "a", encoding="utf-8") as f:
+                f.write("missing_persona=false\n")
+                f.write("missing_description=false\n")
+                f.write(f"details<<EOF\nError running guardrails check: {e}\nEOF\n")
         print("MISSING_PERSONA_LABEL=false")
         print("MISSING_PR_DESCRIPTION=false")
-        print("DETAILS<<EOF")
+        print("DETAILS_START")
         print(f"Error running guardrails check: {e}")
-        print("EOF")
+        print("DETAILS_END")
     
     # Always exit 0 (non-blocking)
     sys.exit(0)
