@@ -20,6 +20,8 @@ from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
 
+__all__ = ["Permission", "ToolPermissions", "AgentPolicy", "PolicyDecision"]
+
 
 class Permission(str, Enum):
     """Permission types that tools can require and personas can grant.
