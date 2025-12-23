@@ -109,13 +109,14 @@ When a Tool is about to execute, the authorization system (future, PR-030) will 
 
 ```
 IF (tool.required_permissions ⊆ persona.allowed_permissions)
-   AND (tool.optional_permissions are a superset concern, no block)
    AND (allowed_tools is empty OR tool.name IN allowed_tools)
 THEN
    ALLOW execution
 ELSE
    DENY execution
 ```
+
+**Note:** Optional permissions can be partially granted or denied without blocking execution.
 
 **Key Points:**
 - All `required_permissions` must be satisfied
@@ -307,11 +308,11 @@ Before executing a tool, the Execution Pipeline (PR-030) will call an authorizat
 
 ```python
 # Future implementation in PR-030
-def execute_tool(tool: ToolBase, context: ToolContext, agent_policy: AgentPolicy) -> ToolResult:
+def execute_tool(tool: ToolBase, context: ToolContext, tool_permissions: ToolPermissions, agent_policy: AgentPolicy) -> ToolResult:
     """Execute a tool with authorization check."""
     
     # FUTURE: Authorization hook
-    decision = authorize(tool, agent_policy)
+    decision = authorize(tool, tool_permissions, agent_policy)
     
     if not decision.allowed:
         return ToolResult(
@@ -334,12 +335,13 @@ def execute_tool(tool: ToolBase, context: ToolContext, agent_policy: AgentPolicy
 
 ```python
 # Future implementation in PR-030 or later
-def authorize(tool: ToolBase, policy: AgentPolicy) -> PolicyDecision:
+def authorize(tool: ToolBase, tool_permissions: ToolPermissions, policy: AgentPolicy) -> PolicyDecision:
     """
     Determine if a tool can be executed under the given policy.
     
     Args:
         tool: The tool requesting execution
+        tool_permissions: Permission requirements for the tool
         policy: The agent's permission policy
         
     Returns:
@@ -353,8 +355,7 @@ def authorize(tool: ToolBase, policy: AgentPolicy) -> PolicyDecision:
         )
     
     # Check required permissions
-    tool_perms = getattr(tool, 'required_permissions', [])
-    missing = set(tool_perms) - set(policy.allowed_permissions)
+    missing = set(tool_permissions.required_permissions) - set(policy.allowed_permissions)
     
     if missing:
         return PolicyDecision(
