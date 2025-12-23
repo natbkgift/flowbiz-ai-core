@@ -173,6 +173,7 @@ if testing_key in section_bodies:
     else:
         has_keyword = any(keyword in lowered_testing for keyword in command_keywords)
         has_code = bool(re.search(r"`[^`]+`|```[\s\S]*?```", testing_content))
+        # Accept checkboxes from PR template (e.g., "- [x] Manual", "- [ ] Unit tests")
         has_checkbox = bool(re.search(r"- \[[ xX]\]", testing_content))
         has_testing_phrase = any(phrase in lowered_testing for phrase in testing_evidence_phrases)
         
