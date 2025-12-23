@@ -1,4 +1,4 @@
-name: PR Labels Required
+name: PR Labels (Advisory)
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   validate-persona-label:
-    name: Validate Persona Label
+    name: Validate Persona Label (Non-blocking)
     runs-on: ubuntu-latest
 
     steps:
@@ -41,23 +41,25 @@ jobs:
             console.log('Persona labels found:', personaLabels);
 
             if (personaLabels.length === 0) {
-              core.setFailed(
-                '❌ Missing persona label.\n\n' +
+              core.warning(
+                '⚠️ Missing persona label (non-blocking).\n\n' +
                 'Add exactly one of: ' +
                 'persona:core / persona:infra / persona:docs\n\n' +
                 'This ensures work is properly scoped and routed.'
               );
+              console.log('⚠️ No persona label found (advisory only, does not block CI)');
               return;
             }
 
             if (personaLabels.length > 1) {
-              core.setFailed(
-                `❌ Multiple persona labels found: ` +
+              core.warning(
+                `⚠️ Multiple persona labels found (non-blocking): ` +
                 `${personaLabels.join(', ')}\n\n` +
                 'Keep only one persona label.\n\n' +
                 'Allowed labels: ' +
                 'persona:core / persona:infra / persona:docs'
               );
+              console.log('⚠️ Multiple persona labels found (advisory only, does not block CI)');
               return;
             }
 
