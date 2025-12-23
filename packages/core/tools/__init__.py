@@ -7,8 +7,20 @@ and the base interface (ToolBase) that all tools must implement.
 
 from __future__ import annotations
 
+from .authorize import authorize
 from .base import ToolBase
 from .context import ToolContext
+from .permissions import AgentPolicy, Permission, PolicyDecision, ToolPermissions
 from .result import ToolError, ToolResult
 
-__all__ = ["ToolBase", "ToolContext", "ToolError", "ToolResult"]
+__all__ = [
+    "AgentPolicy",
+    "Permission",
+    "PolicyDecision",
+    "ToolPermissions",
+    "ToolBase",
+    "ToolContext",
+    "ToolError",
+    "ToolResult",
+    "authorize",
+]

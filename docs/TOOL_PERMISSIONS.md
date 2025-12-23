@@ -12,6 +12,37 @@ This document defines the **permission model** for Tools and Agent Personas in F
 
 **Important:** This is a **design-only** document. No runtime enforcement is implemented yet. The types and schemas defined here serve as contracts for future work.
 
+## Contracts (Tool / Persona / Authorize Hook)
+
+The permission model is captured as **pure schemas and a stubbed hook**—no runtime enforcement today. Tool and persona authors can start declaring intent using the following contracts:
+
+```python
+from packages.core.tools import AgentPolicy, Permission, ToolPermissions, authorize
+
+
+class ExampleTool:
+    """Pseudo-tool showing permission declaration (design-only)."""
+
+    permissions = ToolPermissions(
+        required_permissions=[Permission.READ_FS],
+        optional_permissions=[Permission.NET_HTTP],
+    )
+
+
+persona_policy = AgentPolicy(
+    persona="core",
+    allowed_permissions=[Permission.READ_FS, Permission.NET_HTTP],
+    allowed_tools=["example_tool"],
+)
+
+# Future (PR-030): the execution pipeline will call authorize(...) before run()
+decision = authorize(tool=ExampleTool(), ctx=None, policy=persona_policy)
+```
+
+- `ToolPermissions`: what a tool says it needs (required + optional).
+- `AgentPolicy`: what a persona allows (permissions + optional tool allowlist).
+- `authorize(...)`: contract-only hook that will be invoked in PR-030 before execution.
+
 ---
 
 ## 1. Terminology
