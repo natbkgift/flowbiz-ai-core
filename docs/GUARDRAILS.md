@@ -6,7 +6,11 @@ These guardrails define how FlowBiz AI Core is maintained. Enforced rules are bl
 Guardrails are enforced by GitHub Actions to stop PRs that do not follow the template. The workflow lives in `.github/workflows/guardrails.yml` and runs on pull requests (pushes to `main` are skipped). It fails when any of the following are missing from the PR description:
 
 - Required headings (any Markdown level `#`, `##`, or `###`): `Summary`, `Scope`, `In Scope / Out of Scope`, `Files Changed`, `Verification / Testing`, and `Risk & Rollback`.
-- Evidence of a command in the Testing section (e.g., `pytest`, `ruff`, `docker compose`, or `curl`).
+- Evidence of testing in the Testing section, which can be:
+  - Test commands (e.g., `pytest`, `ruff`, `docker compose`, or `curl`)
+  - Code snippets in backticks
+  - Template checkboxes (e.g., `- [x] Manual`, `- [x] Unit tests`)
+  - Testing descriptions (e.g., "Tested locally", "Manual testing", "Manually tested", "Verified", etc.)
 - A checked acknowledgement line, such as `- [x] Guardrails followed`.
 
 The workflow also emits a warning (non-blocking) if the PR title does not start with a recognizable prefix such as `PR-123:` or `Feat:`.
