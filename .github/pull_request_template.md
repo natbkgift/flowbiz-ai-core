@@ -15,12 +15,14 @@
 - Mention any especially important or risky files. (Optional)
 
 ## Verification / Testing
+<!-- Describe how you tested these changes. Include commands, code snippets, or test results. -->
+<!-- For documentation-only or non-code changes, you can write "N/A - Documentation only" or similar. -->
 - [ ] Not run (explain why)
 - [ ] Manual
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] Other (describe)
-- Testing notes: `replace with commands or evidence`
+- Testing notes: `replace with commands or evidence, or specify "N/A" if testing is not applicable`
 
 ## Risk & Rollback
 - Risks: 

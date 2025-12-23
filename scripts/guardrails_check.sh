@@ -102,6 +102,7 @@ required_sections = [
 ]
 
 command_keywords = ["pytest", "ruff", "docker compose", "curl"]
+exemption_keywords = ["n/a", "not applicable", "no testing", "not required", "documentation only", "docs only"]
 
 errors: list[str] = []
 warnings: list[str] = []
@@ -160,9 +161,10 @@ if testing_key in section_bodies:
     else:
         has_keyword = any(keyword in lowered_testing for keyword in command_keywords)
         has_code = bool(re.search(r"`[^`]+`|```[\s\S]*?```", testing_content))
-        if not (has_keyword or has_code):
+        has_exemption = any(exemption in lowered_testing for exemption in exemption_keywords)
+        if not (has_keyword or has_code or has_exemption):
             errors.append(
-                "Testing section present but no commands detected (expected pytest/ruff/docker compose/curl or any code snippet)."
+                "Testing section present but no commands detected (expected pytest/ruff/docker compose/curl, any code snippet, or exemption like 'N/A' or 'Not applicable')."
             )
 
 # Accept either a checked checkbox or plain text acknowledgement; warn if missing
