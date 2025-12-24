@@ -329,6 +329,52 @@ sudo netstat -tlnp | grep -E ':(80|443|8000|5432)'
 docker compose exec api curl http://localhost:8000/healthz
 ```
 
+### Rollback Procedures
+
+If a deployment causes issues, use these steps to rollback to a previous stable version:
+
+#### Rollback to Tagged Version
+```bash
+cd /opt/flowbiz/flowbiz-ai-core
+
+# Check current version
+git describe --tags
+
+# List available tags
+git tag -l
+
+# Rollback to specific version
+git checkout tags/v0.1.0  # Replace with desired version tag
+
+# Rebuild and restart containers
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+
+# Verify services are running
+docker compose ps
+curl https://flowbiz.cloud/healthz
+```
+
+#### Quick Rollback (Last Known Good)
+```bash
+cd /opt/flowbiz/flowbiz-ai-core
+
+# Revert to last commit on main branch
+git checkout main
+git pull origin main
+
+# Restart with last stable version
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+# Verify
+curl https://flowbiz.cloud/healthz
+```
+
+**Important Notes:**
+- Always verify health checks after rollback
+- Database migrations may need manual intervention if schema changed
+- Check logs after rollback: `docker compose logs -f`
+- Document the rollback in PR_LOG.md or create an incident report
+
 ---
 
 ## Contact / Ownership
