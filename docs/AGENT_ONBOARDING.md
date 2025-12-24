@@ -134,7 +134,7 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 # Install dependencies
 pip install -e .[dev]
 
-# Run service
+# Run service (adjust module path for your service structure)
 uvicorn apps.api.main:app --reload --port <YOUR_PORT>
 ```
 
