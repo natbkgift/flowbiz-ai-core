@@ -344,7 +344,7 @@ git describe --tags
 git tag -l
 
 # Rollback to specific version
-git checkout tags/v0.1.0  # Replace with desired version tag
+git checkout tags/vX.X.X  # Replace with your desired version tag (e.g., v0.1.0)
 
 # Rebuild and restart containers
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d

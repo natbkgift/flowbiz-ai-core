@@ -295,13 +295,17 @@ Rollback immediately if you observe:
 
 #### Option 1: Revert to Previous Git Tag (Recommended)
 ```bash
+# For client services:
 cd /opt/flowbiz/clients/<your-service>
+
+# For core service (authorized personnel only):
+# cd /opt/flowbiz/flowbiz-ai-core
 
 # Check current version
 git describe --tags
 
 # Rollback to last stable version
-git checkout tags/v1.0.0  # Replace with your last stable tag
+git checkout tags/vX.X.X  # Replace with your last stable tag (e.g., v1.0.0)
 
 # Restart containers with pinned version
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
@@ -312,6 +316,7 @@ curl http://localhost:<YOUR_PORT>/healthz
 
 #### Option 2: Revert Last Commit
 ```bash
+# Navigate to your service directory
 cd /opt/flowbiz/clients/<your-service>
 
 # Revert to previous commit
@@ -335,7 +340,9 @@ curl http://localhost:<YOUR_PORT>/healthz
 
 3. **Pull and redeploy** on VPS:
    ```bash
+   # Navigate to your service directory
    cd /opt/flowbiz/clients/<your-service>
+   
    git pull origin main
    docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
    ```
