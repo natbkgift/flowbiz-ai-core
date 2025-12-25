@@ -1,0 +1,144 @@
+name: Reusable VPS Deploy
+
+on:
+  workflow_call:
+    inputs:
+      remote_path:
+        description: 'Remote path on VPS where the project will be deployed'
+        required: true
+        type: string
+      compose_files:
+        description: 'Docker Compose files to use (space-separated)'
+        required: false
+        type: string
+        default: 'docker-compose.yml docker-compose.override.prod.yml'
+      pre_build_cmd:
+        description: 'Optional command to run before building (e.g., create .env)'
+        required: false
+        type: string
+        default: ''
+      post_deploy_cmd:
+        description: 'Optional command to run after deployment (e.g., health check)'
+        required: false
+        type: string
+        default: ''
+      docker_prune:
+        description: 'Run docker system prune after deployment'
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      VPS_HOST:
+        description: 'VPS hostname or IP address'
+        required: true
+      VPS_USER:
+        description: 'SSH username for VPS'
+        required: true
+      VPS_SSH_KEY:
+        description: 'SSH private key for authentication'
+        required: true
+      VPS_PORT:
+        description: 'SSH port (default: 22)'
+        required: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: vps-prod
+      url: ${{ secrets.VPS_URL }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/vps_key
+          chmod 600 ~/.ssh/vps_key
+          ssh-keyscan -p ${{ secrets.VPS_PORT || 22 }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Copy project to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          source: "."
+          target: "${{ inputs.remote_path }}"
+          rm: false
+          strip_components: 0
+
+      - name: Pre-build command
+        if: ${{ inputs.pre_build_cmd != '' }}
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            cd ${{ inputs.remote_path }}
+            ${{ inputs.pre_build_cmd }}
+
+      - name: Deploy with Docker Compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            cd ${{ inputs.remote_path }}
+            
+            # Build compose file arguments
+            COMPOSE_FILES=""
+            for file in ${{ inputs.compose_files }}; do
+              COMPOSE_FILES="$COMPOSE_FILES -f $file"
+            done
+            
+            echo "🚀 Deploying with: docker compose $COMPOSE_FILES"
+            
+            # Pull latest images and rebuild
+            docker compose $COMPOSE_FILES pull || true
+            docker compose $COMPOSE_FILES up --build -d --remove-orphans
+            
+            # Show status
+            echo "📊 Container status:"
+            docker compose $COMPOSE_FILES ps
+
+      - name: Post-deploy command
+        if: ${{ inputs.post_deploy_cmd != '' }}
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            cd ${{ inputs.remote_path }}
+            ${{ inputs.post_deploy_cmd }}
+
+      - name: Cleanup old Docker resources
+        if: ${{ inputs.docker_prune }}
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            echo "🧹 Cleaning up unused Docker resources..."
+            docker system prune -af --volumes || true
+            echo "✅ Cleanup completed"
+
+      - name: Deployment summary
+        run: |
+          echo "### 🎉 Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Host:** ${{ secrets.VPS_HOST }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Path:** ${{ inputs.remote_path }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Compose Files:** ${{ inputs.compose_files }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Time:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY

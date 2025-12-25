@@ -1,0 +1,39 @@
+name: Deploy to Production VPS
+
+on:
+  workflow_dispatch:
+    inputs:
+      remote_path:
+        description: 'Remote path on VPS'
+        required: false
+        default: '/home/flowbiz/flowbiz-ai-core'
+      
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'docker-compose*.yml'
+      - 'Dockerfile'
+      - 'pyproject.toml'
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy_vps.yml
+    with:
+      remote_path: ${{ github.event.inputs.remote_path || '/home/flowbiz/flowbiz-ai-core' }}
+      compose_files: 'docker-compose.yml docker-compose.override.prod.yml'
+      pre_build_cmd: |
+        # Ensure .env file exists (create from template if needed)
+        if [ ! -f .env ]; then
+          echo "⚠️  .env file not found, please create it manually on VPS"
+          exit 1
+        fi
+      post_deploy_cmd: |
+        # Health check
+        sleep 5
+        curl -f http://localhost:8000/health || echo "⚠️  Health check failed"
+      docker_prune: true
+    secrets: inherit
+    environment: vps-prod
