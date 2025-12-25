@@ -278,6 +278,104 @@ docker compose logs --tail=50
 
 ---
 
+## 🔄 Rollback Protocol
+
+If your deployment causes issues or breaks functionality, follow these steps to rollback:
+
+### When to Rollback
+
+Rollback immediately if you observe:
+- ❌ Health checks failing after deployment
+- ❌ Critical errors in container logs
+- ❌ Service unavailable or returning 500 errors
+- ❌ Database connection failures
+- ❌ Breaking changes affecting other services
+
+### Rollback Steps
+
+#### Option 1: Revert to Previous Git Tag (Recommended)
+```bash
+# For client services:
+cd /opt/flowbiz/clients/<your-service>
+
+# For core service (authorized personnel only):
+# cd /opt/flowbiz/flowbiz-ai-core
+
+# Check current version
+git describe --tags
+
+# Rollback to last stable version
+git checkout tags/vX.X.X  # Replace with your last stable tag (e.g., v1.0.0)
+
+# Restart containers with pinned version
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+
+# Verify
+curl http://localhost:<YOUR_PORT>/healthz
+```
+
+#### Option 2: Revert Last Commit
+```bash
+# Navigate to your service directory
+cd /opt/flowbiz/clients/<your-service>
+
+# Revert to previous commit
+git log --oneline -5  # Find the last good commit SHA (check messages/timestamps)
+git checkout <commit-sha>  # Replace with actual SHA of last known good commit
+
+# Restart containers
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+# Verify
+curl http://localhost:<YOUR_PORT>/healthz
+```
+
+#### Option 3: Revert PR in GitHub (For Main Branch)
+1. **Create a revert PR** on GitHub:
+   - Go to the problematic PR
+   - Click "Revert" button
+   - GitHub will create a new PR that reverts the changes
+   
+2. **Merge the revert PR** immediately
+
+3. **Pull and redeploy** on VPS:
+   ```bash
+   # Navigate to your service directory
+   cd /opt/flowbiz/clients/<your-service>
+   
+   git pull origin main
+   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+   ```
+
+### Post-Rollback Checklist
+
+After rolling back, verify:
+- [ ] Health endpoint returns `200 OK`
+- [ ] Metadata endpoint shows correct (old) version
+- [ ] No errors in container logs (`docker compose logs --tail=50`)
+- [ ] Dependent services still working (if any)
+- [ ] Document the incident and rollback reason
+
+### Communication
+
+After rollback, you **MUST**:
+1. **Document the issue** — What broke and why
+2. **Notify via PR comment** — Add a comment on the problematic PR explaining the rollback
+3. **Update PR Log** — Add entry to `docs/PR_LOG.md` (if applicable)
+4. **Create post-mortem** — For critical issues, create an incident report
+
+### Prevention
+
+To make rollbacks easier:
+- ✅ Always tag stable releases (`git tag v1.0.0`)
+- ✅ Use version pinning in `docker-compose.prod.yml`
+- ✅ Keep database migrations reversible
+- ✅ Test in staging/local before production
+- ✅ Deploy during low-traffic periods
+- ✅ Monitor logs immediately after deployment
+
+---
+
 ## 🔐 Security Checklist
 
 Before going live, ensure:

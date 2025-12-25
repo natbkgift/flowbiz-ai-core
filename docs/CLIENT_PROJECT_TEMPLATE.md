@@ -4,7 +4,24 @@
 
 ---
 
-## 🎯 1) Project Goal
+## 📚 Prerequisites — Read Before Starting
+
+**IMPORTANT:** Before using this template or deploying any service to the shared VPS, you **MUST** read:
+
+1. **[VPS_STATUS.md](VPS_STATUS.md)** — Current VPS state, deployed services, ports, constraints, and operational rules
+2. **[AGENT_ONBOARDING.md](AGENT_ONBOARDING.md)** — Do/Don't guidelines, deployment checklist, and escalation protocols
+
+These documents are the **single source of truth** for VPS infrastructure. Following them ensures:
+- ✅ No conflicts with existing services
+- ✅ No breaking changes to production
+- ✅ Smooth deployment process
+- ✅ Clear understanding of constraints and conventions
+
+**If you haven't read the above documents, stop and read them first.**
+
+---
+
+## 🚧 Status: Template Status Tracker
 
 **ชื่อโปรเจค:** `<project-name>`  
 **คำอธิบาย (1–2 ประโยค):**
