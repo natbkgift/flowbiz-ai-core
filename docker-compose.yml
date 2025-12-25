@@ -2,6 +2,9 @@ version: "3.9"
 services:
   nginx:
     image: nginx:1.25-alpine
+    command: >
+      sh -c "rm -f /etc/nginx/conf.d/default.conf &&
+      /docker-entrypoint.sh nginx -g 'daemon off;'"
     environment:
       CSP_API: ""
       CSP_DOCS: ""
