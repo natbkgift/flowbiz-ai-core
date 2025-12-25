@@ -1,7 +1,7 @@
 # TikTok Live Client Service - API Gateway
 # Subdomain: tiktoklive.flowbiz.cloud
-# Upstream: http://127.0.0.1:3001
-# Dashboard: Private (no public route, SSH port-forward only)
+# Upstream: http://api:8000 (Docker network)
+# Using core API temporarily until client is deployed
 
 # HTTP server - redirect to HTTPS
 server {
@@ -35,22 +35,27 @@ server {
   ssl_session_cache shared:SSL:10m;
   ssl_session_timeout 10m;
 
-  # Security headers
-  include /etc/nginx/snippets/security_headers.conf;
+  # Security headers (inline to avoid snippet dependencies)
+  add_header X-Content-Type-Options "nosniff" always;
+  add_header X-Frame-Options "DENY" always;
+  add_header Referrer-Policy "no-referrer" always;
+  add_header X-XSS-Protection "1; mode=block" always;
+  add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
 
   # Proxy timeouts
   proxy_connect_timeout 2s;
   proxy_read_timeout 30s;
   proxy_send_timeout 30s;
 
-  # Proxy to TikTok Gateway API
-  # Handles all routes: /healthz, /v1/meta, /v1/analytics/summary, /v1/reliability/summary, etc.
+  # Proxy to API (Docker network service name)
   location / {
-    proxy_pass http://127.0.0.1:3001;
-
-    include /etc/nginx/snippets/proxy_headers.conf;
-
-    # Additional proxy settings
+    proxy_pass http://api:8000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Connection "";
     proxy_buffering off;
     proxy_request_buffering off;
   }
