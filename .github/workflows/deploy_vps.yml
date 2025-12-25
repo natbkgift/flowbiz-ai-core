@@ -40,6 +40,9 @@ on:
       VPS_PORT:
         description: 'SSH port (default: 22)'
         required: false
+      VPS_URL:
+        description: 'Deployment URL for summary links (optional)'
+        required: false
 
 jobs:
   deploy:
