@@ -71,7 +71,6 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: vps-prod
-      url: ${{ secrets.VPS_URL }}
     
     steps:
       - name: Checkout repository
@@ -167,3 +166,6 @@ jobs:
           echo "- **Path:** ${{ inputs.remote_path }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Compose Files:** ${{ inputs.compose_files }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Time:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ secrets.VPS_URL }}" ]; then
+            echo "- **URL:** ${{ secrets.VPS_URL }}" >> $GITHUB_STEP_SUMMARY
+          fi
