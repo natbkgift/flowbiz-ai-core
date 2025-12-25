@@ -1,119 +1,62 @@
-# FlowBiz Client Project Template
+# 🚀 FlowBiz Client Project Template (One-Page)
 
-**วัตถุประสงค์:** Template นี้ใช้สำหรับสร้างโปรเจคลูกค้าที่เชื่อมต่อกับ FlowBiz AI Core ได้อย่างราบรื่น รองรับการ deploy บน VPS และใช้โครงสร้างมาตรฐานเดียวกัน
-
----
-
-## 🚧 Status: Template Status Tracker
-
-**Copy this section into your project README.md and track progress:**
-
-```markdown
-## 📊 Project Readiness Checklist
-
-### Phase 1: Core Structure ✅/⏳
-- [ ] README.md created
-- [ ] docker-compose.yml setup
-- [ ] Dockerfile configured
-- [ ] pyproject.toml with dependencies
-- [ ] .env.example configured
-
-### Phase 2: Contract Implementation ⏳
-- [ ] GET /healthz endpoint (returns 200 + JSON)
-- [ ] GET /v1/meta endpoint (with version/build_sha)
-- [ ] [Business endpoint 1] _______________
-- [ ] [Business endpoint 2] _______________
-- [ ] [Business endpoint 3] _______________
-
-### Phase 3: Documentation ⏳
-- [ ] docs/PROJECT_CONTRACT.md
-- [ ] docs/DEPLOYMENT.md
-- [ ] docs/GUARDRAILS.md
-- [ ] docs/CODEX_PREFLIGHT.md
-
-### Phase 4: CI/CD & Security ⏳
-- [ ] .github/workflows/ci.yml
-- [ ] .github/workflows/guardrails.yml
-- [ ] .github/workflows/pr-labels.yml
-- [ ] .github/workflows/deploy.yml (with GitHub Secrets)
-- [ ] nginx/templates/default.conf.template
-- [ ] nginx/snippets/security_headers.conf
-
-### Phase 5: Testing & Validation ⏳
-- [ ] `docker compose up` runs without errors
-- [ ] `curl http://localhost:8001/healthz` → 200 OK
-- [ ] `curl http://localhost:8001/v1/meta` → 200 OK
-- [ ] Business endpoints respond correctly
-- [ ] `ruff check .` passes
-- [ ] `pytest -q` passes
-
-### Phase 6: Deployment Setup ⏳
-- [ ] VPS DNS configured (A record pointing to IP)
-- [ ] GitHub Secrets configured (DEPLOY_SSH_KEY, DEPLOY_VPS_IP)
-- [ ] SSH key added to VPS authorized_keys
-- [ ] Docker Compose prod override tested
-- [ ] HTTPS certificate provisioned (Let's Encrypt)
-
-### Phase 7: Go Live ⏳
-- [ ] `git push origin main` triggers auto-deploy
-- [ ] `curl https://[domain]/healthz` → 200 OK
-- [ ] `curl https://[domain]/v1/meta` → 200 OK
-- [ ] Security headers present in responses
-- [ ] Monitoring/alerts configured (optional)
+> ใช้ template นี้ทุกครั้ง เมื่อสร้างโปรเจคลูกค้าที่ต้องเชื่อมกับ FlowBiz AI Core และ deploy บน VPS
 
 ---
 
-## 📝 Status Indicators
+## 🎯 1) Project Goal
 
-| Status | Meaning | Action |
-|--------|---------|--------|
-| ✅ | Complete | Ready to use |
-| ⏳ | In Progress | Agent working on it |
-| ❌ | Blocked | Owner intervention needed |
-| 🚧 | Draft/Partial | Not production-ready yet |
+**ชื่อโปรเจค:** `<project-name>`  
+**คำอธิบาย (1–2 ประโยค):**
 
-## Usage Rules
+> ตัวอย่าง: REST API สำหรับจัดการ customer conversation เชื่อม FlowBiz AI Core
 
-- **🚧 DRAFT:** Use this template only if Phases 1-2 complete
-- **👷 IN DEVELOPMENT:** Share this repo only with Agent if Phases 1-5 complete
-- **🟢 PRODUCTION READY:** Deploy to VPS only if all 7 phases complete + CI green
+---
+
+## 🔌 2) Required API Contract (บังคับ)
+
+โปรเจค **ต้องมี** endpoint เหล่านี้:
+
+### Health
+```bash
+GET /healthz
+200 OK
+{
+  "status": "ok",
+  "service": "<project-name>",
+  "version": "0.1.0"
+}
 ```
 
+### Metadata
+```bash
+GET /v1/meta
+200 OK
+{
+  "service": "<project-name>",
+  "environment": "dev|prod",
+  "version": "0.1.0",
+  "build_sha": "abc123"
+}
+```
+
+### Business Endpoints (อย่างน้อย 2–3)
+- `POST /v1/...`
+- `GET /v1/...`
+
 ---
 
-## 🎯 Agent Kickoff Packet (Copy-Paste Ready)
+## ⚙️ 3) Environment Variables (STRICT)
 
-```markdown
-# Project Setup Request
-
-## 1. Project Goal
-[ระบุชื่อโปรเจค + วัตถุประสงค์หลัก 1-2 ประโยค]
-
-ตัวอย่าง: "Customer Support Bot API — REST API สำหรับจัดการ conversation และ ticket routing โดยเชื่อมกับ FlowBiz AI Core"
-
-## 2. Must-Have Endpoints (FlowBiz Contract)
-
-### Health & Metadata (Required)
-- `GET /healthz` → `200 OK` + `{"status": "ok", "service": "service-name", "version": "x.y.z"}`
-- `GET /v1/meta` → `{"service": "service-name", "environment": "dev/prod", "version": "x.y.z", "build_sha": "abc123"}`
-
-### Business Endpoints (Minimal)
-[ระบุ 2-3 endpoints หลักที่ต้องมี เช่น]
-- `POST /v1/conversations` — สร้าง conversation ใหม่
-- `GET /v1/conversations/{id}` — ดึงข้อมูล conversation
-- `POST /v1/conversations/{id}/messages` — ส่งข้อความ
-
-## 3. Environment Variables Rules
-
-### APP_* (Application Settings - Strict)
+### APP_* (บังคับ)
 ```bash
-APP_SERVICE_NAME=customer-support-api
+APP_SERVICE_NAME=<project-name>
 APP_ENV=dev
 APP_LOG_LEVEL=INFO
 APP_CORS_ORIGINS=["http://localhost:3000"]
 ```
 
-### FLOWBIZ_* (Metadata - Read by core/deployment)
+### FLOWBIZ_* (metadata)
 ```bash
 FLOWBIZ_VERSION=0.1.0
 FLOWBIZ_BUILD_SHA=local-dev
@@ -122,46 +65,135 @@ FLOWBIZ_BUILD_SHA=local-dev
 ### Integration (ถ้าเชื่อม core)
 ```bash
 FLOWBIZ_CORE_URL=http://localhost:8000
-FLOWBIZ_API_KEY=secret-key
+FLOWBIZ_API_KEY=your-api-key
 ```
 
-## 4. Run Modes (Required Support)
+---
 
-### Local Development
+## 🏃 4) Run Modes (ล็อกให้ชัด)
+
+### Local Dev (ง่ายสุด — default)
 ```bash
-python -m uvicorn apps.api.main:app --reload --port 8001
+uvicorn apps.api.main:app --reload --port 8001
 ```
 
-### Docker Compose (Dev)
+### Docker Dev
 ```bash
 docker compose up --build
 ```
 
-### Docker Compose (Production Override)
+### Production (VPS)
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
 
-## 5. Deployment Target
+---
 
-- **Platform:** Hostinger VPS Ubuntu 24.04
-- **Domain:** [ระบุ domain หรือ subdomain]
-- **SSL:** Let's Encrypt via Certbot
-- **Reverse Proxy:** Nginx (ต้องมี security headers)
-- **Port:** Internal 8001, External 443 (HTTPS)
+## 🐳 5) Docker (บังคับมี)
 
-## 6. Guardrails (Same as flowbiz-ai-core)
-
-- Non-blocking CI (ruff + pytest)
-- PR comment bot for missing persona/description
-- Codex pre-flight checklist (mandatory before code)
-- Persona labels: `persona:core` / `persona:infra` / `persona:docs`
+- **Dockerfile**
+- **docker-compose.yml** (dev)
+- **docker-compose.prod.yml** (prod override)
+- App ฟังที่ internal port **8000**
+- External:
+  - Dev: `http://localhost:8001`
+  - Prod: `https://<domain>`
 
 ---
 
-## 📋 Repository Contract (Files You MUST Create)
+## 🔐 6) Production (VPS Standard)
 
-### 1. README.md
+- **OS:** Ubuntu 24.04
+- **Reverse Proxy:** Nginx
+- **SSL:** Let's Encrypt (Certbot)
+- **Security headers** (prod only):
+  - `X-Content-Type-Options: nosniff`
+  - `X-Frame-Options: DENY`
+  - `Referrer-Policy: strict-origin-when-cross-origin`
+  - `Permissions-Policy: geolocation=(), microphone=(), camera=()`
+  - `Strict-Transport-Security`
+
+---
+
+## 🧪 7) Validation Checklist (ต้องผ่าน)
+
+```bash
+# Dev
+curl http://localhost:8001/healthz
+curl http://localhost:8001/v1/meta
+
+# Production
+curl https://<domain>/healthz
+curl https://<domain>/v1/meta
+
+# Lint & Test
+ruff check . ✅
+pytest -q ✅
+```
+
+---
+
+## 🧭 8) Guardrails (เหมือน core)
+
+- **CI:** non-blocking
+- **PR ต้องมี:**
+  - Persona label: `persona:core` | `persona:infra` | `persona:docs`
+  - PR description: Summary + Testing
+- **Pre-flight checklist:** docs/CODEX_PREFLIGHT.md
+
+---
+
+## 📁 9) Required Files (ขั้นต่ำ)
+
+```
+README.md
+.env.example
+docker-compose.yml
+docker-compose.prod.yml
+Dockerfile
+
+apps/api/main.py
+apps/api/routes/health.py
+apps/api/routes/v1/meta.py
+
+docs/PROJECT_CONTRACT.md
+docs/DEPLOYMENT.md
+docs/GUARDRAILS.md
+docs/CODEX_PREFLIGHT.md
+```
+
+---
+
+## 🚀 10) Deploy (Owner only)
+
+- ใช้ **GitHub Actions + Secrets**
+- **ห้าม**ใส่ private key ในโค้ดหรือแชท
+- **Push main = auto deploy**
+
+---
+
+## 🤖 Agent One-Liner (Copy ไปใช้ใน AI อื่นได้ทันที)
+
+```
+สร้างโปรเจค <project-name> ตาม FlowBiz Client Project Template นี้
+
+บังคับ:
+- มี /healthz และ /v1/meta ตาม schema
+- ใช้ APP_* และ FLOWBIZ_* env
+- Run local ด้วย uvicorn port 8001
+- Deploy prod ด้วย Docker Compose + Nginx + SSL
+- CI non-blocking + guardrails + pre-flight
+
+สร้างไฟล์และโครงสร้างให้ครบตาม template นี้ทั้งหมด
+```
+
+---
+
+## 📚 รายละเอียดเพิ่มเติม (สำหรับ Agent)
+
+<details>
+<summary><strong>📋 Example: README.md</strong></summary>
+
 ```markdown
 # [Project Name]
 
@@ -192,26 +224,26 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ## How to Run
 
 ### Local
-```bash
+\```bash
 cp .env.example .env
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -e .
 uvicorn apps.api.main:app --reload --port 8001
-```
+\```
 
 ### Docker
-```bash
+\```bash
 docker compose up --build
-```
+\```
 
 ### Production (VPS)
-```bash
+\```bash
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-```
+\```
 
 ## Smoke Tests
-```bash
+\```bash
 # Health check
 curl http://localhost:8001/healthz
 
@@ -220,10 +252,14 @@ curl http://localhost:8001/v1/meta
 
 # [ระบุ business endpoint test]
 curl -X POST http://localhost:8001/v1/[resource] -H "Content-Type: application/json" -d '{"key": "value"}'
-```
+\```
 ```
 
-### 2. docs/PROJECT_CONTRACT.md
+</details>
+
+<details>
+<summary><strong>📋 Example: docs/PROJECT_CONTRACT.md</strong></summary>
+
 ```markdown
 # Project Contract
 
@@ -267,13 +303,13 @@ Required headers in responses:
 
 ### Error Format
 All errors must return:
-```json
+\```json
 {
   "detail": "Error message",
   "request_id": "uuid-or-trace-id",
   "timestamp": "2025-12-24T10:30:00Z"
 }
-```
+\```
 
 Standard status codes:
 - `400` — Bad Request (client error)
@@ -282,16 +318,20 @@ Standard status codes:
 - `500` — Internal Server Error
 ```
 
-### 3. docs/DEPLOYMENT.md
+</details>
+
+<details>
+<summary><strong>📋 Example: docs/DEPLOYMENT.md</strong></summary>
+
 ```markdown
 # Deployment Guide
 
 ## Local Development
-```bash
+\```bash
 cp .env.example .env
 # Edit .env with local values
 docker compose up --build
-```
+\```
 
 ## Production Deployment (VPS)
 
@@ -302,31 +342,31 @@ docker compose up --build
 
 ### Steps
 1. **Clone repository**
-   ```bash
+   \```bash
    git clone https://github.com/[org]/[repo].git
    cd [repo]
-   ```
+   \```
 
 2. **Set environment variables**
-   ```bash
+   \```bash
    cp .env.example .env.prod
    nano .env.prod  # Edit with production values
-   ```
+   \```
 
 3. **Configure Nginx**
    - Ensure `nginx/templates/default.conf.template` has correct domain
    - SSL certificates should be in `/etc/letsencrypt/live/[domain]/`
 
 4. **Start services**
-   ```bash
+   \```bash
    docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-   ```
+   \```
 
 5. **Verify**
-   ```bash
+   \```bash
    curl https://[domain]/healthz
    curl https://[domain]/v1/meta
-   ```
+   \```
 
 ### Reverse Proxy Assumptions
 - Nginx runs as reverse proxy in same Docker network
@@ -346,7 +386,11 @@ docker compose up --build
 - Nginx config: Mounted from `./nginx/templates/`
 ```
 
-### 4. docs/GUARDRAILS.md
+</details>
+
+<details>
+<summary><strong>📋 Example: docs/GUARDRAILS.md</strong></summary>
+
 ```markdown
 # Guardrails
 
@@ -381,7 +425,11 @@ Template เต็มมีใน `.github/pull_request_template.md`
 ดู `docs/CODEX_PREFLIGHT.md` — ต้องตอบก่อนเขียนโค้ดทุกครั้ง
 ```
 
-### 5. docs/CODEX_PREFLIGHT.md
+</details>
+
+<details>
+<summary><strong>📋 Example: docs/CODEX_PREFLIGHT.md</strong></summary>
+
 ```markdown
 # Codex Pre-Flight Checklist
 
@@ -436,7 +484,11 @@ Template เต็มมีใน `.github/pull_request_template.md`
 - [ ] ไม่มี scope creep
 ```
 
-### 6. .env.example
+</details>
+
+<details>
+<summary><strong>📋 Example: .env.example</strong></summary>
+
 ```bash
 # Application Settings (Strict - validated by pydantic)
 APP_SERVICE_NAME=my-service
@@ -460,7 +512,11 @@ FLOWBIZ_BUILD_SHA=local-dev
 # EXTERNAL_API_URL=https://api.example.com
 ```
 
-### 7. docker-compose.yml
+</details>
+
+<details>
+<summary><strong>📋 Example: docker-compose.yml</strong></summary>
+
 ```yaml
 version: '3.8'
 
@@ -507,7 +563,11 @@ networks:
     driver: bridge
 ```
 
-### 8. docker-compose.prod.yml
+</details>
+
+<details>
+<summary><strong>📋 Example: docker-compose.prod.yml</strong></summary>
+
 ```yaml
 version: '3.8'
 
@@ -531,9 +591,10 @@ services:
       NGINX_PORT: 443
 ```
 
----
+</details>
 
-## 🗂️ Repository Skeleton (Recommended Structure)
+<details>
+<summary><strong>🗂️ Repository Skeleton (Recommended Structure)</strong></summary>
 
 ```
 my-service/
@@ -596,9 +657,10 @@ my-service/
 └── README.md
 ```
 
----
+</details>
 
-## 🔌 Integration Contract Summary
+<details>
+<summary><strong>🔌 Integration Contract Summary</strong></summary>
 
 ### Minimum Endpoints
 - `GET /healthz` → `{"status": "ok", "service": "...", "version": "..."}`
@@ -625,9 +687,10 @@ my-service/
 }
 ```
 
----
+</details>
 
-## 📦 Quick Start Commands
+<details>
+<summary><strong>📦 Quick Start Commands</strong></summary>
 
 ### 1. Copy Template to New Repo
 ```bash
@@ -664,9 +727,10 @@ nano .env.prod  # Edit production values
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
 
----
+</details>
 
-## � VPS Access & Deployment (for Agents)
+<details>
+<summary><strong>🔑 VPS Access & Deployment (for Agents)</strong></summary>
 
 ### SSH Key Access via GitHub Secrets (Recommended ⭐)
 
@@ -748,9 +812,10 @@ git push origin main
 - ✅ Fully automated (push to main = deploy)
 - ✅ Easy key rotation (update secret + regenerate)
 
----
+</details>
 
-## �💡 Best Practices
+<details>
+<summary><strong>💡 Best Practices</strong></summary>
 
 1. **ใช้ Template Repo**
    - สร้าง `flowbiz-template-service` repository
@@ -773,29 +838,10 @@ git push origin main
    - `DEPLOYMENT.md` — Production deployment
    - `CODEX_PREFLIGHT.md` — Agent instructions
 
----
+</details>
 
-## 🚀 สิ่งที่ต้องส่งให้ Agent (One-Liner)
-
-**Copy-paste นี้ในแชท AI อื่น:**
-
-```
-สร้างโปรเจค [ชื่อโปรเจค] ตาม FlowBiz Client Project Template:
-https://github.com/natbkgift/flowbiz-ai-core/blob/main/docs/CLIENT_PROJECT_TEMPLATE.md
-
-ต้องการ:
-1. Endpoints: /healthz, /v1/meta + [ระบุ business endpoints]
-2. Env: APP_* strict, FLOWBIZ_* metadata
-3. Deploy: Docker Compose (dev + prod override), Hostinger VPS Ubuntu 24.04
-4. Guardrails: Non-blocking CI + PR comment bot + pre-flight checklist
-5. Integration: เชื่อมกับ core ที่ http://localhost:8000 (ถ้าต้องการ)
-
-ดู template ครบที่ลิงก์ด้านบน แล้วสร้างให้ครบทุกไฟล์ตาม Repository Skeleton
-```
-
----
-
-## ✅ Checklist สำหรับ Validation
+<details>
+<summary><strong>✅ Checklist สำหรับ Validation</strong></summary>
 
 เมื่อโปรเจคลูกค้าสร้างเสร็จ ตรวจสอบ:
 
@@ -811,9 +857,10 @@ https://github.com/natbkgift/flowbiz-ai-core/blob/main/docs/CLIENT_PROJECT_TEMPL
 - [ ] ruff check + pytest ผ่าน
 - [ ] CI workflows (guardrails.yml, pr-labels.yml) ทำงาน
 
+</details>
+
 ---
 
 **ที่มา:** `flowbiz-ai-core/docs/CLIENT_PROJECT_TEMPLATE.md`  
 **อัปเดตล่าสุด:** 2025-12-24  
 **Maintainer:** FlowBiz AI Core Team
-```
