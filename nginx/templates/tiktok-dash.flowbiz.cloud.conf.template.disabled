@@ -1,0 +1,74 @@
+# TikTok Client Service - Dashboard UI (OPTIONAL - DISABLED BY DEFAULT)
+# This template is provided for reference if the dashboard needs to be exposed publicly.
+# By default, the dashboard should remain private (SSH port-forward only).
+#
+# TO ENABLE:
+# 1. Rename to: tiktok-dash.flowbiz.cloud.conf.template
+# 2. Provision SSL: sudo certbot certonly --nginx -d tiktok-dash.flowbiz.cloud
+# 3. Update gateway CORS to include https://tiktok-dash.flowbiz.cloud
+# 4. Restart nginx: docker compose restart nginx
+#
+# Subdomain: tiktok-dash.flowbiz.cloud
+# Upstream: http://127.0.0.1:3002
+
+# HTTP server - redirect to HTTPS
+server {
+  listen 80;
+  server_name tiktok-dash.flowbiz.cloud;
+  server_tokens off;
+
+  location /.well-known/acme-challenge/ {
+    root /var/www/certbot;
+  }
+
+  location / {
+    return 301 https://$host$request_uri;
+  }
+}
+
+# HTTPS server (production)
+server {
+  listen 443 ssl http2;
+  server_name tiktok-dash.flowbiz.cloud;
+  server_tokens off;
+
+  # SSL certificates
+  ssl_certificate /etc/letsencrypt/live/tiktok-dash.flowbiz.cloud/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/tiktok-dash.flowbiz.cloud/privkey.pem;
+
+  # SSL configuration
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers HIGH:!aNULL:!MD5;
+  ssl_prefer_server_ciphers on;
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 10m;
+
+  # Security headers (modified for dashboard)
+  add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+  add_header X-Content-Type-Options "nosniff" always;
+  add_header X-Frame-Options "SAMEORIGIN" always;  # Changed from DENY to allow embedding if needed
+  add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+
+  # Proxy timeouts
+  proxy_connect_timeout 2s;
+  proxy_read_timeout 30s;
+  proxy_send_timeout 30s;
+
+  # Proxy to TikTok Dashboard UI
+  location / {
+    proxy_pass http://127.0.0.1:3002;
+    
+    include /etc/nginx/snippets/proxy_headers.conf;
+
+    # Additional proxy settings for static content
+    proxy_buffering off;
+    proxy_request_buffering off;
+  }
+
+  # Enable gzip for static assets
+  gzip on;
+  gzip_vary on;
+  gzip_min_length 1024;
+  gzip_types text/plain text/css text/xml text/javascript application/javascript application/json application/xml+rss;
+}
