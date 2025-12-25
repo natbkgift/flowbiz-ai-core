@@ -36,11 +36,10 @@ echo "  sudo certbot certonly --webroot -w /var/www/certbot -d tiktok.flowbiz.cl
 echo ""
 echo "Follow certbot prompts to complete certificate provisioning"
 
-echo ""
 echo "================================================================"
 echo "STEP 4: Verify certificate was created"
 echo "================================================================"
-sudo ls -la /etc/letsencrypt/live/tiktok.flowbiz.cloud/
+echo "Run: sudo ls -la /etc/letsencrypt/live/tiktok.flowbiz.cloud/"
 echo "Expected files: fullchain.pem, privkey.pem, cert.pem, chain.pem"
 
 echo ""

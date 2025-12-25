@@ -43,12 +43,10 @@ server {
   ssl_session_cache shared:SSL:10m;
   ssl_session_timeout 10m;
 
-  # Security headers (modified for dashboard)
-  add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
-  add_header X-Content-Type-Options "nosniff" always;
-  add_header X-Frame-Options "SAMEORIGIN" always;  # Changed from DENY to allow embedding if needed
-  add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-  add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+  # Security headers
+  include /etc/nginx/snippets/security_headers.conf;
+  # Note: X-Frame-Options is SAMEORIGIN instead of DENY to allow embedding if needed
+  add_header X-Frame-Options "SAMEORIGIN" always;
 
   # Proxy timeouts
   proxy_connect_timeout 2s;
