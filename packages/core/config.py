@@ -85,8 +85,24 @@ class StrictDotEnvSettingsSource(StrictEnvValidationMixin, CommaSeparatedListDot
     """Dotenv source that enforces known APP_* keys before parsing."""
 
     def __call__(self) -> dict[str, Any]:
+        # Get raw dotenv data first
+        raw_data = super(CommaSeparatedListDotEnvSource, self).__call__()
+        
+        # Filter to only include variables with the expected prefix
+        # or non-prefixed variables that are allowed (like FLOWBIZ_*, POSTGRES_*)
+        prefix = getattr(self, "env_prefix", "").upper()
+        if prefix:
+            filtered_data = {
+                key: value
+                for key, value in raw_data.items()
+                if key.upper().startswith(prefix)
+            }
+        else:
+            filtered_data = raw_data
+            
+        # Now validate against expected keys
         self._validate_unknown_env_vars()
-        return super().__call__()
+        return filtered_data
 
 
 class AppSettings(BaseSettings):
