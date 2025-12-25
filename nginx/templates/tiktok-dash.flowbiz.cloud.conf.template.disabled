@@ -43,10 +43,9 @@ server {
   ssl_session_cache shared:SSL:10m;
   ssl_session_timeout 10m;
 
-  # Security headers
+  # Security headers (uses snippet for consistency)
+  # Note: Dashboard uses all default security headers from snippet
   include /etc/nginx/snippets/security_headers.conf;
-  # Note: X-Frame-Options is SAMEORIGIN instead of DENY to allow embedding if needed
-  add_header X-Frame-Options "SAMEORIGIN" always;
 
   # Proxy timeouts
   proxy_connect_timeout 2s;
