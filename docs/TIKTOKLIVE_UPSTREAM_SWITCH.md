@@ -12,18 +12,27 @@ Switch tiktoklive.flowbiz.cloud routing from **FlowBiz AI Core** (`api:8000`) to
 
 **Scope:**
 - Nginx template change only
+- Disabled Docker nginx service (use system nginx instead)
 - No firewall/port changes
 - No breaking changes to other domains
 - Preserves all security headers, TLS, HTTP→HTTPS redirects
+
+**Architecture Note:**  
+System nginx is required to access host port 127.0.0.1:3001. Docker nginx cannot reach host ports due to bridge network isolation.
 
 ---
 
 ## Changes
 
-### File Modified
-- `nginx/templates/tiktoklive.flowbiz.cloud.conf.template`
-  - **Before:** `proxy_pass http://api:8000;`
-  - **After:** `proxy_pass http://127.0.0.1:3001;`
+### Files Modified
+1. **`nginx/templates/tiktoklive.flowbiz.cloud.conf.template`**
+   - **Before:** `proxy_pass http://api:8000;`
+   - **After:** `proxy_pass http://127.0.0.1:3001;`
+   - Security headers inlined (no snippet dependencies)
+
+2. **`docker-compose.yml`**
+   - Disabled nginx service (commented out)
+   - System nginx used instead for host port access
 
 ### What Stays the Same
 - SSL certificates (`/etc/letsencrypt/live/tiktoklive.flowbiz.cloud/`)
@@ -63,20 +72,28 @@ cd /opt/flowbiz/flowbiz-ai-core
 # 2. Pull latest changes
 git pull origin main
 
-# 3. Validate nginx config syntax
-docker compose exec nginx nginx -t
+# 3. Stop Docker nginx (if running)
+docker compose stop nginx && docker compose rm -f nginx
+
+# 4. Deploy nginx config to system nginx
+sudo cp nginx/templates/tiktoklive.flowbiz.cloud.conf.template \
+  /etc/nginx/conf.d/tiktoklive.flowbiz.cloud.conf
+
+# 5. Validate system nginx config syntax
+sudo nginx -t
 
 # Expected output:
 # nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 # nginx: configuration file /etc/nginx/nginx.conf test is successful
 
-# 4. Restart nginx container (applies new template)
-docker compose restart nginx
+# 6. Restart system nginx
+sudo systemctl restart nginx
 
-# 5. Wait for nginx to be healthy
-sleep 5
-docker compose ps nginx
+# 7. Verify system nginx is running
+sudo systemctl status nginx
 ```
+
+**Note:** System nginx must be used instead of Docker nginx because Docker containers cannot access host ports (127.0.0.1:3001) due to bridge network isolation.
 
 ---
 
@@ -96,19 +113,23 @@ curl -i http://127.0.0.1:3001/v1/meta
 
 ```bash
 # Health check
-curl -k https://tiktoklive.flowbiz.cloud/healthz
+curl --insecure https://tiktoklive.flowbiz.cloud/healthz
 
 # Metadata endpoint
-curl -k https://tiktoklive.flowbiz.cloud/v1/meta
+curl --insecure https://tiktoklive.flowbiz.cloud/v1/meta
+
+# Verify security headers
+curl -I --insecure https://tiktoklive.flowbiz.cloud/healthz
 ```
 
 **Success Criteria:**
 - HTTP status: `200 OK`
 - Response body includes: `"service":"TikTok Live Client"` or similar (NOT "FlowBiz AI Core")
 - Security headers present:
-  - `Strict-Transport-Security`
+  - `Strict-Transport-Security: max-age=63072000`
   - `X-Content-Type-Options: nosniff`
   - `X-Frame-Options: DENY`
+  - `Referrer-Policy: no-referrer`
 
 ### 3. TLS Verification
 
