@@ -1,0 +1,83 @@
+# Client Project Nginx Config Template (System Nginx)
+# Copy this template to /etc/nginx/conf.d/<domain>.conf
+#
+# REQUIRED REPLACEMENTS:
+#   {{DOMAIN}}  - Replace with your domain (e.g., client.flowbiz.cloud)
+#   {{PORT}}    - Replace with your service port (e.g., 3001)
+#
+# Example usage:
+#   cp client_system_nginx.conf.template /etc/nginx/conf.d/client.flowbiz.cloud.conf
+#   sed -i 's/{{DOMAIN}}/client.flowbiz.cloud/g' /etc/nginx/conf.d/client.flowbiz.cloud.conf
+#   sed -i 's/{{PORT}}/3001/g' /etc/nginx/conf.d/client.flowbiz.cloud.conf
+#   sudo nginx -t && sudo systemctl reload nginx
+
+# HTTP server - redirect to HTTPS
+server {
+  listen 80;
+  server_name {{DOMAIN}};
+  server_tokens off;
+
+  # Let's Encrypt challenge (required for certificate issuance)
+  location /.well-known/acme-challenge/ {
+    root /var/www/certbot;
+  }
+
+  # Redirect all other HTTP traffic to HTTPS
+  location / {
+    return 301 https://$host$request_uri;
+  }
+}
+
+# HTTPS server (production)
+server {
+  listen 443 ssl http2;
+  server_name {{DOMAIN}};
+  server_tokens off;
+
+  # SSL certificates (Let's Encrypt)
+  # IMPORTANT: Replace {{DOMAIN}} in the paths below
+  ssl_certificate /etc/letsencrypt/live/{{DOMAIN}}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{DOMAIN}}/privkey.pem;
+
+  # SSL configuration
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers HIGH:!aNULL:!MD5;
+  ssl_prefer_server_ciphers on;
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 10m;
+
+  # Security headers
+  add_header X-Content-Type-Options "nosniff" always;
+  add_header X-Frame-Options "DENY" always;
+  add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+  # Proxy timeouts
+  proxy_connect_timeout 5s;
+  proxy_read_timeout 60s;
+  proxy_send_timeout 60s;
+
+  # Proxy to service on localhost
+  # IMPORTANT: Replace {{PORT}} with your service port
+  location / {
+    proxy_pass http://127.0.0.1:{{PORT}};
+
+    # Standard proxy headers
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Port $server_port;
+
+    # Disable buffering for streaming responses (optional, uncomment if needed)
+    # proxy_buffering off;
+    # proxy_request_buffering off;
+
+    # WebSocket support (optional, uncomment if needed)
+    # proxy_http_version 1.1;
+    # proxy_set_header Upgrade $http_upgrade;
+    # proxy_set_header Connection "upgrade";
+  }
+}
