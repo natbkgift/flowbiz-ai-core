@@ -1,6 +1,28 @@
 name: Reusable VPS Deploy
 
 on:
+  workflow_dispatch:
+    inputs:
+      remote_path:
+        description: 'Remote path on VPS where the project will be deployed'
+        required: true
+        default: '/opt/flowbiz/flowbiz-ai-core'
+      compose_files:
+        description: 'Docker Compose files to use (space-separated)'
+        required: false
+        default: 'docker-compose.yml docker-compose.override.prod.yml'
+      pre_build_cmd:
+        description: 'Optional command to run before building (e.g., create .env)'
+        required: false
+        default: ''
+      post_deploy_cmd:
+        description: 'Optional command to run after deployment (e.g., health check)'
+        required: false
+        default: ''
+      docker_prune:
+        description: 'Run docker system prune after deployment'
+        required: false
+        default: 'true'
   workflow_call:
     inputs:
       remote_path:
