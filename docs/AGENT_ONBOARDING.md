@@ -320,8 +320,8 @@ curl http://localhost:<YOUR_PORT>/healthz
 cd /opt/flowbiz/clients/<your-service>
 
 # Revert to previous commit
-git log --oneline -5  # Find the last good commit SHA
-git checkout <commit-sha>
+git log --oneline -5  # Find the last good commit SHA (check messages/timestamps)
+git checkout <commit-sha>  # Replace with actual SHA of last known good commit
 
 # Restart containers
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
