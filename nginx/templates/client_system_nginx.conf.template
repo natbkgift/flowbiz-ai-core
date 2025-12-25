@@ -71,11 +71,11 @@ server {
     proxy_set_header X-Forwarded-Host $host;
     proxy_set_header X-Forwarded-Port $server_port;
 
-    # Disable buffering for streaming responses (optional, uncomment if needed)
+    # For streaming responses, uncomment to disable buffering
     # proxy_buffering off;
     # proxy_request_buffering off;
 
-    # WebSocket support (optional, uncomment if needed)
+    # For WebSocket support, uncomment these lines
     # proxy_http_version 1.1;
     # proxy_set_header Upgrade $http_upgrade;
     # proxy_set_header Connection "upgrade";

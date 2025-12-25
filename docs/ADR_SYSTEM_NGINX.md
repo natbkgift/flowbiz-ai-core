@@ -128,11 +128,11 @@ All new client projects MUST adhere to this decision. Agents deploying services 
 
 **Verification command:**
 ```bash
-# No nginx containers should exist
+# No nginx containers may exist
 docker ps --filter "name=nginx" --filter "ancestor=nginx"
 # Expected: No results
 
-# System nginx should own ports 80/443
+# System nginx must own ports 80/443
 sudo netstat -tlnp | grep ':80\|:443'
 # Expected: nginx process
 ```
