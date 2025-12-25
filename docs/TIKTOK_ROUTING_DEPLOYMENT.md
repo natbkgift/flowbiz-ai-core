@@ -37,6 +37,10 @@ This document describes the implementation of production routing for the **flowb
 1. The client service is already deployed at `/opt/flowbiz/clients/flowbiz-client-live-tiktok`
 2. Gateway API is running on `127.0.0.1:3001`
 3. Dashboard UI is running on `127.0.0.1:3002` (private, no nginx route)
+4. **DNS Record:** Add A record for `tiktok.flowbiz.cloud` pointing to VPS IP address
+   - Example: `tiktok.flowbiz.cloud. 300 IN A <VPS_IP>`
+   - Wait for DNS propagation (usually 5-15 minutes)
+   - Verify: `dig tiktok.flowbiz.cloud` or `nslookup tiktok.flowbiz.cloud`
 
 ### Step 1: Deploy Updated Nginx Configuration
 
