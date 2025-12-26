@@ -11,6 +11,7 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
 - **[PR Log](docs/PR_LOG.md)** – History of pull requests (PR-001 to PR-120)
 
 ### Client Project Guidelines (NEW)
+- **[⚡ Quick Reference](docs/AGENT_QUICK_REFERENCE.md)** – One-page guide for agents deploying client services ⭐ **START HERE**
 - **[Project Contract](docs/PROJECT_CONTRACT.md)** – Mandatory integration contract for client services on shared VPS
 - **[Deployment Guide](docs/DEPLOYMENT.md)** – Step-by-step deployment guide for client projects
 - **[ADR: System Nginx](docs/ADR_SYSTEM_NGINX.md)** – Architecture decision: Why system nginx is mandatory
