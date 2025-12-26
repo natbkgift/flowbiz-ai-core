@@ -4,10 +4,20 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
 
 ## Documentation
 
+### Core Documentation
 - **[Architecture](docs/ARCHITECTURE.md)** – System design, layers, data flow, configuration, logging, and infrastructure
 - **[Deployment Guide](docs/DEPLOYMENT_VPS.md)** – Step-by-step VPS deployment with Docker Compose and Nginx
 - **[Reusable Deployment](docs/REUSABLE_DEPLOYMENT.md)** – Share VPS deployment across projects securely
 - **[PR Log](docs/PR_LOG.md)** – History of pull requests (PR-001 to PR-120)
+
+### Client Project Guidelines (NEW)
+- **[Project Contract](docs/PROJECT_CONTRACT.md)** – Mandatory integration contract for client services on shared VPS
+- **[Deployment Guide](docs/DEPLOYMENT.md)** – Step-by-step deployment guide for client projects
+- **[ADR: System Nginx](docs/ADR_SYSTEM_NGINX.md)** – Architecture decision: Why system nginx is mandatory
+- **[Agent New Project Checklist](docs/AGENT_NEW_PROJECT_CHECKLIST.md)** – Pre-deployment checklist (all items must be YES)
+- **[Agent Behavior Lock](docs/CODEX_AGENT_BEHAVIOR_LOCK.md)** – Agent behavior rules and safety locks
+- **[Client Project Template](docs/CLIENT_PROJECT_TEMPLATE.md)** – Template for creating new client projects
+- **[Guardrails](docs/GUARDRAILS.md)** – Development guidelines and best practices
 
 ## Project structure
 
