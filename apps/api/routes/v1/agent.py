@@ -45,7 +45,7 @@ def run_agent_legacy(request: Request, body: AgentRunRequest) -> AgentResult:
 
 
 @router.post("/agent/run", summary="Execute agent - PR-022", response_model=RuntimeResult)
-def run_agent(request: Request, body: RuntimeRequest) -> RuntimeResult:
+def run_agent_v2(request: Request, body: RuntimeRequest) -> RuntimeResult:
     """Execute agent using PR-022 runtime skeleton contract."""
 
     ctx = RuntimeContext(
