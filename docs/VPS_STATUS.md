@@ -7,7 +7,9 @@
 ## VPS Overview
 
 ### Purpose
-This VPS hosts production deployments for **FlowBiz AI Core** and multiple client projects, serving as the foundational infrastructure for the FlowBiz ecosystem at `flowbiz.cloud`.
+This VPS hosts production deployments for **FlowBiz AI Core** and multiple 
+client projects, serving as the foundational infrastructure for the FlowBiz 
+ecosystem at `flowbiz.cloud`.
 
 ### Environment
 - **Operating System:** Ubuntu 24.04 LTS
@@ -258,7 +260,7 @@ All nginx configs MUST be in `/etc/nginx/conf.d/`:
 Each project must maintain:
 1. **Own docker-compose file(s)** — No sharing of compose files between projects
 2. **Unique localhost port** — No port conflicts (document port allocation)
-3. **Nginx config in `/etc/nginx/conf.d/`** — Using the [client_system_nginx.conf.template](../nginx/templates/client_system_nginx.conf.template)
+3. **Nginx config in `/etc/nginx/conf.d/`** — Using the [client_system_nginx.conf.template](nginx/templates/client_system_nginx.conf.template)
 4. **Environment isolation** — Separate `.env` files with service-specific credentials
 5. **Health check endpoint** — Minimum: `GET /healthz` returning 200 OK
 
