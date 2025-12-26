@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class RuntimeError(BaseModel):
@@ -24,12 +24,6 @@ class RuntimeResult(BaseModel):
     trace_id: str
     agent: str | None
     output: str | None
-    errors: list[RuntimeError]
+    errors: list[RuntimeError] = Field(default_factory=list)
 
     model_config = ConfigDict(extra="forbid")
-
-    def __init__(self, **data):
-        """Initialize RuntimeResult with default empty errors list."""
-        if "errors" not in data:
-            data["errors"] = []
-        super().__init__(**data)
