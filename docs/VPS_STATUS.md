@@ -219,7 +219,7 @@ https://service-name.com/...
 
 **Reason:** Core is designed as a foundational API layer only. Other concerns belong in separate repositories.
 
-**Alternative:** Create a new client project following the `CLIENT_PROJECT_TEMPLATE.md`.
+**Alternative:** Create a new client project following the [CLIENT_PROJECT_TEMPLATE.md](./CLIENT_PROJECT_TEMPLATE.md).
 
 ### Do Not Store Secrets in Version Control
 ❌ **DO NOT** commit `.env` files, API keys, passwords, or certificates to Git.
