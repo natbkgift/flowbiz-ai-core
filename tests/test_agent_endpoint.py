@@ -23,10 +23,10 @@ def client() -> TestClient:
 
 
 def test_agent_run_endpoint_smoke(client: TestClient):
-    """POST /v1/agent/run returns 200 and matches schema."""
+    """POST /v1/agent/run/legacy returns 200 and matches schema."""
 
     response = client.post(
-        "/v1/agent/run",
+        "/v1/agent/run/legacy",
         json={"input_text": "hello"},
     )
 
@@ -42,7 +42,7 @@ def test_agent_run_endpoint_with_all_fields(client: TestClient):
     """Ensure endpoint accepts all optional fields."""
 
     response = client.post(
-        "/v1/agent/run",
+        "/v1/agent/run/legacy",
         json={
             "input_text": "comprehensive test",
             "user_id": "user-123",
@@ -63,7 +63,7 @@ def test_agent_run_endpoint_missing_input_text(client: TestClient):
     """Ensure endpoint validates required fields."""
 
     response = client.post(
-        "/v1/agent/run",
+        "/v1/agent/run/legacy",
         json={},
     )
 
@@ -74,7 +74,7 @@ def test_agent_run_endpoint_extra_fields_rejected(client: TestClient):
     """Ensure endpoint rejects unknown fields in request body."""
 
     response = client.post(
-        "/v1/agent/run",
+        "/v1/agent/run/legacy",
         json={
             "input_text": "test",
             "unknown_field": "should fail",
@@ -88,7 +88,7 @@ def test_agent_run_endpoint_trace_contract(client: TestClient):
     """Ensure response trace dict includes contract fields (agent_name, request_id)."""
 
     response = client.post(
-        "/v1/agent/run",
+        "/v1/agent/run/legacy",
         json={"input_text": "test trace"},
     )
 
@@ -109,7 +109,7 @@ def test_agent_run_endpoint_includes_request_id(client: TestClient):
     """Ensure response includes X-Request-ID header."""
 
     response = client.post(
-        "/v1/agent/run",
+        "/v1/agent/run/legacy",
         json={"input_text": "test"},
     )
 
@@ -124,7 +124,7 @@ def test_agent_run_endpoint_default_channel(client: TestClient):
     """Ensure channel defaults to 'api' when not provided."""
 
     response = client.post(
-        "/v1/agent/run",
+        "/v1/agent/run/legacy",
         json={"input_text": "test"},
     )
 
@@ -136,7 +136,7 @@ def test_agent_run_endpoint_result_schema_strict(client: TestClient):
     """Ensure response matches strict AgentResult schema."""
 
     response = client.post(
-        "/v1/agent/run",
+        "/v1/agent/run/legacy",
         json={"input_text": "schema test"},
     )
 
