@@ -685,7 +685,10 @@ sudo chown -R $USER:$USER ~/flowbiz-ai-core
 
 **Fix Docker socket permissions:**
 ```bash
-sudo chmod 666 /var/run/docker.sock
+# The correct method is to add the user to the docker group.
+sudo usermod -aG docker $USER
+# Then apply the new group membership (log out and back in, or use newgrp).
+newgrp docker
 ```
 
 ### High Memory Usage
