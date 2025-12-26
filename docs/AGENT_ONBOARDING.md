@@ -8,9 +8,10 @@
 
 Before deploying any service, review these essential documents:
 
-1. **[VPS_STATUS.md](VPS_STATUS.md)** — Current production state, deployed services, and operational conventions
-2. **[CLIENT_PROJECT_TEMPLATE.md](CLIENT_PROJECT_TEMPLATE.md)** — Template and requirements for new service projects
-3. **[DEPLOYMENT_VPS.md](DEPLOYMENT_VPS.md)** — Detailed deployment procedures and troubleshooting
+1. **[CODEX_AGENT_BEHAVIOR_LOCK.md](CODEX_AGENT_BEHAVIOR_LOCK.md)** — Mandatory agent behavior rules and safety locks
+2. **[VPS_STATUS.md](VPS_STATUS.md)** — Current production state, deployed services, and operational conventions
+3. **[CLIENT_PROJECT_TEMPLATE.md](CLIENT_PROJECT_TEMPLATE.md)** — Template and requirements for new service projects
+4. **[DEPLOYMENT_VPS.md](DEPLOYMENT_VPS.md)** — Detailed deployment procedures and troubleshooting
 
 **Rule:** If you haven't read the above documents, do not proceed with deployment.
 

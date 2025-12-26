@@ -142,6 +142,7 @@ sudo netstat -tlnp | grep ':80\|:443'
 - **Implementation guide:** `docs/AGENT_NEW_PROJECT_CHECKLIST.md`
 - **Template config:** `nginx/templates/client_system_nginx.conf.template`
 - **Existing documentation:** `docs/CODEX_SYSTEM_NGINX_FIRST.md`
+- **Agent behavior lock:** `docs/CODEX_AGENT_BEHAVIOR_LOCK.md`
 
 ---
 

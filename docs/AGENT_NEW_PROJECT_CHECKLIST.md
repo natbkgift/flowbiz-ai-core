@@ -223,6 +223,14 @@ By proceeding with deployment after completing this checklist, you acknowledge:
 
 ---
 
+## 📚 Related Documentation
+
+- **[ADR_SYSTEM_NGINX.md](./ADR_SYSTEM_NGINX.md)** — Architecture decision for system nginx
+- **[CODEX_SYSTEM_NGINX_FIRST.md](./CODEX_SYSTEM_NGINX_FIRST.md)** — System nginx operational guide
+- **[CODEX_AGENT_BEHAVIOR_LOCK.md](./CODEX_AGENT_BEHAVIOR_LOCK.md)** — Agent behavior rules and safety locks
+
+---
+
 **Checklist Version:** 1.0  
 **Last Updated:** 2025-12-25  
 **Maintained by:** FlowBiz Infrastructure Team  
