@@ -17,4 +17,10 @@ class RuntimeRequest(BaseSchema):
 
     agent: str
     input: str
-    meta: RuntimeRequestMeta = RuntimeRequestMeta()
+    meta: RuntimeRequestMeta | None = None
+
+    def __init__(self, **data):
+        """Initialize RuntimeRequest with default meta."""
+        if "meta" not in data or data["meta"] is None:
+            data["meta"] = RuntimeRequestMeta()
+        super().__init__(**data)

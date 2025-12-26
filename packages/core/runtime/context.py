@@ -30,4 +30,4 @@ class RuntimeContext:
         self.input = input
         self.trace_id = trace_id or str(uuid.uuid4())
         self.mode = mode
-        self.meta = meta or {}
+        self.meta = {} if meta is None else meta
