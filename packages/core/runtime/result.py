@@ -14,7 +14,7 @@ class RuntimeError(BaseModel):
     message: str
     details: dict[str, Any] = {}
 
-    model_config = ConfigDict(extra="forbid", frozen=False)
+    model_config = ConfigDict(extra="forbid", frozen=True)
 
 
 class RuntimeResult(BaseModel):
