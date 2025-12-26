@@ -163,7 +163,7 @@ The following scenarios illustrate what is and is not allowed in `flowbiz-ai-cor
 
 4. **Add health check endpoint**
    - File: `apps/api/routes/health.py`
-   - Reason: Core HTTP API; transport-agnostic health check
+   - Reason: Core HTTP API; simple health check endpoint
 
 5. **Add trace ID middleware**
    - File: `apps/api/middleware.py`
