@@ -91,6 +91,7 @@ These boundaries describe what each layer may and may not do. Each boundary incl
   - **Error handling is standardized at the boundary.** Core returns structured errors; API translates to HTTP responses.
   - **Why:** Maintains a one-directional dependency graph and predictable error semantics.
 
+---
 ## Core Boundaries (SCOPE)
 
 FlowBiz AI Core has **strict scope boundaries** to keep the repository lean, stable, and transport-agnostic. These boundaries are documented in detail in [`docs/SCOPE.md`](./SCOPE.md).
