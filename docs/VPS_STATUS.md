@@ -167,7 +167,7 @@ All FlowBiz projects should be deployed under `/opt/flowbiz/` with the following
 Each project must maintain:
 1. **Own docker-compose file(s)** — No sharing of compose files between projects
 2. **Unique port assignments** — No host port conflicts (use different internal ports)
-3. **Nginx vhost configuration** — Each service should have its own reverse proxy configuration or subdomain
+3. **Nginx vhost configuration** — Each service should have its own reverse proxy configuration or subdomain, created by copying and customizing the shared template at `nginx/templates/client_system_nginx.conf.template` (one vhost file per service, not a single global config)
 4. **Environment isolation** — Separate `.env` files with service-specific credentials
 5. **Health check endpoint** — Minimum: `GET /healthz` returning 200 OK
 
