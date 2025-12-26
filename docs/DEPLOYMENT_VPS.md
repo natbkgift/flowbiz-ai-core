@@ -1,6 +1,6 @@
 # VPS Deployment Guide
 
-This guide provides step-by-step instructions for deploying FlowBiz AI Core to a Virtual Private Server (VPS) using Docker Compose and Nginx.
+This guide provides step-by-step instructions for deploying FlowBiz AI Core to a Virtual Private Server (VPS) using Docker Compose for the application services and system Nginx for the reverse proxy.
 
 ---
 
@@ -258,9 +258,11 @@ docker-compose up --build -d
 
 This command will:
 - Build the API Docker image
-- Pull Nginx and PostgreSQL images
+- Pull PostgreSQL image
 - Create necessary volumes
-- Start all three services (nginx, api, db)
+- Start the API and database services (api, db)
+
+**Note:** This deployment uses Docker only for the API and database. For production deployments with public access, you must configure system nginx separately as documented in `ADR_SYSTEM_NGINX.md`. The Docker nginx service is intentionally disabled in this configuration.
 
 ### 2. Monitor Startup
 
@@ -270,7 +272,6 @@ docker-compose logs -f
 
 # View logs from specific service
 docker-compose logs -f api
-docker-compose logs -f nginx
 docker-compose logs -f db
 ```
 
@@ -284,7 +285,6 @@ docker-compose ps
 
 # Expected output:
 # NAME                COMMAND                  SERVICE   STATUS          PORTS
-# flowbiz-nginx       "nginx -g 'daemon of…"   nginx     Up 2 minutes    0.0.0.0:80->80/tcp
 # flowbiz-api         "uvicorn apps.api.ma…"   api       Up 2 minutes    8000/tcp
 # flowbiz-db          "docker-entrypoint.s…"   db        Up 2 minutes    5432/tcp
 ```
@@ -295,11 +295,11 @@ All services should show `Up` status.
 
 ## Verify Deployment
 
-### 1. Test Health Endpoint
+### 1. Test Health Endpoint (Direct API Access)
 
 ```bash
-# From VPS
-curl http://localhost/healthz
+# Test API directly on port 8000
+curl http://localhost:8000/healthz
 
 # Expected response:
 # {"status":"ok","service":"FlowBiz AI Core","version":"0.1.0"}
@@ -308,7 +308,7 @@ curl http://localhost/healthz
 ### 2. Test Metadata Endpoint
 
 ```bash
-curl http://localhost/v1/meta
+curl http://localhost:8000/v1/meta
 
 # Expected response:
 # {"service":"FlowBiz AI Core","version":"0.1.0","git_sha":"abc1234"}
@@ -317,84 +317,55 @@ curl http://localhost/v1/meta
 ### 3. Test Root Endpoint
 
 ```bash
-curl http://localhost/
+curl http://localhost:8000/
 
 # Expected response:
 # {"message":"FlowBiz AI Core API"}
 ```
 
-### 4. Verify Security Headers via Nginx
+### 4. Production Access via System Nginx
 
-Use `curl -I` to confirm the reverse proxy returns the hardened headers. Content-Security-Policy is injected via `CSP_API` (strict) and `CSP_DOCS` (relaxed for Swagger). Keep them empty in development, set your production policies when deploying.
+**Note:** For production deployments with public access, you must configure system nginx as a reverse proxy. This setup is documented in:
+- `ADR_SYSTEM_NGINX.md` - Architecture decision and rationale
+- `CODEX_SYSTEM_NGINX_FIRST.md` - Operational guide
+- `AGENT_NEW_PROJECT_CHECKLIST.md` - Deployment checklist
+
+System nginx configuration should:
+- Proxy requests from port 80/443 to the API service on localhost:8000
+- Handle TLS termination with Let's Encrypt certificates
+- Add security headers (X-Content-Type-Options, X-Frame-Options, etc.)
+- Implement Content Security Policy (CSP) for different paths
+
+Example test after system nginx is configured:
 
 ```bash
-curl -I http://localhost/healthz
+# Test through system nginx (production)
+curl http://localhost/healthz
 
-# Example headers:
-# X-Content-Type-Options: nosniff
-# X-Frame-Options: DENY
-# Referrer-Policy: strict-origin-when-cross-origin
-# Permissions-Policy: geolocation=(), microphone=(), camera=()
-# Content-Security-Policy: default-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';
+# Or from external client
+curl https://api.yourdomain.com/healthz
 ```
 
-### 5. Test from External Client
-
-From your local machine:
+### 5. Check Request ID Header
 
 ```bash
-# Replace YOUR_VPS_IP with your server's IP
-curl http://YOUR_VPS_IP/healthz
-
-# Or with domain name
-curl http://api.yourdomain.com/healthz
-```
-
-### 6. Check Request ID Header
-
-```bash
-curl -i http://localhost/healthz | grep X-Request-ID
+curl -i http://localhost:8000/healthz | grep X-Request-ID
 
 # Should see: X-Request-ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
-### Security Headers & CSP
+### Development vs Production
 
-- Security headers are always enabled at Nginx.
-- Path-specific CSP is enabled **only in production** via `CSP_API` (strict for API paths) and `CSP_DOCS` (relaxed for `/docs` and `/openapi.json`). The base compose file leaves these empty for development and renders the template automatically at container startup.
-
-Dev:
-
-```bash
-CSP_API=""
-CSP_DOCS=""
-```
-
-Prod:
-
-```bash
-CSP_API="default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; img-src 'self'; connect-src 'self'; style-src 'self'; script-src 'self'"
-CSP_DOCS="default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'"
-```
-
-Recommended production override (renders prod CSP values into the Nginx template):
-
-```bash
-docker compose -f docker-compose.yml -f docker-compose.override.prod.yml up --build -d
-```
-
-Verify headers at any time (use `findstr` on Windows or `grep` on Linux/macOS):
-
-```bash
-curl -I http://localhost/healthz | findstr /I "content-security-policy"
-curl -I http://localhost/docs | findstr /I "content-security-policy"
-```
+- **Development:** Docker Compose runs API and database only. Access API directly on port 8000.
+- **Production:** System nginx proxies public traffic (ports 80/443) to API on localhost:8000. Docker nginx is intentionally disabled to comply with infrastructure architecture (see `ADR_SYSTEM_NGINX.md`).
 
 ---
 
-## SSL/TLS Setup (Optional)
+## SSL/TLS Setup (Production Only)
 
-For production deployments, enable HTTPS using Let's Encrypt.
+For production deployments with public access, enable HTTPS using system nginx and Let's Encrypt.
+
+**Note:** This section applies only to production deployments where system nginx is configured as the reverse proxy. For development, the API is accessed directly on port 8000 without TLS.
 
 ### 1. Install Certbot
 
@@ -402,29 +373,86 @@ For production deployments, enable HTTPS using Let's Encrypt.
 sudo apt install -y certbot python3-certbot-nginx
 ```
 
-### 2. Stop Nginx Container
+### 2. Configure System Nginx
+
+Create a system nginx configuration file for your domain:
 
 ```bash
-docker-compose stop nginx
+sudo nano /etc/nginx/conf.d/api.yourdomain.com.conf
 ```
 
-### 3. Obtain SSL Certificate
+Add the following configuration (HTTP only, for initial setup):
+
+```nginx
+server {
+  listen 80;
+  server_name api.yourdomain.com;
+
+  location / {
+    proxy_pass http://127.0.0.1:8000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+}
+```
+
+### 3. Test and Reload Nginx
 
 ```bash
-sudo certbot certonly --standalone -d api.yourdomain.com
+# Test configuration
+sudo nginx -t
+
+# Reload nginx
+sudo systemctl reload nginx
+```
+
+### 4. Obtain SSL Certificate
+
+Use certbot with the nginx plugin for zero-downtime certificate issuance:
+
+```bash
+sudo certbot --nginx -d api.yourdomain.com
 
 # Follow the prompts to complete verification
 ```
 
-### 4. Update Nginx Configuration
+Certbot will automatically:
+- Obtain the certificate from Let's Encrypt
+- Update your nginx configuration to use HTTPS
+- Add an HTTP → HTTPS redirect
+- Configure SSL settings
 
-Create a new Nginx configuration template for HTTPS (the template is rendered with environment variables at container startup):
+### 5. Verify HTTPS
 
 ```bash
-nano ~/flowbiz-ai-core/nginx/templates/default.conf.template
+curl https://api.yourdomain.com/healthz
 ```
 
-Add HTTP → HTTPS redirect and HTTPS server block:
+### 6. Certificate Auto-Renewal
+
+Let's Encrypt certificates expire after 90 days. Certbot sets up automatic renewal:
+
+```bash
+# Test renewal (dry run)
+sudo certbot renew --dry-run
+
+# Check renewal timer status
+sudo systemctl status certbot.timer
+
+# View renewal configuration
+sudo cat /etc/cron.d/certbot
+```
+
+The renewal process runs automatically. When certificates are renewed, nginx will be reloaded automatically.
+
+### Advanced: Manual System Nginx Configuration
+
+If you prefer full control over the nginx configuration, you can manually create the HTTPS configuration:
 
 ```nginx
 map $http_upgrade $connection_upgrade {
@@ -444,10 +472,6 @@ server {
 
   server_tokens off;
 
-  # Use Docker's internal resolver to handle dynamic IP addresses for upstream services.
-  resolver 127.0.0.11 valid=30s;
-  set $upstream_api http://api:8000;
-
   ssl_certificate /etc/letsencrypt/live/api.yourdomain.com/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/api.yourdomain.com/privkey.pem;
 
@@ -455,92 +479,32 @@ server {
   ssl_ciphers HIGH:!aNULL:!MD5;
   ssl_prefer_server_ciphers on;
 
+  # Security headers
   add_header X-Content-Type-Options "nosniff" always;
   add_header X-Frame-Options "DENY" always;
   add_header Referrer-Policy "strict-origin-when-cross-origin" always;
   add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
 
-  set $csp_api "${CSP_API}";
-  set $csp_docs "${CSP_DOCS}";
-
-  location = /docs {
-    add_header Content-Security-Policy "$csp_docs" always;
-    proxy_pass $upstream_api;
-    include /etc/nginx/proxy_params;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection $connection_upgrade;
-  }
-
-  location = /openapi.json {
-    add_header Content-Security-Policy "$csp_docs" always;
-    proxy_pass $upstream_api;
-    include /etc/nginx/proxy_params;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection $connection_upgrade;
-  }
+  # Content Security Policy (adjust as needed)
+  add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';" always;
 
   location / {
-    add_header Content-Security-Policy "$csp_api" always;
-    proxy_pass $upstream_api;
-    include /etc/nginx/proxy_params;
+    proxy_pass http://127.0.0.1:8000;
     proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection $connection_upgrade;
   }
 }
 ```
 
-### 5. Update Docker Compose
-
-Edit `docker-compose.yml` to mount SSL certificates:
-
-```bash
-nano docker-compose.yml
-```
-
-Update nginx service:
-
-```yaml
-  nginx:
-    image: nginx:1.25-alpine
-    ports:
-      - "80:80"
-      - "443:443"  # Add HTTPS port
-    volumes:
-      - ./nginx/templates/default.conf.template:/etc/nginx/templates/default.conf.template:ro
-      - /etc/letsencrypt:/etc/letsencrypt:ro  # Mount certificates
-    depends_on:
-      - api
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/healthz"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-```
-
-### 6. Restart Services
-
-```bash
-docker-compose up -d
-```
-
-### 7. Verify HTTPS
-
-```bash
-curl https://api.yourdomain.com/healthz
-```
-
-### 8. Set Up Certificate Auto-Renewal
-
-```bash
-# Test renewal
-sudo certbot renew --dry-run
-
-# Certificates auto-renew via systemd timer
-sudo systemctl status certbot.timer
-```
+For more details on system nginx configuration, see:
+- `ADR_SYSTEM_NGINX.md` - Architecture decision and rationale
+- `CODEX_SYSTEM_NGINX_FIRST.md` - Operational guide
+- `nginx/templates/client_system_nginx.conf.template` - Template configuration
 
 ---
 
@@ -663,6 +627,8 @@ docker-compose up -d
 
 ### Nginx Returns 502 Bad Gateway
 
+**This error occurs when system nginx cannot connect to the API service.**
+
 **Check API service:**
 ```bash
 docker-compose logs api
@@ -673,7 +639,29 @@ docker-compose ps api
 
 **Test API directly:**
 ```bash
+# Test from the host
+curl http://localhost:8000/healthz
+
+# Or from inside the container
 docker-compose exec api curl http://localhost:8000/healthz
+```
+
+**Check system nginx configuration:**
+```bash
+# Test nginx configuration
+sudo nginx -t
+
+# Check nginx status
+sudo systemctl status nginx
+
+# View nginx error logs
+sudo tail -f /var/log/nginx/error.log
+```
+
+**Verify API is listening on correct port:**
+```bash
+# Check if API is listening on port 8000
+sudo netstat -tlnp | grep :8000
 ```
 
 ### Permission Denied Errors
@@ -729,7 +717,6 @@ docker network inspect flowbiz-ai-core_default
 **Test inter-service connectivity:**
 ```bash
 docker-compose exec api ping db
-docker-compose exec nginx ping api
 ```
 
 ### Reset Entire Deployment
@@ -756,7 +743,8 @@ Before going live, ensure:
 - [ ] Strong database password set in `.env`
 - [ ] `.env` file has restrictive permissions (600)
 - [ ] Firewall configured (ufw enabled, ports 80/443 open)
-- [ ] SSL/TLS certificate installed and configured
+- [ ] SSL/TLS certificate installed and configured (system nginx)
+- [ ] System nginx configured as reverse proxy (see `ADR_SYSTEM_NGINX.md`)
 - [ ] Domain DNS configured correctly
 - [ ] CORS origins updated for production domain
 - [ ] `APP_ENV` set to `production`
