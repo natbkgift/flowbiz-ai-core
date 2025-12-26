@@ -1,21 +1,6 @@
-# VPS Deployment Guide — System Nginx Architecture
+# VPS Deployment Guide
 
-This guide provides step-by-step instructions for deploying FlowBiz AI Core to a Virtual Private Server (VPS) using **System Nginx** (via systemd) as the reverse proxy and Docker Compose for application services.
-
----
-
-## ⚠️ CRITICAL: Architecture Requirements
-
-**READ FIRST:** [ADR_SYSTEM_NGINX.md](ADR_SYSTEM_NGINX.md)
-
-This deployment **REQUIRES**:
-- ✅ System nginx via systemd as the ONLY reverse proxy
-- ✅ Services bind to localhost ports only (127.0.0.1:<PORT>)
-- ✅ All routing configs in `/etc/nginx/conf.d/`
-- ❌ NO Docker nginx containers in production
-- ❌ NO services binding to 0.0.0.0:80 or 0.0.0.0:443
-
-**If you violate these rules, your deployment will be rejected.**
+This guide provides step-by-step instructions for deploying FlowBiz AI Core to a Virtual Private Server (VPS) using Docker Compose for the application services and system Nginx for the reverse proxy.
 
 ---
 
@@ -24,15 +9,13 @@ This deployment **REQUIRES**:
 1. [Prerequisites](#prerequisites)
 2. [Server Setup](#server-setup)
 3. [Install Dependencies](#install-dependencies)
-4. [Install System Nginx](#install-system-nginx)
-5. [Clone Repository](#clone-repository)
-6. [Configure Environment](#configure-environment)
-7. [Deploy Application Services](#deploy-application-services)
-8. [Configure System Nginx](#configure-system-nginx)
-9. [SSL/TLS Setup](#ssltls-setup)
-10. [Verify Deployment](#verify-deployment)
-11. [Maintenance](#maintenance)
-12. [Troubleshooting](#troubleshooting)
+4. [Clone Repository](#clone-repository)
+5. [Configure Environment](#configure-environment)
+6. [Deploy with Docker Compose](#deploy-with-docker-compose)
+7. [Verify Deployment](#verify-deployment)
+8. [SSL/TLS Setup (Optional)](#ssltls-setup-optional)
+9. [Maintenance](#maintenance)
+10. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -52,11 +35,10 @@ This deployment **REQUIRES**:
 - Git (optional, for cloning)
 - Basic knowledge of Linux command line
 
-### Domain Setup (Required for Production)
+### Domain Setup (Optional but Recommended)
 
 - Domain name pointing to your VPS IP address
-- DNS A record configured (e.g., `flowbiz.cloud` → VPS IP)
-- Subdomain records for client services (e.g., `client1.flowbiz.cloud` → VPS IP)
+- DNS A record configured (e.g., `api.yourdomain.com` → VPS IP)
 
 ---
 
@@ -95,10 +77,10 @@ su - flowbiz
 # Allow SSH
 sudo ufw allow OpenSSH
 
-# Allow HTTP (for Let's Encrypt challenge and HTTP→HTTPS redirect)
+# Allow HTTP
 sudo ufw allow 80/tcp
 
-# Allow HTTPS (for production traffic)
+# Allow HTTPS (for future SSL setup)
 sudo ufw allow 443/tcp
 
 # Enable firewall
@@ -107,8 +89,6 @@ sudo ufw enable
 # Check status
 sudo ufw status
 ```
-
-**Important:** Ports 80 and 443 will be owned by system nginx. No Docker containers should bind to these ports.
 
 ---
 
@@ -162,7 +142,7 @@ newgrp docker
 docker ps
 ```
 
-### 4. Install Git
+### 4. Install Git (Optional)
 
 ```bash
 sudo apt install -y git
@@ -170,88 +150,14 @@ sudo apt install -y git
 
 ---
 
-## Install System Nginx
-
-**CRITICAL:** Install nginx on the host system, NOT in Docker.
-
-### 1. Install Nginx
-
-```bash
-# Install nginx
-sudo apt install -y nginx
-
-# Verify installation
-nginx -v
-```
-
-### 2. Start and Enable Nginx
-
-```bash
-# Start nginx service
-sudo systemctl start nginx
-
-# Enable nginx to start on boot
-sudo systemctl enable nginx
-
-# Check status
-sudo systemctl status nginx
-```
-
-**Expected:** Nginx should be `active (running)`.
-
-### 3. Verify Nginx Owns Ports 80/443
-
-```bash
-# Check which process is listening on ports 80 and 443
-sudo netstat -tlnp | grep -E ':(80|443)'
-```
-
-**Expected output:**
-```
-tcp  0  0 0.0.0.0:80  0.0.0.0:*  LISTEN  <PID>/nginx: master process
-```
-
-### 4. Create Nginx Configuration Directory
-
-```bash
-# Nginx configs will be stored in /etc/nginx/conf.d/
-# This directory typically exists by default
-sudo ls -la /etc/nginx/conf.d/
-```
-
-### 5. Remove Default Nginx Site (Optional)
-
-```bash
-# Remove default site to avoid conflicts
-sudo rm /etc/nginx/sites-enabled/default
-
-# Test nginx configuration
-sudo nginx -t
-
-# Reload nginx
-sudo systemctl reload nginx
-```
-
----
-
 ## Clone Repository
-
-### Create Project Directory
-
-```bash
-# Create deployment directory
-sudo mkdir -p /opt/flowbiz
-
-# Change ownership to your user
-sudo chown -R $USER:$USER /opt/flowbiz
-
-# Navigate to directory
-cd /opt/flowbiz
-```
 
 ### Option 1: Clone via Git (Recommended)
 
 ```bash
+# Navigate to home directory
+cd ~
+
 # Clone repository
 git clone https://github.com/natbkgift/flowbiz-ai-core.git
 
@@ -268,10 +174,9 @@ From your local machine:
 tar -czf flowbiz-ai-core.tar.gz flowbiz-ai-core/
 
 # Upload to VPS
-scp flowbiz-ai-core.tar.gz flowbiz@YOUR_VPS_IP:/opt/flowbiz/
+scp flowbiz-ai-core.tar.gz flowbiz@YOUR_VPS_IP:~
 
 # On VPS, extract
-cd /opt/flowbiz
 tar -xzf flowbiz-ai-core.tar.gz
 cd flowbiz-ai-core
 ```
@@ -342,59 +247,24 @@ ls -la .env
 
 ---
 
-## Deploy Application Services
+## Deploy with Docker Compose
 
-**IMPORTANT:** We deploy **only** the application services (API + Database). **NO nginx container** in production.
-
-### 1. Create Production Docker Compose Override
-
-Create a production override file if it doesn't exist:
+### 1. Build and Start Services
 
 ```bash
-cd /opt/flowbiz/flowbiz-ai-core
-nano docker-compose.prod.yml
-```
-
-Add the following content (this removes nginx and binds API to localhost only):
-
-```yaml
-version: '3.8'
-
-services:
-  api:
-    restart: always
-    ports:
-      - "127.0.0.1:8000:8000"  # Bind to localhost only
-    environment:
-      APP_ENV: production
-      APP_LOG_LEVEL: WARNING
-    command: uvicorn apps.api.main:app --host 0.0.0.0 --port 8000 --workers 4
-
-  db:
-    restart: always
-    ports:
-      - "127.0.0.1:5432:5432"  # Bind to localhost only
-```
-
-**Key Points:**
-- API binds to `127.0.0.1:8000` (accessible only from host)
-- Database binds to `127.0.0.1:5432` (accessible only from host)
-- No nginx service (system nginx will handle routing)
-
-### 2. Build and Start Services
-
-```bash
-# Build and start services with production override
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+# Build and start all services in detached mode
+docker-compose up --build -d
 ```
 
 This command will:
 - Build the API Docker image
 - Pull PostgreSQL image
 - Create necessary volumes
-- Start API and database services (NO nginx)
+- Start the API and database services (api, db)
 
-### 3. Monitor Startup
+**Note:** This deployment uses Docker only for the API and database. For production deployments with public access, you must configure system nginx separately as documented in `ADR_SYSTEM_NGINX.md`. The Docker nginx service is intentionally disabled in this configuration.
+
+### 2. Monitor Startup
 
 ```bash
 # View logs from all services
@@ -407,247 +277,29 @@ docker-compose logs -f db
 
 Press `Ctrl+C` to stop following logs.
 
-### 4. Check Service Status
+### 3. Check Service Status
 
 ```bash
 # List running containers
 docker-compose ps
 
-# Expected output (NO nginx container):
-# NAME                COMMAND                  SERVICE   STATUS          PORTS
-# flowbiz-api         "uvicorn apps.api.ma…"   api       Up 2 minutes    127.0.0.1:8000->8000/tcp
-# flowbiz-db          "docker-entrypoint.s…"   db        Up 2 minutes    127.0.0.1:5432->5432/tcp
-```
-
-**Verify NO nginx container exists:**
-```bash
-docker ps | grep nginx
-```
-**Expected:** No output (no nginx container should be running).
-
-### 5. Test API on Localhost
-
-```bash
-# Test API directly on localhost (from VPS)
-curl http://127.0.0.1:8000/healthz
-
-# Expected response:
-# {"status":"ok","service":"FlowBiz AI Core","version":"0.1.0"}
-```
-
-**Important:** At this point, the API is accessible only from the VPS itself (not publicly). System nginx will proxy public traffic to it.
-
----
-
-## Configure System Nginx
-
-Now that the application services are running on localhost, configure system nginx to proxy public traffic to them.
-
-### 1. Copy Nginx Template
-
-```bash
-# Copy the client template for system nginx
-sudo cp /opt/flowbiz/flowbiz-ai-core/nginx/templates/client_system_nginx.conf.template \
-     /etc/nginx/conf.d/flowbiz.cloud.conf
-
-# Edit the file
-sudo nano /etc/nginx/conf.d/flowbiz.cloud.conf
-```
-
-### 2. Update Placeholders
-
-Replace the following placeholders in the file:
-- `{{DOMAIN}}` → `flowbiz.cloud` (your actual domain)
-- `{{PORT}}` → `8000` (the localhost port where API is running)
-
-You can use sed to automate this:
-
-```bash
-sudo sed -i 's/{{DOMAIN}}/flowbiz.cloud/g' /etc/nginx/conf.d/flowbiz.cloud.conf
-sudo sed -i 's/{{PORT}}/8000/g' /etc/nginx/conf.d/flowbiz.cloud.conf
-```
-
-### 3. Verify Nginx Configuration
-
-```bash
-# Test nginx configuration syntax
-sudo nginx -t
-
 # Expected output:
-# nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-# nginx: configuration file /etc/nginx/nginx.conf test is successful
+# NAME                COMMAND                  SERVICE   STATUS          PORTS
+# flowbiz-api         "uvicorn apps.api.ma…"   api       Up 2 minutes    8000/tcp
+# flowbiz-db          "docker-entrypoint.s…"   db        Up 2 minutes    5432/tcp
 ```
 
-### 4. Reload Nginx
-
-```bash
-# Reload nginx to apply the new configuration
-sudo systemctl reload nginx
-
-# Check status
-sudo systemctl status nginx
-```
-
-**Important:** At this stage, nginx will try to use SSL certificates that don't exist yet. The HTTPS server block will fail, but HTTP should work.
-
-### 5. Test HTTP Access (Temporary)
-
-```bash
-# Test from VPS localhost
-curl http://localhost/healthz
-
-# Test from external client (if HTTP is working)
-curl http://YOUR_VPS_IP/healthz
-```
-
-**Next Step:** Obtain SSL certificates to enable HTTPS.
-
----
-
-## SSL/TLS Setup
-
-**CRITICAL:** SSL certificates are managed by Certbot on the host system, NOT in Docker containers.
-
-### 1. Install Certbot
-
-```bash
-# Install certbot with nginx plugin
-sudo apt install -y certbot python3-certbot-nginx
-```
-
-### 2. Obtain SSL Certificate
-
-Before running certbot, temporarily comment out the HTTPS server block in the nginx config since we don't have certificates yet:
-
-```bash
-# Edit the nginx config
-sudo nano /etc/nginx/conf.d/flowbiz.cloud.conf
-```
-
-Comment out the entire HTTPS server block (lines starting with `server {` for port 443) by adding `#` at the beginning of each line, OR remove it temporarily.
-
-**OR** use certbot with standalone mode (recommended for first-time setup):
-
-```bash
-# Stop nginx temporarily
-sudo systemctl stop nginx
-
-# Obtain certificate using standalone mode
-sudo certbot certonly --standalone -d flowbiz.cloud -d www.flowbiz.cloud
-
-# Start nginx again
-sudo systemctl start nginx
-```
-
-Follow the prompts:
-- Enter your email address
-- Agree to Terms of Service
-- Choose whether to share your email
-
-**Certificate Location:**
-```
-/etc/letsencrypt/live/flowbiz.cloud/fullchain.pem
-/etc/letsencrypt/live/flowbiz.cloud/privkey.pem
-```
-
-### 3. Uncomment HTTPS Server Block
-
-Now that certificates exist, uncomment or re-add the HTTPS server block in the nginx config:
-
-```bash
-sudo nano /etc/nginx/conf.d/flowbiz.cloud.conf
-```
-
-Ensure the HTTPS server block (port 443) is present and points to the correct certificate paths.
-
-### 4. Test and Reload Nginx
-
-```bash
-# Test nginx configuration
-sudo nginx -t
-
-# Reload nginx
-sudo systemctl reload nginx
-```
-
-### 5. Verify HTTPS
-
-```bash
-# Test from VPS
-curl https://localhost/healthz -k
-
-# Test from external client
-curl https://flowbiz.cloud/healthz
-
-# Check security headers
-curl -I https://flowbiz.cloud/healthz
-```
-
-**Expected Headers:**
-- `X-Content-Type-Options: nosniff`
-- `X-Frame-Options: DENY`
-- `Referrer-Policy: strict-origin-when-cross-origin`
-- `Permissions-Policy: geolocation=(), microphone=(), camera=()`
-- `Strict-Transport-Security: max-age=31536000; includeSubDomains`
-
-### 6. Set Up Certificate Auto-Renewal
-
-```bash
-# Test renewal process (dry run)
-sudo certbot renew --dry-run
-
-# Check certbot timer status (auto-renewal runs twice daily)
-sudo systemctl status certbot.timer
-
-# Enable timer if not already enabled
-sudo systemctl enable certbot.timer
-sudo systemctl start certbot.timer
-```
-
-**Important:** Certbot automatically renews certificates. After renewal, nginx needs to reload:
-
-```bash
-# Test manual renewal
-sudo certbot renew
-
-# Reload nginx after certificate renewal
-sudo systemctl reload nginx
-```
-
-Consider adding a renewal hook to auto-reload nginx:
-
-```bash
-# Create renewal hook
-sudo nano /etc/letsencrypt/renewal-hooks/post/reload-nginx.sh
-```
-
-Add the following content:
-
-```bash
-#!/bin/bash
-systemctl reload nginx
-```
-
-Make it executable:
-
-```bash
-sudo chmod +x /etc/letsencrypt/renewal-hooks/post/reload-nginx.sh
-```
+All services should show `Up` status.
 
 ---
 
 ## Verify Deployment
 
-After system nginx is configured with SSL, verify everything works end-to-end.
-
-### 1. Test Health Endpoint
+### 1. Test Health Endpoint (Direct API Access)
 
 ```bash
-# From VPS
-curl https://localhost/healthz -k
-
-# From external client
-curl https://flowbiz.cloud/healthz
+# Test API directly on port 8000
+curl http://localhost:8000/healthz
 
 # Expected response:
 # {"status":"ok","service":"FlowBiz AI Core","version":"0.1.0"}
@@ -656,68 +308,209 @@ curl https://flowbiz.cloud/healthz
 ### 2. Test Metadata Endpoint
 
 ```bash
-curl https://flowbiz.cloud/v1/meta
+curl http://localhost:8000/v1/meta
 
 # Expected response:
-# {"service":"FlowBiz AI Core","version":"0.1.0","git_sha":"abc1234","environment":"production"}
+# {"service":"FlowBiz AI Core","version":"0.1.0","git_sha":"abc1234"}
 ```
 
-### 3. Test API Documentation
+### 3. Test Root Endpoint
 
 ```bash
-# Access Swagger UI in browser
-open https://flowbiz.cloud/docs
+curl http://localhost:8000/
+
+# Expected response:
+# {"message":"FlowBiz AI Core API"}
 ```
 
-### 4. Verify HTTP → HTTPS Redirect
+### 4. Production Access via System Nginx
+
+**Note:** For production deployments with public access, you must configure system nginx as a reverse proxy. This setup is documented in:
+- `ADR_SYSTEM_NGINX.md` - Architecture decision and rationale
+- `CODEX_SYSTEM_NGINX_FIRST.md` - Operational guide
+- `AGENT_NEW_PROJECT_CHECKLIST.md` - Deployment checklist
+
+System nginx configuration should:
+- Proxy requests from port 80/443 to the API service on localhost:8000
+- Handle TLS termination with Let's Encrypt certificates
+- Add security headers (X-Content-Type-Options, X-Frame-Options, etc.)
+- Implement Content Security Policy (CSP) for different paths
+
+Example test after system nginx is configured:
 
 ```bash
-curl -I http://flowbiz.cloud/healthz
+# Test through system nginx (production)
+curl http://localhost/healthz
 
-# Expected: 301 Moved Permanently
-# Location: https://flowbiz.cloud/healthz
+# Or from external client
+curl https://api.yourdomain.com/healthz
 ```
 
-### 5. Verify Security Headers
+### 5. Check Request ID Header
 
 ```bash
-curl -I https://flowbiz.cloud/healthz
+curl -i http://localhost:8000/healthz | grep X-Request-ID
 
-# Expected headers:
-# X-Content-Type-Options: nosniff
-# X-Frame-Options: DENY
-# Referrer-Policy: strict-origin-when-cross-origin
-# Permissions-Policy: geolocation=(), microphone=(), camera=()
-# Strict-Transport-Security: max-age=31536000; includeSubDomains
+# Should see: X-Request-ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
-### 6. Verify Architecture Compliance
+### Development vs Production
 
-Run these checks to confirm system nginx architecture:
+- **Development:** Docker Compose runs API and database only. Access API directly on port 8000.
+- **Production:** System nginx proxies public traffic (ports 80/443) to API on localhost:8000. Docker nginx is intentionally disabled to comply with infrastructure architecture (see `ADR_SYSTEM_NGINX.md`).
+
+---
+
+## SSL/TLS Setup (Production Only)
+
+For production deployments with public access, enable HTTPS using system nginx and Let's Encrypt.
+
+**Note:** This section applies only to production deployments where system nginx is configured as the reverse proxy. For development, the API is accessed directly on port 8000 without TLS.
+
+### 1. Install Certbot
 
 ```bash
-# Verify no nginx containers are running
-docker ps | grep nginx
-# Expected: No output
-
-# Verify system nginx owns ports 80/443
-sudo netstat -tlnp | grep -E ':(80|443)'
-# Expected: nginx process, NOT docker-proxy
-
-# Verify API is accessible on localhost only
-curl http://127.0.0.1:8000/healthz
-# Expected: {"status":"ok",...}
-
-# Verify API is NOT accessible externally on port 8000
-curl http://YOUR_VPS_IP:8000/healthz
-# Expected: Connection refused (this is correct!)
+sudo apt install -y certbot python3-certbot-nginx
 ```
+
+### 2. Configure System Nginx
+
+Create a system nginx configuration file for your domain:
+
+```bash
+sudo nano /etc/nginx/conf.d/api.yourdomain.com.conf
+```
+
+Add the following configuration (HTTP only, for initial setup):
+
+```nginx
+server {
+  listen 80;
+  server_name api.yourdomain.com;
+
+  location / {
+    proxy_pass http://127.0.0.1:8000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+}
+```
+
+### 3. Test and Reload Nginx
+
+```bash
+# Test configuration
+sudo nginx -t
+
+# Reload nginx
+sudo systemctl reload nginx
+```
+
+### 4. Obtain SSL Certificate
+
+Use certbot with the nginx plugin for zero-downtime certificate issuance:
+
+```bash
+sudo certbot --nginx -d api.yourdomain.com
+
+# Follow the prompts to complete verification
+```
+
+Certbot will automatically:
+- Obtain the certificate from Let's Encrypt
+- Update your nginx configuration to use HTTPS
+- Add an HTTP → HTTPS redirect
+- Configure SSL settings
+
+### 5. Verify HTTPS
+
+```bash
+curl https://api.yourdomain.com/healthz
+```
+
+### 6. Certificate Auto-Renewal
+
+Let's Encrypt certificates expire after 90 days. Certbot sets up automatic renewal:
+
+```bash
+# Test renewal (dry run)
+sudo certbot renew --dry-run
+
+# Check renewal timer status
+sudo systemctl status certbot.timer
+
+# View renewal configuration
+sudo cat /etc/cron.d/certbot
+```
+
+The renewal process runs automatically. When certificates are renewed, nginx will be reloaded automatically.
+
+### Advanced: Manual System Nginx Configuration
+
+If you prefer full control over the nginx configuration, you can manually create the HTTPS configuration:
+
+```nginx
+map $http_upgrade $connection_upgrade {
+  default upgrade;
+  ''      close;
+}
+
+server {
+  listen 80;
+  server_name api.yourdomain.com;
+  return 301 https://$server_name$request_uri;
+}
+
+server {
+  listen 443 ssl http2;
+  server_name api.yourdomain.com;
+
+  server_tokens off;
+
+  ssl_certificate /etc/letsencrypt/live/api.yourdomain.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/api.yourdomain.com/privkey.pem;
+
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers HIGH:!aNULL:!MD5;
+  ssl_prefer_server_ciphers on;
+
+  # Security headers
+  add_header X-Content-Type-Options "nosniff" always;
+  add_header X-Frame-Options "DENY" always;
+  add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+  add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+
+  # Content Security Policy (adjust as needed)
+  add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';" always;
+
+  location / {
+    proxy_pass http://127.0.0.1:8000;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+  }
+}
+```
+
+For more details on system nginx configuration, see:
+- `ADR_SYSTEM_NGINX.md` - Architecture decision and rationale
+- `CODEX_SYSTEM_NGINX_FIRST.md` - Operational guide
+- `nginx/templates/client_system_nginx.conf.template` - Template configuration
 
 ---
 
 ## Maintenance
 
-### View Application Logs
+### View Logs
 
 ```bash
 # All services
@@ -730,39 +523,20 @@ docker-compose logs -f --timestamps api
 docker-compose logs --tail=100 api
 ```
 
-### View System Nginx Logs
-
-```bash
-# Nginx access logs
-sudo tail -f /var/log/nginx/access.log
-
-# Nginx error logs
-sudo tail -f /var/log/nginx/error.log
-
-# View logs for specific domain
-sudo grep "flowbiz.cloud" /var/log/nginx/access.log | tail -50
-```
-
 ### Restart Services
 
 ```bash
-# Restart application services
+# Restart all services
 docker-compose restart
 
 # Restart specific service
 docker-compose restart api
-
-# Reload system nginx (for config changes)
-sudo systemctl reload nginx
-
-# Restart system nginx (if necessary)
-sudo systemctl restart nginx
 ```
 
 ### Stop Services
 
 ```bash
-# Stop application services (containers remain)
+# Stop all services (containers remain)
 docker-compose stop
 
 # Stop and remove containers
@@ -770,43 +544,22 @@ docker-compose down
 
 # Stop and remove containers + volumes (WARNING: deletes database data)
 docker-compose down -v
-
-# System nginx should NOT be stopped (it handles all projects)
-# To stop nginx (affects all projects):
-# sudo systemctl stop nginx
 ```
 
 ### Update Application
 
 ```bash
 # Navigate to project directory
-cd /opt/flowbiz/flowbiz-ai-core
+cd ~/flowbiz-ai-core
 
 # Pull latest changes
 git pull origin main
 
-# Rebuild and restart application services
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+# Rebuild and restart
+docker-compose up --build -d
 
 # Verify
-curl http://127.0.0.1:8000/healthz
-curl https://flowbiz.cloud/healthz
-```
-
-### Update System Nginx Configuration
-
-```bash
-# Edit nginx config
-sudo nano /etc/nginx/conf.d/flowbiz.cloud.conf
-
-# Test configuration
-sudo nginx -t
-
-# If test passes, reload nginx
-sudo systemctl reload nginx
-
-# Verify
-curl https://flowbiz.cloud/healthz
+curl http://localhost/healthz
 ```
 
 ### Database Backup
@@ -822,14 +575,7 @@ docker-compose exec -T db psql -U flowbiz flowbiz < backup_20240115_120000.sql
 ### View Container Resource Usage
 
 ```bash
-# Monitor all containers
 docker stats
-
-# Check disk usage
-df -h
-
-# Check Docker disk usage
-docker system df
 ```
 
 ### Clean Up Unused Resources
@@ -842,151 +588,25 @@ docker system prune -a
 docker volume prune
 ```
 
-### SSL Certificate Renewal
-
-```bash
-# Test certificate renewal (dry run)
-sudo certbot renew --dry-run
-
-# Force renewal if needed (not normally required)
-sudo certbot renew --force-renewal
-
-# After renewal, reload nginx
-sudo systemctl reload nginx
-
-# Check certificate expiration
-sudo certbot certificates
-```
-
 ---
-
 
 ## Troubleshooting
 
-### Common Issues
+### Service Won't Start
 
-#### System Nginx Not Running
-
-**Symptoms:**
-- Cannot access website on ports 80/443
-- `curl http://YOUR_VPS_IP` fails
-
-**Check nginx status:**
+**Check logs:**
 ```bash
-sudo systemctl status nginx
-```
-
-**Fix:**
-```bash
-# Start nginx
-sudo systemctl start nginx
-
-# Enable to start on boot
-sudo systemctl enable nginx
-
-# Check for config errors
-sudo nginx -t
-
-# View error logs
-sudo tail -50 /var/log/nginx/error.log
-```
-
-#### Nginx Returns 502 Bad Gateway
-
-**Symptoms:**
-- Website loads but returns 502 error
-- API not responding
-
-**Possible Causes:**
-- API container not running
-- API not accessible on localhost:8000
-- Nginx config has wrong upstream
-
-**Check API service:**
-```bash
-# Check if API container is running
-docker-compose ps api
-
-# Test API directly on localhost
-curl http://127.0.0.1:8000/healthz
-
-# Check API logs
 docker-compose logs api
 ```
 
-**Fix:**
-```bash
-# Restart API service
-docker-compose restart api
+**Common issues:**
+- Port already in use: Change port in `docker-compose.yml`
+- Environment variable errors: Check `.env` file syntax
+- Database connection: Verify `APP_DATABASE_URL` matches PostgreSQL settings
 
-# Verify nginx upstream configuration
-sudo cat /etc/nginx/conf.d/flowbiz.cloud.conf | grep proxy_pass
-# Should show: proxy_pass http://127.0.0.1:8000;
-```
+### Database Connection Errors
 
-#### SSL Certificate Issues
-
-**Symptoms:**
-- HTTPS not working
-- Browser shows "Your connection is not private"
-- Certificate expired warnings
-
-**Check certificates:**
-```bash
-# List all certificates
-sudo certbot certificates
-
-# Check certificate expiration
-sudo certbot certificates | grep "Expiry Date"
-
-# Check nginx SSL configuration
-sudo cat /etc/nginx/conf.d/flowbiz.cloud.conf | grep ssl_certificate
-```
-
-**Fix:**
-```bash
-# Renew certificates
-sudo certbot renew
-
-# Reload nginx
-sudo systemctl reload nginx
-
-# Check certbot timer
-sudo systemctl status certbot.timer
-```
-
-#### Cannot Access API on Port 8000 Externally
-
-**Expected Behavior:** This is CORRECT! The API should NOT be accessible externally on port 8000.
-
-**Verify:**
-```bash
-# This should work (from VPS)
-curl http://127.0.0.1:8000/healthz
-
-# This should fail (from anywhere)
-curl http://YOUR_VPS_IP:8000/healthz
-# Expected: Connection refused
-
-# Access should only work through nginx on ports 80/443
-curl https://flowbiz.cloud/healthz
-```
-
-If port 8000 IS accessible externally, check docker-compose port binding:
-```bash
-# Should bind to 127.0.0.1, NOT 0.0.0.0
-docker-compose config | grep -A 2 "ports:"
-# Correct: - "127.0.0.1:8000:8000"
-# Wrong:   - "8000:8000" or - "0.0.0.0:8000:8000"
-```
-
-#### Database Connection Errors
-
-**Symptoms:**
-- API logs show "connection refused" or "could not connect to database"
-- 500 errors when accessing API endpoints that need database
-
-**Check database:**
+**Verify database is healthy:**
 ```bash
 docker-compose ps db
 
@@ -998,113 +618,74 @@ docker-compose ps db
 docker-compose exec db psql -U flowbiz flowbiz
 ```
 
-**Check database connection string:**
-```bash
-# In .env file
-cat .env | grep DATABASE_URL
-# Should be: postgresql://flowbiz:PASSWORD@db:5432/flowbiz
-```
-
-**Reset database (if corrupted):**
+**Reset database:**
 ```bash
 docker-compose down
 docker volume rm flowbiz-ai-core_postgres-data
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker-compose up -d
 ```
 
-#### Nginx Configuration Syntax Errors
+### Nginx Returns 502 Bad Gateway
 
-**Symptoms:**
-- `sudo nginx -t` fails
-- Nginx won't reload or restart
-- Error logs show configuration errors
+**This error occurs when system nginx cannot connect to the API service.**
 
-**Check configuration:**
+**Check API service:**
 ```bash
-# Test nginx config
+docker-compose logs api
+
+# Verify API is running
+docker-compose ps api
+```
+
+**Test API directly:**
+```bash
+# Test from the host
+curl http://localhost:8000/healthz
+
+# Or from inside the container
+docker-compose exec api curl http://localhost:8000/healthz
+```
+
+**Check system nginx configuration:**
+```bash
+# Test nginx configuration
 sudo nginx -t
 
-# View error details
-sudo nginx -t 2>&1 | less
+# Check nginx status
+sudo systemctl status nginx
 
-# Check specific config file
-sudo cat /etc/nginx/conf.d/flowbiz.cloud.conf
+# View nginx error logs
+sudo tail -f /var/log/nginx/error.log
 ```
 
-**Fix:**
+**Verify API is listening on correct port:**
 ```bash
-# Edit configuration
-sudo nano /etc/nginx/conf.d/flowbiz.cloud.conf
-
-# Test again
-sudo nginx -t
-
-# Reload only if test passes
-sudo systemctl reload nginx
+# Check if API is listening on port 8000
+sudo netstat -tlnp | grep :8000
 ```
 
-#### Port Conflicts
-
-**Symptoms:**
-- `systemctl start nginx` fails with "address already in use"
-- Docker containers fail to start due to port binding errors
-
-**Check what's using ports:**
-```bash
-# Check ports 80 and 443
-sudo netstat -tlnp | grep -E ':(80|443)'
-
-# Check port 8000
-sudo netstat -tlnp | grep ':8000'
-```
-
-**Fix:**
-```bash
-# If another process owns ports 80/443 (not nginx):
-sudo systemctl stop <other-service>
-sudo systemctl start nginx
-
-# If Docker containers conflict on port 8000:
-# Ensure only one service uses each localhost port
-docker ps -a | grep 8000
-```
-
-#### Permission Denied Errors
-
-**Symptoms:**
-- Cannot modify files in /opt/flowbiz/
-- Docker commands fail
-- Cannot access logs
+### Permission Denied Errors
 
 **Fix file permissions:**
 ```bash
-sudo chown -R $USER:$USER /opt/flowbiz/flowbiz-ai-core
+sudo chown -R $USER:$USER ~/flowbiz-ai-core
 ```
 
-**Fix Docker permissions:**
+**Fix Docker socket permissions:**
 ```bash
-# Add user to docker group
+# The correct method is to add the user to the docker group.
 sudo usermod -aG docker $USER
-
-# Apply changes (log out and back in, or:)
+# Then apply the new group membership (log out and back in, or use newgrp).
 newgrp docker
 ```
 
-#### High Memory Usage
+### High Memory Usage
 
 **Check resource usage:**
 ```bash
 docker stats
 
-# Check disk usage
-df -h
-
-# Check Docker disk usage
-docker system df
-```
-
-**Limit container memory in docker-compose.prod.yml:**
-```yaml
+# Limit container memory in docker-compose.yml:
 services:
   api:
     deploy:
@@ -1113,7 +694,7 @@ services:
           memory: 512M
 ```
 
-#### View Container Shell
+### View Container Shell
 
 **Access API container:**
 ```bash
@@ -1125,23 +706,32 @@ docker-compose exec api bash
 docker-compose exec db bash
 ```
 
-### Reset Deployment
+### Network Issues
+
+**Inspect Docker network:**
+```bash
+docker network ls
+docker network inspect flowbiz-ai-core_default
+```
+
+**Test inter-service connectivity:**
+```bash
+docker-compose exec api ping db
+```
+
+### Reset Entire Deployment
 
 **WARNING: This deletes all data**
 
 ```bash
-# Stop and remove containers + volumes
+# Stop and remove everything
 docker-compose down -v
 
 # Remove images
-docker rmi $(docker images -q "flowbiz-ai-core*")
+docker rmi flowbiz-ai-core:dev
 
 # Start fresh
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
-
-# Verify
-curl http://127.0.0.1:8000/healthz
-curl https://flowbiz.cloud/healthz
+docker-compose up --build -d
 ```
 
 ---
@@ -1150,39 +740,57 @@ curl https://flowbiz.cloud/healthz
 
 Before going live, ensure:
 
-- [ ] **System nginx installed and running** (`sudo systemctl status nginx`)
-- [ ] **No nginx containers in Docker** (`docker ps | grep nginx` returns nothing)
-- [ ] **Services bind to localhost only** (check docker-compose.prod.yml ports)
-- [ ] **Nginx config in /etc/nginx/conf.d/** (flowbiz.cloud.conf exists and tested)
-- [ ] **SSL certificates installed** (`sudo certbot certificates`)
-- [ ] **Certificate auto-renewal enabled** (`sudo systemctl status certbot.timer`)
 - [ ] Strong database password set in `.env`
-- [ ] `.env` file has restrictive permissions (`chmod 600 .env`)
-- [ ] Firewall configured (`sudo ufw status` shows 80/443 open)
-- [ ] Domain DNS configured correctly (A record points to VPS IP)
+- [ ] `.env` file has restrictive permissions (600)
+- [ ] Firewall configured (ufw enabled, ports 80/443 open)
+- [ ] SSL/TLS certificate installed and configured (system nginx)
+- [ ] System nginx configured as reverse proxy (see `ADR_SYSTEM_NGINX.md`)
+- [ ] Domain DNS configured correctly
 - [ ] CORS origins updated for production domain
 - [ ] `APP_ENV` set to `production`
 - [ ] Log level appropriate (`INFO` or `WARNING`)
 - [ ] Database backups scheduled
 - [ ] Monitoring and alerting configured
-- [ ] System updates applied (`sudo apt update && sudo apt upgrade`)
-- [ ] Health check endpoints accessible (`curl https://flowbiz.cloud/healthz`)
-- [ ] Security headers present (`curl -I https://flowbiz.cloud/healthz`)
-- [ ] HTTP redirects to HTTPS (`curl -I http://flowbiz.cloud`)
+- [ ] System updates applied
+- [ ] Docker images use specific version tags (not `latest`)
+- [ ] Health check endpoints accessible
+- [ ] Request IDs appearing in logs
 
 ---
 
-## Related Documentation
+## Additional Resources
 
-- **[VPS_STATUS.md](VPS_STATUS.md)** — Current VPS state and operational conventions
-- **[ADR_SYSTEM_NGINX.md](ADR_SYSTEM_NGINX.md)** — Architecture decision for system nginx (MANDATORY READING)
-- **[CODEX_AGENT_BEHAVIOR_LOCK.md](CODEX_AGENT_BEHAVIOR_LOCK.md)** — Agent behavior rules and safety locks
-- **[AGENT_NEW_PROJECT_CHECKLIST.md](AGENT_NEW_PROJECT_CHECKLIST.md)** — Pre-deployment checklist for new projects
-- **[AGENT_ONBOARDING.md](AGENT_ONBOARDING.md)** — Agent onboarding guide
-- **[CLIENT_PROJECT_TEMPLATE.md](CLIENT_PROJECT_TEMPLATE.md)** — Template for client projects
+- **Docker Documentation**: https://docs.docker.com/
+- **Docker Compose Documentation**: https://docs.docker.com/compose/
+- **Nginx Documentation**: https://nginx.org/en/docs/
+- **Let's Encrypt**: https://letsencrypt.org/
+- **PostgreSQL Documentation**: https://www.postgresql.org/docs/
 
 ---
 
-**Document Version:** 2.0 (Updated for System Nginx Architecture)  
-**Last Major Update:** 2025-12-26  
-**Status:** Active (System Nginx Required)
+## Support
+
+For issues specific to FlowBiz AI Core:
+- Check repository issues: https://github.com/natbkgift/flowbiz-ai-core/issues
+- Review architecture documentation: `docs/ARCHITECTURE.md`
+- Review PR log: `docs/PR_LOG.md`
+
+For infrastructure issues:
+- Docker community: https://forums.docker.com/
+- DigitalOcean community: https://www.digitalocean.com/community/
+- Stack Overflow: https://stackoverflow.com/
+
+---
+
+## Next Steps
+
+After successful deployment:
+
+1. **Set up monitoring**: Configure log aggregation and metrics collection
+2. **Implement backups**: Automate database and configuration backups
+3. **Configure alerts**: Set up health check monitoring and alerting
+4. **Scale horizontally**: Add load balancer and multiple API instances
+5. **Add authentication**: Implement API authentication and authorization
+6. **Enable rate limiting**: Protect against abuse and DoS attacks
+
+Refer to `docs/ARCHITECTURE.md` for system architecture details and future enhancement plans.
