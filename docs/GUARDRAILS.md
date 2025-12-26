@@ -91,6 +91,23 @@ These boundaries describe what each layer may and may not do. Each boundary incl
   - **Error handling is standardized at the boundary.** Core returns structured errors; API translates to HTTP responses.
   - **Why:** Maintains a one-directional dependency graph and predictable error semantics.
 
+## Core Boundaries (SCOPE)
+
+FlowBiz AI Core has **strict scope boundaries** to keep the repository lean, stable, and transport-agnostic. These boundaries are documented in detail in [`docs/SCOPE.md`](./SCOPE.md).
+
+**Key principle:** Core is for **reusable contracts, runtime primitives, and observability hooks**. It must not contain:
+- UI/frontend code (Next.js, React, admin panels)
+- Billing/payment logic (Stripe, subscriptions, invoicing)
+- Platform-specific integrations (TikTok adapters, social media SDKs)
+- Client-specific business logic
+- Platform infrastructure (WAF, CDN, multi-tenant quota enforcement)
+
+**PR requirement:** All PRs must respect scope boundaries. If a change touches UI, billing, platform integrations, or client-specific logic, it does not belong in core and should be rejected or moved to the appropriate repository (platform or client).
+
+**If unsure:** Consult [`docs/SCOPE.md`](./SCOPE.md) or open an issue to discuss placement before submitting a PR.
+
+---
+
 ## Recommended (Not Enforced) — Strongly Encouraged
 These practices improve maintainability but can be waived with reviewer justification.
 
