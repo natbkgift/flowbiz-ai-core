@@ -2,6 +2,13 @@
 
 This document defines the **single source of truth** for what `flowbiz-ai-core` does and does not do. It establishes clear boundaries to prevent platform-specific code, UI components, billing logic, and client integrations from leaking into the core repository.
 
+## TL;DR (30 seconds)
+- Core = reusable contracts + runtime primitives + observability hooks
+- Forbidden: UI, billing/payments, platform adapters, client-specific logic
+- Folder boundaries define allowed/forbidden; follow intent over names
+- Dependency direction is one-way: platform/clients → core
+- Enforcement: This scope is enforced socially via [GUARDRAILS.md](./GUARDRAILS.md) (non-blocking)
+
 ---
 
 ## Purpose
