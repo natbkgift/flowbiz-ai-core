@@ -1,6 +1,6 @@
 # VPS Deployment Guide
 
-This guide provides step-by-step instructions for deploying FlowBiz AI Core to a Virtual Private Server (VPS) using Docker Compose and Nginx.
+This guide provides step-by-step instructions for deploying FlowBiz AI Core to a Virtual Private Server (VPS) using Docker Compose for the application services and system Nginx for the reverse proxy.
 
 ---
 
