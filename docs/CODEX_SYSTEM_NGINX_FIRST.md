@@ -66,3 +66,11 @@ For multi-project VPS, **system nginx is always the default and safest choice**.
 - All projects reachable via HTTPS
 - Health checks return 200 OK
 - Architecture is documented and reproducible
+
+---
+
+## Related Documentation
+
+- **[ADR_SYSTEM_NGINX.md](./ADR_SYSTEM_NGINX.md)** — Architecture decision record
+- **[AGENT_NEW_PROJECT_CHECKLIST.md](./AGENT_NEW_PROJECT_CHECKLIST.md)** — Pre-deployment checklist
+- **[CODEX_AGENT_BEHAVIOR_LOCK.md](./CODEX_AGENT_BEHAVIOR_LOCK.md)** — Agent behavior rules and safety locks
