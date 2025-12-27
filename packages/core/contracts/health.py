@@ -8,8 +8,8 @@ from pydantic import BaseModel, ConfigDict
 class HealthResponse(BaseModel):
     """Minimal health response schema."""
 
-    model_config = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True, extra="forbid")
 
-    status: Literal["ok"]
+    status: Literal["ok", "degraded", "unhealthy"]
     service: str
     version: str

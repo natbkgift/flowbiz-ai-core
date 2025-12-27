@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict
 class RuntimeMeta(BaseModel):
     """Descriptive runtime metadata."""
 
-    model_config = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True, extra="forbid")
 
     service: str
     environment: str
