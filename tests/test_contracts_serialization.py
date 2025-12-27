@@ -35,7 +35,7 @@ from packages.core.contracts.meta import RuntimeMeta
                 "job_type": "ingest",
                 "payload": {"count": 2, "items": ["a", "b"]},
                 "trace_id": "trace-1",
-                "created_at": "2024-01-01T00:00:00Z",
+                "created_at": datetime(2024, 1, 1, tzinfo=timezone.utc),
             },
             "job_type",
             "transform",
