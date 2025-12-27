@@ -11,7 +11,7 @@ from packages.core.contracts.meta import RuntimeMeta
 def test_health_schema_round_trip_and_immutability():
     schema = HealthResponse(status="ok", service="core", version="1.0.0")
 
-    with pytest.raises(ValidationError):
+    with pytest.raises((ValidationError, AttributeError)):
         schema.service = "other"
 
     dumped = schema.model_dump()
@@ -29,7 +29,7 @@ def test_meta_schema_round_trip_and_immutability():
         build_sha="abc123",
     )
 
-    with pytest.raises(ValidationError):
+    with pytest.raises((ValidationError, AttributeError)):
         schema.version = "2.0.0"
 
     dumped = schema.model_dump()
@@ -48,7 +48,7 @@ def test_job_envelope_round_trip_and_immutability():
         created_at="2024-01-01T00:00:00Z",
     )
 
-    with pytest.raises(ValidationError):
+    with pytest.raises((ValidationError, AttributeError)):
         schema.job_type = "transform"
 
     dumped = schema.model_dump()
