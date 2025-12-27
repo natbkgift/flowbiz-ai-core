@@ -10,6 +10,6 @@ class HealthResponse(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    status: Literal["ok", "degraded", "unhealthy"]
+    status: Literal["ok"]
     service: str
     version: str
