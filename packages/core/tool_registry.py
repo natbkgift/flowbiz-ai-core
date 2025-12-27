@@ -28,6 +28,11 @@ class ToolRegistryProtocol(Protocol):
 
     This protocol establishes the contract for tool registry implementations.
     All implementations must provide these methods with the specified behavior.
+
+    This module provides both Protocol (duck typing) and ABC (inheritance) patterns.
+    Use Protocol for maximum flexibility and duck typing support. Use ABC when
+    you need inheritance-based patterns or are working with frameworks that
+    expect inheritance.
     """
 
     def register(self, spec: ToolSpec) -> ToolRegistration:
@@ -110,6 +115,16 @@ class ToolRegistryABC(ABC):
 
     This ABC provides the same interface as ToolRegistryProtocol but can be
     used with inheritance-based patterns if preferred over duck typing.
+
+    Prefer ABC over Protocol when:
+    - You need shared implementation methods in the base class
+    - You're working with frameworks that expect inheritance (e.g., dependency injection)
+    - You want explicit inheritance relationships for documentation or tooling
+
+    Prefer Protocol when:
+    - You want maximum flexibility and duck typing support
+    - You're implementing adapters for existing classes
+    - You want to avoid tight coupling through inheritance
     """
 
     @abstractmethod
