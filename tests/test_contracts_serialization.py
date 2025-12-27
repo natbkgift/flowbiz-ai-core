@@ -36,7 +36,7 @@ from packages.core.contracts.meta import RuntimeMeta
                 "job_type": "ingest",
                 "payload": {"count": 2, "items": ["a", "b"]},
                 "trace_id": "trace-1",
-                "created_at": datetime(2024, 1, 1, tzinfo=timezone.utc),
+                "created_at": "2024-01-01T00:00:00Z",
             },
             "job_type",
             "transform",
@@ -52,13 +52,37 @@ def test_schema_round_trip_and_immutability(
     """Tests schema immutability and serialization round-trip."""
     schema = schema_class(**instance_data)
 
-    with pytest.raises(ValidationError):
+    with pytest.raises((ValidationError, AttributeError)):
         setattr(schema, update_field, update_value)
 
     dumped = schema.model_dump()
     loaded = schema_class.model_validate(dumped)
     assert loaded == schema
+    assert json.loads(json.dumps(dumped)) == dumped
 
+    loaded = RuntimeMeta.model_validate(dumped)
+    assert loaded == schema
+
+
+def test_job_envelope_round_trip_and_immutability():
+    schema = JobEnvelope(
+        job_id="job-1",
+        job_type="ingest",
+        payload={"count": 2, "items": ["a", "b"]},
+        trace_id="trace-1",
+        created_at="2024-01-01T00:00:00Z",
+    )
+
+    with pytest.raises((ValidationError, AttributeError)):
+        schema.job_type = "transform"
+
+    dumped = schema.model_dump()
+    assert json.loads(json.dumps(dumped)) == dumped
+
+    loaded = JobEnvelope.model_validate(dumped)
+    assert loaded == schema
+=======
     json_dumped = schema.model_dump_json()
     json_loaded = schema_class.model_validate_json(json_dumped)
     assert json_loaded == schema
+>>>>>>> origin/codex/create-schema-only-contract-package

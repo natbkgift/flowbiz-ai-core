@@ -15,4 +15,4 @@ class JobEnvelope(BaseModel):
     job_type: str
     payload: dict[str, Any]
     trace_id: str | None = None
-    created_at: datetime | None = None
+    created_at: str | None = None
