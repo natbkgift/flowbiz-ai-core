@@ -207,6 +207,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-025: Tool Registry v2 (Skeleton, In-Memory, Contracts-First)
+
+**Goal:** Create Tool Registry v2 as a minimal, deterministic, schema-first module for managing tool specifications and their lifecycle.
+
+**Key Changes:**
+- Added core contracts (`packages/core/contracts/tool_registry.py`): ToolSpec, ToolRegistration, ToolRegistrySnapshot
+- Implemented ToolRegistryProtocol and ToolRegistryABC interfaces
+- Implemented InMemoryToolRegistry with deterministic, sorted behavior
+- Added comprehensive documentation (`docs/TOOL_REGISTRY.md`) with ADR on in-memory first approach
+- Added 35 tests covering contracts, registration logic, enable/disable, and serialization
+- All 182 tests pass with no regressions
+
+**Status:** ✅ Ready for Review
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
