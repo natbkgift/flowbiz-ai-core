@@ -98,6 +98,24 @@ registration = registry.register(spec)
 
 **Rationale:** The last rule prevents accidental overwrites when the developer forgets to bump the version. If you want to update a tool's spec, you must update its version.
 
+**Important edge case - Unversioned tools (version=None):**
+When a tool is registered without a version (version=None), it cannot be updated with a different specification unless you first register it with an explicit version. This is because `None == None`, so both the existing and new specs are considered to have the "same version" (both unversioned). This behavior is by design to prevent accidental overwrites of unversioned tools.
+
+**Example:**
+```python
+# Register unversioned tool
+spec1 = ToolSpec(tool_name="example", version=None, input_schema={"a": "string"}, output_schema={})
+registry.register(spec1)
+
+# Attempt to update without version - will raise ValueError
+spec2 = ToolSpec(tool_name="example", version=None, input_schema={"b": "number"}, output_schema={})
+registry.register(spec2)  # ❌ Raises ValueError
+
+# Solution: Add a version to update
+spec3 = ToolSpec(tool_name="example", version="1.0.0", input_schema={"b": "number"}, output_schema={})
+registry.register(spec3)  # ✅ Succeeds, overwrites with versioned spec
+```
+
 ### 2. List All
 
 List all registered tools (sorted by tool_name):

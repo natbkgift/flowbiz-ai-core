@@ -189,6 +189,11 @@ class InMemoryToolRegistry(ToolRegistryABC):
         3. If tool_name exists with different version: overwrite with new registration
         4. If tool_name exists with same version but different spec: raise ValueError
 
+        **Important**: When version is None, tools are considered to have the "same version"
+        (both unversioned). This means you cannot update an unversioned tool's specification
+        without first assigning it a version. This is by design to prevent accidental overwrites
+        of unversioned tools.
+
         Args:
             spec: The tool specification to register
 
@@ -197,7 +202,8 @@ class InMemoryToolRegistry(ToolRegistryABC):
 
         Raises:
             ValueError: If attempting to register a tool with the same name and version
-                       but different specification
+                       but different specification. This includes the case where both
+                       the existing and new specs have version=None (unversioned).
         """
         tool_name = spec.tool_name
         existing = self._tools.get(tool_name)
@@ -219,8 +225,9 @@ class InMemoryToolRegistry(ToolRegistryABC):
         # Different spec: check version
         if existing.spec.version == spec.version:
             # Same version, different spec: forbidden
+            version_str = f"'{spec.version}'" if spec.version is not None else "None (unversioned)"
             raise ValueError(
-                f"Cannot register tool '{tool_name}' with version '{spec.version}': "
+                f"Cannot register tool '{tool_name}' with version {version_str}: "
                 f"a different specification already exists with this version. "
                 f"Update the version to register a new specification."
             )

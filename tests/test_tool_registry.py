@@ -263,6 +263,33 @@ class TestInMemoryToolRegistry:
             registry.register(spec_v1_modified)
         assert "version" in str(exc_info.value).lower()
 
+    def test_register_no_version_different_spec_raises_error(self):
+        """Test that registering different specs with version=None raises ValueError.
+        
+        This tests the edge case where both the existing and new specs have version=None.
+        Since None == None, they are considered the "same version" (both unversioned),
+        and attempting to register a different spec should raise an error.
+        """
+        registry = InMemoryToolRegistry()
+        spec_unversioned = ToolSpec(
+            tool_name="example",
+            version=None,  # Unversioned
+            input_schema={"field1": "string"},
+            output_schema={},
+        )
+        spec_unversioned_modified = ToolSpec(
+            tool_name="example",
+            version=None,  # Also unversioned
+            input_schema={"field2": "number"},  # Different schema
+            output_schema={},
+        )
+        registry.register(spec_unversioned)
+
+        with pytest.raises(ValueError) as exc_info:
+            registry.register(spec_unversioned_modified)
+        assert "version" in str(exc_info.value).lower()
+        assert "unversioned" in str(exc_info.value).lower()
+
     def test_list_all_empty(self):
         """Test listing from empty registry."""
         registry = InMemoryToolRegistry()
