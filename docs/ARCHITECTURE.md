@@ -159,7 +159,7 @@ The legacy runtime system provides:
 
 5. **`AgentRuntime`** (`runtime.py`) - Single agent per instance with extensive structured logging
 
-**Migration Path**: New code should use `packages.core.runtime.AgentRuntime`. The legacy runtime is maintained for backward compatibility but will be deprecated in future versions.
+**Migration Path**: New code should use `packages.core.runtime.AgentRuntime`. The legacy runtime is deprecated and maintained for backward compatibility only.
      - `agent_selected`: Agent chosen for execution
      - `agent_done`: Agent completed execution
      - `runtime_done`: Runtime finished processing
