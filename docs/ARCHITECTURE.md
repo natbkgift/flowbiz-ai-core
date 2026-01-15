@@ -166,18 +166,18 @@ The legacy runtime system provides:
 
 **Migration Path**: New code should use `packages.core.runtime.AgentRuntime`. The legacy runtime is deprecated and maintained for backward compatibility only.
 
-**API Endpoint:**
+**API Endpoint (Legacy):**
 
-- **Route**: `POST /v1/agent/run`
+- **Route**: `POST /v1/agent/run/legacy`
 - **Request**: `AgentRunRequest` schema
-  - `input_text` (required): Text input for agent
-  - `user_id` (optional): User identifier
-  - `client_id` (optional): Client identifier
-  - `channel` (optional, default "api"): Execution channel
-  - `metadata` (optional): Additional context data
-    - **Size guidance**: Keep metadata <32KB to avoid storage/network overhead; use only for transient request context
+   - `input_text` (required): Text input for agent
+   - `user_id` (optional): User identifier
+   - `client_id` (optional): Client identifier
+   - `channel` (optional, default "api"): Execution channel
+   - `metadata` (optional): Additional context data
+      - **Size guidance**: Keep metadata <32KB to avoid storage/network overhead; use only for transient request context
 - **Response**: `AgentResult` schema
-- **Behavior**: Executes DefaultAgent and returns deterministic result
+- **Behavior**: Executes `DefaultAgent` and returns deterministic result
 
 **Design Principles:**
 

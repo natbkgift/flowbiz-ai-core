@@ -15,7 +15,7 @@ FlowBiz AI Core has **two agent runtime implementations**:
 |--------|---------------|-------------------------|
 | **Location** | `packages.core.agents` | `packages.core.runtime` |
 | **Agent Interface** | `AgentBase.run(AgentContext) -> AgentResult` | `AgentBase.execute(RuntimeContext) -> RuntimeResult` |
-| **Agent Management** | Single agent per runtime instance | Built-in agent registry (`_agents` dict) |
+| **Agent Management** | Single agent per runtime instance | Built-in agent registry (`register_agent`, internal `_agents`) |
 | **Agent Selection** | Fixed at runtime creation | Dynamic by name from request |
 | **Error Handling** | Basic string-based status | Structured `RuntimeError` objects |
 | **Endpoints** | `/v1/agent/run/legacy` | `/v1/agent/run` |
