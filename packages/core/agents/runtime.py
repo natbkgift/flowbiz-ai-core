@@ -1,4 +1,13 @@
-"""Agent runtime orchestration with structured logging."""
+"""Agent runtime orchestration with structured logging.
+
+**DEPRECATED**: This legacy runtime is deprecated in favor of the new runtime
+system in `packages.core.runtime`. The new runtime provides:
+- Built-in agent registry
+- Better error handling
+- More structured contracts
+
+Use `packages.core.runtime.AgentRuntime` for new code.
+"""
 
 from __future__ import annotations
 
