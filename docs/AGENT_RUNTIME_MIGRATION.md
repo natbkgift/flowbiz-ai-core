@@ -82,9 +82,13 @@ result = runtime.run(
 ```
 
 **After (New):**
+
+> **Note:** The following example uses the internal `_agents` registry on `AgentRuntime`. This is an advanced/internal usage pattern and **not** part of the stable public API. Prefer a dedicated registration method if/when one is available in your version of the runtime.
+
 ```python
 # Agent registry approach
 runtime = AgentRuntime()
+# Internal/advanced usage: direct access to `_agents` is not part of the public API and may change.
 # Register your agent (or use built-in ones like "echo")
 runtime._agents["my-agent"] = MyAgent()
 
