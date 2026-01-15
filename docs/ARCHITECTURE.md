@@ -109,62 +109,75 @@ The core layer provides shared utilities and domain logic used across the applic
 
 ### Agent Runtime System
 
-The Agent Runtime system provides a foundational skeleton for executing agents with structured lifecycle logging and testability.
+The Agent Runtime system provides a foundational skeleton for executing agents with structured lifecycle logging and testability. As of PR-022, there are **two runtime implementations**:
 
-**Components:**
+#### Current Runtime (packages/core/runtime/) - **Recommended**
 
-1. **`AgentContext`** (`context.py`)
-   - Normalized context for agent execution
-   - Fields: `request_id`, `user_id`, `client_id`, `channel`, `input_text`, `metadata`, `created_at`
-   - Factory method `create()` generates UTC timestamps
-   - Based on `BaseSchema` with strict validation (extras forbidden)
+The new runtime system (PR-022) provides enhanced agent registry capabilities:
 
-2. **`AgentResult`** (`result.py`)
-   - Typed result of agent execution
-   - Fields: `output_text`, `status` (ok/refused/error), `reason`, `trace`
-   - Strict schema validation (extras forbidden)
-   - Status is a literal type for compile-time safety
-   - **Trace Contract** (keys required for Phase 2+ metrics/logging correlation):
-     - `agent_name` (string): Name of the agent that produced this result
-     - `runtime_ms` (integer): Total execution time in milliseconds
-     - `request_id` (string, optional): Request ID for correlation with application logs
+1. **`RuntimeContext`** (`context.py`)
+   - Context for agent execution with `agent`, `input`, `trace_id`, `mode`, `meta`
+   - Support for agent selection by name
+   - Structured metadata handling
 
-3. **`AgentBase`** (`base.py`)
-   - Abstract base class for all agents
-   - Properties: `name` (string identifier)
-   - Methods: `run(ctx: AgentContext) -> AgentResult`
-   - Currently synchronous (async may be added later)
+2. **`RuntimeResult`** (`result.py`)
+   - Structured result with `status`, `trace_id`, `agent`, `output`, `errors`
+   - Comprehensive error handling with `RuntimeError` objects
+   - Support for multiple errors per result
 
-4. **`DefaultAgent`** (`default_agent.py`)
-   - Minimal deterministic stub agent
-   - Returns echo-like response: `"OK: {input_text}"`
-   - Status always "ok"
-   - No external dependencies (no LLM, tools, or network calls)
-   - Used as default when no agent is specified
+3. **`AgentBase`** (`agent_base.py`)
+   - Abstract base class with `execute(ctx: RuntimeContext) -> RuntimeResult`
+   - Name-based agent identification
+
+4. **`EchoAgent`** (`agents/echo.py`)
+   - Deterministic echo agent for testing
+   - Returns input as output with proper `RuntimeResult`
 
 5. **`AgentRuntime`** (`runtime.py`)
-   - Orchestrates agent execution lifecycle
-   - Builds `AgentContext` from API request
-   - Selects and runs agent (currently only DefaultAgent)
-   - Emits structured lifecycle logs:
-     - `runtime_start`: Runtime begins processing
-     - `agent_selected`: Agent chosen for execution
-     - `agent_done`: Agent completed execution
-     - `runtime_done`: Runtime finished processing
+   - Built-in agent registry (`_agents` dict)
+   - Agent selection by name from context
+   - Comprehensive error handling for unknown agents
+   - Exception catching and structured error responses
+
+#### Legacy Runtime (packages/core/agents/) - **Deprecated**
+
+The legacy runtime system provides:
+
+1. **`AgentContext`** (`context.py`)
+   - Fields: `request_id`, `user_id`, `client_id`, `channel`, `input_text`, `metadata`, `created_at`
+   - Factory method `create()` generates UTC timestamps
+
+2. **`AgentResult`** (`result.py`)
+   - Fields: `output_text`, `status` (ok/refused/error), `reason`, `trace`
+   - **Trace Contract** for metrics/logging correlation
+
+3. **`AgentBase`** (`base.py`)
+   - Methods: `run(ctx: AgentContext) -> AgentResult`
+
+4. **`DefaultAgent`** (`default_agent.py`)
+   - Returns echo-like response: `"OK: {input_text}"`
+
+5. **`AgentRuntime`** (`runtime.py`) - Single agent per instance with extensive structured logging. It emits structured lifecycle logs:
+   - `runtime_start`: Runtime begins processing
+   - `agent_selected`: Agent chosen for execution
+   - `agent_done`: Agent completed execution
+   - `runtime_done`: Runtime finished processing
    - All logs include `request_id` and `agent_name`
 
-**API Endpoint:**
+**Migration Path**: New code should use `packages.core.runtime.AgentRuntime`. The legacy runtime is deprecated and maintained for backward compatibility only.
 
-- **Route**: `POST /v1/agent/run`
+**API Endpoint (Legacy):**
+
+- **Route**: `POST /v1/agent/run/legacy`
 - **Request**: `AgentRunRequest` schema
-  - `input_text` (required): Text input for agent
-  - `user_id` (optional): User identifier
-  - `client_id` (optional): Client identifier
-  - `channel` (optional, default "api"): Execution channel
-  - `metadata` (optional): Additional context data
-    - **Size guidance**: Keep metadata <32KB to avoid storage/network overhead; use only for transient request context
+   - `input_text` (required): Text input for agent
+   - `user_id` (optional): User identifier
+   - `client_id` (optional): Client identifier
+   - `channel` (optional, default "api"): Execution channel
+   - `metadata` (optional): Additional context data
+      - **Size guidance**: Keep metadata <32KB to avoid storage/network overhead; use only for transient request context
 - **Response**: `AgentResult` schema
-- **Behavior**: Executes DefaultAgent and returns deterministic result
+- **Behavior**: Executes `DefaultAgent` and returns deterministic result
 
 **Design Principles:**
 

@@ -17,6 +17,10 @@ class AgentRuntime:
             "echo": EchoAgent(),
         }
 
+    def register_agent(self, agent: AgentBase) -> None:
+        """Register an agent in the runtime registry."""
+        self._agents[agent.name] = agent
+
     def run(self, ctx: RuntimeContext) -> RuntimeResult:
         """Execute agent specified in context.
 

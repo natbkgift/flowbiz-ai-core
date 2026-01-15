@@ -7,12 +7,21 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
 - **[Architecture](docs/ARCHITECTURE.md)** – System design, layers, data flow, configuration, logging, and infrastructure
 - **[Deployment Guide](docs/DEPLOYMENT_VPS.md)** – Step-by-step VPS deployment with Docker Compose and Nginx
 - **[Reusable Deployment](docs/REUSABLE_DEPLOYMENT.md)** – Share VPS deployment across projects securely
+- **[Agent Runtime Migration](docs/AGENT_RUNTIME_MIGRATION.md)** – Migration guide from legacy to new agent runtime
+- **[Scope & Boundaries](docs/SCOPE.md)** – What belongs in core vs. platform/client repos
+- **[Guardrails](docs/GUARDRAILS.md)** – Development guidelines and code review requirements
+- **[Tool Authoring Guide](docs/TOOLS.md)** – How to write tools correctly and consistently
+- **[Tool Registry](docs/TOOL_REGISTRY.md)** – Tool Registry v2 data model and lifecycle operations
 - **[PR Log](docs/PR_LOG.md)** – History of pull requests (PR-001 to PR-120)
 
 ## Project structure
 
 - `apps/api/` – FastAPI application entrypoint and related modules
 - `packages/core/` – Shared core utilities and domain modules
+  - `packages/core/runtime/` – **Current** agent runtime system (recommended)
+  - `packages/core/agents/` – **Legacy** agent runtime system (deprecated)
+  - `packages/core/tools/` – Tool base interface and examples
+  - `packages/core/contracts/` – Schema contracts (tool registry, etc.)
 - `docs/` – Project documentation
 - `tests/` – Automated tests
 

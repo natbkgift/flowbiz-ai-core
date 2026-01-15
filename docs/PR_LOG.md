@@ -198,12 +198,130 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 **Goal:** Provide comprehensive documentation for architecture, deployment, and PR history.
 
 **Key Changes:**
-- Created `docs/PR_LOG.md` tracking PR-001 through PR-013
-- Created `docs/ARCHITECTURE.md` documenting system design
+- Created `docs/PR_LOG.md` tracking PR-001 through PR-013 (updated to include all PRs through PR-025)
+- Created `docs/ARCHITECTURE.md` documenting system design (updated with runtime consolidation guidance)
 - Created `docs/DEPLOYMENT_VPS.md` with VPS deployment guide
-- Updated `README.md` with documentation links
+- Updated `README.md` with documentation links (enhanced with key new documentation)
+- **Runtime Consolidation**: Clarified that the new runtime (`packages.core.runtime`) is recommended over the legacy runtime (`packages.core.agents`)
 
-**Status:** 🚧 In Progress
+**Status:** ✅ Merged
+
+---
+
+## PR-022: Agent Runtime Skeleton with echo agent and /v1/agent/run endpoint
+
+**Goal:** Implement minimal runtime plumbing for agent execution via HTTP.
+
+**Key Changes:**
+- Added `packages/core/runtime/` module with context, request/result schemas, agent base, and orchestrator
+- Added `packages/core/runtime/agents/` with built-in echo agent
+- Added `POST /v1/agent/run` endpoint (legacy moved to `/legacy`)
+- Added comprehensive unit and integration test coverage (43 tests)
+- Implemented deterministic echo agent for end-to-end validation
+
+**Status:** ✅ Merged
+
+---
+
+## PR-023: Add tool base interface (ToolBase, ToolContext, ToolResult)
+
+**Goal:** Introduce foundation contracts for tool execution in the AI Hub.
+
+**Key Changes:**
+- Added `packages/core/tools/` module with base abstractions
+- Implemented abstract `ToolBase` interface requiring `name`, `description`, `run()`
+- Added immutable `ToolContext` for inputs and structured `ToolResult`/`ToolError` for outputs
+- Enabled safe, observable, schema-validated tool invocation
+- Added comprehensive tests (13 tests covering inheritance, immutability, serialization)
+
+**Status:** ✅ Merged
+
+---
+
+## PR-023.1: Add DummyTool example as reference implementation
+
+**Goal:** Add DummyTool as canonical reference implementation of the ToolBase interface.
+
+**Key Changes:**
+- Added `packages/core/tools/examples/dummy.py` with DummyTool implementation
+- Demonstrated correct usage of ToolContext, ToolResult, and explicit error handling
+- Added comprehensive test suite (9 tests) for the example tool
+- Provided template for future tool development
+
+**Status:** ✅ Merged
+
+---
+
+## PR-023.2: Tool Authoring Guide (Docs)
+
+**Goal:** Define canonical specification for writing Tools in FlowBiz AI Core.
+
+**Key Changes:**
+- Added `docs/TOOLS.md` as single source of truth for Tool interface and lifecycle
+- Documented authoring rules, error design guidelines, and testing requirements
+- Established "Tools don't think, Tools only do" principle
+- Provided DummyTool as reference implementation template
+- Added tool readiness checklist for pre-merge verification
+
+**Status:** ✅ Merged
+
+---
+
+## PR-023.3: Add tool lint & policy enforcement (CI)
+
+**Goal:** Add AST-based static analysis to enforce critical Tool authoring rules via CI.
+
+**Key Changes:**
+- Added `scripts/check_tools.py` for Tool policy checking
+- Added `tool-policy` job to `.github/workflows/ci.yml`
+- Enforced critical rules (inheritance, forbidden imports/calls, return types)
+- Added test fixtures for valid/invalid tools
+- Updated `docs/TOOLS.md` with enforcement documentation
+
+**Status:** ✅ Merged
+
+---
+
+## PR-023.4: Tool permissions (design-only)
+
+**Goal:** Design-only permission model for tools and agent personas.
+
+**Key Changes:**
+- Added `docs/TOOL_PERMISSIONS.md` with complete permission model specification
+- Added `packages/core/tools/permissions.py` with immutable Pydantic types
+- Defined 7 initial permissions and 3 MVP personas (core, infra, docs)
+- Established deny-by-default, least-privilege framework
+- Added comprehensive tests (21 tests) for schema validation
+
+**Status:** ✅ Merged
+
+---
+
+## PR-023.5: Permission examples per tool (examples-only)
+
+**Goal:** Add permission declaration examples and guidelines for tool authors.
+
+**Key Changes:**
+- Added `docs/TOOL_PERMISSION_EXAMPLES.md` with tool category → permission mapping
+- Updated `packages/core/tools/examples/dummy.py` with `permissions` property
+- Provided 8 runnable examples and 5 anti-patterns
+- Established consistent patterns for declaring tool capabilities
+
+**Status:** ✅ Merged
+
+---
+
+## PR-024.0: Scope + Boundaries (Docs-only)
+
+**Goal:** Establish canonical scope boundaries for flowbiz-ai-core.
+
+**Key Changes:**
+- Added `docs/SCOPE.md` defining what belongs in core vs. platform/client repos
+- Updated `docs/GUARDRAILS.md` with Core boundaries section
+- Established folder-level ownership rules and dependency direction
+- Defined forbidden items (UI, billing, TikTok adapters, platform infra)
+
+**Status:** ✅ Merged
 
 ---
 
@@ -219,7 +337,7 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 - Added 35 tests covering contracts, registration logic, enable/disable, and serialization
 - All 182 tests pass with no regressions
 
-**Status:** ✅ Ready for Review
+**Status:** ✅ Merged
 
 ---
 
