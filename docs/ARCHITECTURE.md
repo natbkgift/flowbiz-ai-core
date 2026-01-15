@@ -157,13 +157,14 @@ The legacy runtime system provides:
 4. **`DefaultAgent`** (`default_agent.py`)
    - Returns echo-like response: `"OK: {input_text}"`
 
-5. **`AgentRuntime`** (`runtime.py`) - Single agent per instance with extensive structured logging
+5. **`AgentRuntime`** (`runtime.py`) - Single agent per instance with extensive structured logging. It emits structured lifecycle logs:
+   - `runtime_start`: Runtime begins processing
+   - `agent_selected`: Agent chosen for execution
+   - `agent_done`: Agent completed execution
+   - `runtime_done`: Runtime finished processing
+   - All logs include `request_id` and `agent_name`
 
 **Migration Path**: New code should use `packages.core.runtime.AgentRuntime`. The legacy runtime is deprecated and maintained for backward compatibility only.
-     - `agent_selected`: Agent chosen for execution
-     - `agent_done`: Agent completed execution
-     - `runtime_done`: Runtime finished processing
-   - All logs include `request_id` and `agent_name`
 
 **API Endpoint:**
 
