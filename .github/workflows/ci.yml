@@ -73,5 +73,14 @@ jobs:
       - name: Lint with Ruff
         run: ruff check .
 
-      - name: Run tests
-        run: pytest -q
+      - name: Run tests with coverage
+        run: pytest -q --cov=apps --cov=packages --cov-report=term-missing --cov-report=xml:coverage.xml
+
+      - name: Upload coverage XML
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          if-no-files-found: error
+          retention-days: 7
