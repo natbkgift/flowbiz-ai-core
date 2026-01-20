@@ -98,6 +98,8 @@ For local development and manual deployments from your Windows machine:
 
 Create or edit `C:\Users\<YourName>\.ssh\config`:
 
+> Tip (Thai keyboard): ถ้าพิมพ์ `.ssh` แล้ว “จุด” (`.`) ถูกพิมพ์เป็นอักษรไทย (U+0E41) ให้สลับคีย์บอร์ดเป็น EN ก่อน หรือรัน `scripts/fix-ssh-folder.ps1` เพื่อแก้ชื่อโฟลเดอร์
+
 ```ssh-config
 Host vps-prod
   HostName 203.0.113.45

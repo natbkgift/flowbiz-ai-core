@@ -755,6 +755,8 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```bash
 ssh root@[VPS-IP]
 
+# Tip (Thai keyboard): ถ้า `~/.ssh` เผลอพิมพ์แล้ว “จุด” (`.`) กลายเป็นอักษรไทย (U+0E41) ให้สลับคีย์บอร์ดเป็น EN ก่อนพิมพ์จุด
+
 # Create agent-specific SSH key
 ssh-keygen -t ed25519 -f ~/.ssh/id_flowbiz_agent_[project-name] -N ""
 
