@@ -93,20 +93,17 @@ echo ""
 
 $remoteScript += "echo '✅ deploy completed'\n"
 
-$scriptBytes = [System.Text.Encoding]::UTF8.GetBytes($remoteScript)
+$remoteScriptLf = $remoteScript -replace "`r`n", "`n"
+$scriptBytes = [System.Text.Encoding]::UTF8.GetBytes($remoteScriptLf)
 $scriptB64 = [Convert]::ToBase64String($scriptBytes)
 
-$sshPayload = @"
-base64 -d <<'B64' | bash
-$scriptB64
-B64
-"@
+$sshPayload = "printf '%s' '$scriptB64' | base64 -d | bash"
 
 Write-Host "Deploying via ssh flowbiz-vps ..."
 
 if ($DryRun) {
   Write-Host "--- DRY RUN (no commands executed) ---"
-  Write-Host $remoteScript
+  Write-Host $remoteScriptLf
   exit 0
 }
 
