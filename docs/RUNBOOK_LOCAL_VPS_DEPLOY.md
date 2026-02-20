@@ -18,6 +18,7 @@ powershell -ExecutionPolicy Bypass -File scripts/vps_deploy.ps1 \
   -GitRef main \
   -SourceMode upload \
   -ComposeFiles docker-compose.yml docker-compose.override.prod.yml \
+  -HealthMode container \
   -HealthUrlLocal http://127.0.0.1:8000/healthz
 ```
 
@@ -29,6 +30,7 @@ powershell -ExecutionPolicy Bypass -File scripts/vps_deploy.ps1 \
   -GitRef <commit-sha> \
   -SourceMode upload \
   -ComposeFiles docker-compose.yml docker-compose.override.prod.yml \
+  -HealthMode container \
   -HealthUrlLocal http://127.0.0.1:8000/healthz
 ```
 

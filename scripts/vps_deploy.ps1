@@ -17,6 +17,10 @@ param(
   [string]$HealthUrlLocal = "http://127.0.0.1:8000/healthz",
 
   [Parameter()]
+  [ValidateSet("host", "container")]
+  [string]$HealthMode = "host",
+
+  [Parameter()]
   [string]$PublicHealthUrl = "",
 
   [Parameter()]
@@ -88,8 +92,12 @@ echo "== status"
 docker compose $composeArgs ps
 
 echo "== health (local)"
-curl -fsS "$HealthUrlLocal" >/dev/null
-curl -fsS "$HealthUrlLocal" | head -c 400 || true
+if [ "$HealthMode" = "container" ]; then
+  docker compose $composeArgs exec -T api python -c "import urllib.request; print(urllib.request.urlopen('$HealthUrlLocal').read()[:400].decode('utf-8','ignore'))"
+else
+  curl -fsS "$HealthUrlLocal" >/dev/null
+  curl -fsS "$HealthUrlLocal" | head -c 400 || true
+fi
 
 echo ""
 "@
