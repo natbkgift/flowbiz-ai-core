@@ -96,7 +96,7 @@ if [ "$HealthMode" = "container" ]; then
   ok=0
   i=1
   while [ "`$i" -le 20 ]; do
-    if docker compose $composeArgs exec -T api python -c "import urllib.request; print(urllib.request.urlopen('$HealthUrlLocal', timeout=2).read()[:400].decode('utf-8','ignore'))"; then
+    if docker compose $composeArgs exec -T api python -c "import urllib.request; print(urllib.request.urlopen('$HealthUrlLocal', timeout=2).read()[:400].decode('utf-8','ignore'))" 2>/dev/null; then
       ok=1
       break
     fi
