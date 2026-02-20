@@ -16,6 +16,7 @@ This runbook uses the standard SSH alias `flowbiz-vps` and a controlled script s
 powershell -ExecutionPolicy Bypass -File scripts/vps_deploy.ps1 \
   -RemotePath /opt/flowbiz/flowbiz-ai-core \
   -GitRef main \
+  -SourceMode upload \
   -ComposeFiles docker-compose.yml docker-compose.override.prod.yml \
   -HealthUrlLocal http://127.0.0.1:8000/healthz
 ```
@@ -26,6 +27,7 @@ powershell -ExecutionPolicy Bypass -File scripts/vps_deploy.ps1 \
 powershell -ExecutionPolicy Bypass -File scripts/vps_deploy.ps1 \
   -RemotePath /opt/flowbiz/flowbiz-ai-core \
   -GitRef <commit-sha> \
+  -SourceMode upload \
   -ComposeFiles docker-compose.yml docker-compose.override.prod.yml \
   -HealthUrlLocal http://127.0.0.1:8000/healthz
 ```

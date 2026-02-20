@@ -10,6 +10,10 @@ param(
   [string]$GitRef = "main",
 
   [Parameter()]
+  [ValidateSet("git", "upload")]
+  [string]$SourceMode = "git",
+
+  [Parameter()]
   [string]$HealthUrlLocal = "http://127.0.0.1:8000/healthz",
 
   [Parameter()]
@@ -35,15 +39,15 @@ if ($ComposeFiles.Count -eq 0) {
 
 $composeArgs = ($ComposeFiles | ForEach-Object { "-f $($_)" }) -join " "
 
-$remoteScript = @"
-set -euo pipefail
+function Assert-CommandExists {
+  param([Parameter(Mandatory = $true)][string]$Name)
+  $cmd = Get-Command $Name -ErrorAction SilentlyContinue
+  if (-not $cmd) {
+    throw "Required command not found: $Name"
+  }
+}
 
-echo "== target"
-echo "host: flowbiz-vps"
-echo "path: $RemotePath"
-echo "ref:  $GitRef"
-
-cd "$RemotePath"
+$gitSection = @"
 
 echo "== git fetch"
 git fetch origin --prune
@@ -55,6 +59,27 @@ else
   git checkout "$GitRef"
   git pull --ff-only origin "$GitRef" || true
 fi
+"@
+
+if ($SourceMode -eq "upload") {
+  $gitSection = @"
+
+echo "== source"
+echo "SourceMode=upload (skipping remote git fetch/checkout)"
+"@
+}
+
+$remoteScript = @"
+set -euo pipefail
+
+echo "== target"
+echo "host: flowbiz-vps"
+echo "path: $RemotePath"
+echo "ref:  $GitRef"
+
+cd "$RemotePath"
+
+$gitSection
 
 echo "== deploy"
 docker compose $composeArgs up -d --build --remove-orphans
@@ -109,6 +134,34 @@ if ($DryRun) {
 
 # Preflight: ensure SSH works non-interactively
 & ssh -o BatchMode=yes flowbiz-vps "echo ok" | Out-Null
+
+if ($SourceMode -eq "upload") {
+  Assert-CommandExists -Name "git"
+  Assert-CommandExists -Name "scp"
+
+  $sha = (& git rev-parse HEAD).Trim()
+  if (-not $sha) {
+    throw "Could not determine local git SHA (git rev-parse HEAD)."
+  }
+
+  $tmp = Join-Path $env:TEMP ("flowbiz-src-{0}.tar.gz" -f $sha)
+  if (Test-Path $tmp) {
+    Remove-Item -Force $tmp
+  }
+
+  Write-Host "Creating git archive for $sha ..."
+  & git archive --format=tar.gz -o $tmp $sha
+
+  $remoteTmp = "/tmp/flowbiz-src-$sha.tar.gz"
+
+  Write-Host "Uploading archive to VPS ..."
+  & scp $tmp ("flowbiz-vps:{0}" -f $remoteTmp) | Out-Null
+
+  Write-Host "Extracting archive on VPS ..."
+  & ssh flowbiz-vps ("mkdir -p '{0}' && tar -xzf '{1}' -C '{0}' && rm -f '{1}'" -f $RemotePath, $remoteTmp)
+
+  Remove-Item -Force $tmp -ErrorAction SilentlyContinue
+}
 
 # Execute remote script
 & ssh flowbiz-vps $sshPayload
