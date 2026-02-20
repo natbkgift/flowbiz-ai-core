@@ -35,16 +35,16 @@ def _iter_repo_files() -> list[Path]:
 @pytest.mark.parametrize(
     "bad_substring",
     [
-        "แssh",
-        "~/แssh",
-        "\\แssh",
-        "แ.ssh",
-        "แ\\.ssh",
+        "\u0e41" + "ssh",
+        "~/" + "\u0e41" + "ssh",
+        "\\" + "\u0e41" + "ssh",
+        "\u0e41" + ".ssh",
+        "\u0e41" + "\\.ssh",
     ],
 )
 def test_repo_does_not_contain_thai_ssh_typo(bad_substring: str) -> None:
     """
-    Prevent the common typo where `.ssh` becomes `แssh` when the '.' key is typed
+    Prevent the common typo where `.ssh` becomes `\u0e41ssh` when the '.' key is typed
     while a Thai keyboard layout is active.
     """
     offenders: list[str] = []

@@ -14,7 +14,7 @@ This VPS hosts the production deployment of **FlowBiz AI Core** (Phase 1), servi
 - **Hosting Provider:** Hostinger VPS
 - **Domain:** `flowbiz.cloud` + `www.flowbiz.cloud`
 - **SSL/TLS:** Let's Encrypt certificates with auto-renewal
-- **Reverse Proxy:** Nginx (running in Docker container)
+- **Reverse Proxy:** System Nginx (systemd) — see `docs/ADR_SYSTEM_NGINX.md`
 
 ### Network Configuration
 - **HTTP (Port 80):** Redirects all traffic to HTTPS
@@ -34,24 +34,18 @@ This VPS hosts the production deployment of **FlowBiz AI Core** (Phase 1), servi
 #### Container Stack
 The following Docker containers are running via Docker Compose:
 
-1. **nginx** — Nginx reverse proxy (1.25-alpine)
-   - Handles SSL termination
-   - Routes requests to API service
-   - Applies security headers
-   - Manages HTTP → HTTPS redirect
-
-2. **api** — FastAPI application (flowbiz-ai-core:dev)
+1. **api** — FastAPI application (flowbiz-ai-core:dev)
    - Python-based REST API
    - Internal port: 8000 (not exposed)
    - Provides health checks, metadata, and business endpoints
 
-3. **postgres** — PostgreSQL database (16-alpine)
+2. **postgres** — PostgreSQL database (16-alpine)
    - Data persistence layer
    - Internal port: 5432 (not exposed)
    - Volume: `postgres-data`
 
 #### Port Mapping
-- **Public:** 80 (HTTP redirect), 443 (HTTPS)
+- **Public:** 80 (HTTP redirect), 443 (HTTPS) via **system nginx**
 - **Internal:** 8000 (API), 5432 (Database)
 - **Exposed:** Only ports 80 and 443 are accessible from the internet
 
@@ -194,11 +188,13 @@ https://service-name.com/...
 ## Hard Rules (MUST NOT)
 
 ### Do Not Edit Global Nginx
-❌ **DO NOT** modify the core nginx configuration (`/opt/flowbiz/flowbiz-ai-core/nginx/`) unless explicitly authorized by the core team.
+❌ **DO NOT** modify global nginx configs unless explicitly authorized by the core team.
+
+**System nginx routing source-of-truth:** `/etc/nginx/conf.d/<domain>.conf`
 
 **Reason:** Breaking nginx breaks all services including the core API.
 
-**Alternative:** Create a separate nginx container or vhost for your service.
+**Alternative:** Create a dedicated vhost config file for your service domain under `/etc/nginx/conf.d/` (one domain = one file) and proxy to `127.0.0.1:<PORT>`.
 
 ### Do Not Expose Random Ports Publicly
 ❌ **DO NOT** bind services directly to public ports (e.g., `0.0.0.0:8080`) without reverse proxy and security review.
@@ -238,7 +234,9 @@ cd /opt/flowbiz/flowbiz-ai-core
 docker compose ps
 ```
 
-**Expected:** All three services (nginx, api, db) should show `Up` or `Up (healthy)` status.
+**Expected:** `api` and `db` should show `Up` or `Up (healthy)` status.
+
+**Note:** Public routing (80/443) is handled by **system nginx** (not a Docker container).
 
 ### View Container Logs
 ```bash
@@ -247,7 +245,6 @@ docker compose logs -f
 
 # Specific service
 docker compose logs -f api
-docker compose logs -f nginx
 docker compose logs -f db
 
 # Last 100 lines
@@ -290,7 +287,7 @@ ls -la /etc/letsencrypt/live/flowbiz.cloud/
 ```bash
 sudo ufw status
 sudo systemctl status docker
-docker compose ps nginx
+sudo systemctl status nginx --no-pager
 ```
 
 #### Symptom: Database connection errors in API logs

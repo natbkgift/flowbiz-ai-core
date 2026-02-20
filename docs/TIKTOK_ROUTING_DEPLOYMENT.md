@@ -72,45 +72,20 @@ sudo ls -la /etc/letsencrypt/live/tiktok.flowbiz.cloud/
 - `fullchain.pem` - Full certificate chain
 - `privkey.pem` - Private key
 
-### Step 3: Restart Core Nginx Container
+### Step 3: Install System Nginx Vhost + Reload
 
-The nginx container uses the `templates/` directory and will automatically process `.conf.template` files.
+Templates in this repo are **references**. In production, routing is applied via **system nginx** vhost files in `/etc/nginx/conf.d/`.
 
 ```bash
-# Navigate to core directory
+# On VPS
 cd /opt/flowbiz/flowbiz-ai-core
 
-# Restart nginx to pick up new configuration
-docker compose -f docker-compose.yml -f docker-compose.prod.yml restart nginx
+# Copy template into system nginx (one domain = one file)
+sudo cp nginx/templates/tiktok.flowbiz.cloud.conf.template /etc/nginx/conf.d/tiktok.flowbiz.cloud.conf
 
-# Check nginx is running
-docker compose ps nginx
-```
-
-### Step 4: Validate Nginx Configuration (Inside Container)
-
-```bash
-# Test nginx configuration syntax
-docker compose exec nginx nginx -t
-
-# Expected output:
-# nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-# nginx: configuration file /etc/nginx/nginx.conf test is successful
-```
-
-**If validation fails:**
-- Check nginx container logs: `docker compose logs nginx`
-- Verify SSL certificates exist at the expected paths
-- Review template syntax
-
-### Step 5: Reload Nginx (If Test Successful)
-
-```bash
-# Reload nginx to apply configuration without downtime
-docker compose exec nginx nginx -s reload
-
-# Or restart the container
-docker compose restart nginx
+# Validate + reload
+sudo nginx -t
+sudo systemctl reload nginx
 ```
 
 ### Step 6: Verify Routing with Curl
@@ -147,7 +122,7 @@ The dashboard is intentionally NOT exposed publicly. To access it:
 
 ```bash
 # From local machine, create SSH tunnel to VPS
-ssh -L 3002:127.0.0.1:3002 user@vps-host
+ssh -L 3002:127.0.0.1:3002 flowbiz-vps
 
 # Then open in browser:
 # http://localhost:3002
@@ -197,15 +172,12 @@ If the routing causes issues, follow these steps to rollback:
 ### Option 1: Remove Nginx Template and Restart
 
 ```bash
-# Navigate to core repository
-cd /opt/flowbiz/flowbiz-ai-core
+# Disable the system nginx vhost
+sudo mv /etc/nginx/conf.d/tiktok.flowbiz.cloud.conf /etc/nginx/conf.d/tiktok.flowbiz.cloud.conf.disabled
 
-# Remove or rename the tiktok template
-sudo mv nginx/templates/tiktok.flowbiz.cloud.conf.template \
-         nginx/templates/tiktok.flowbiz.cloud.conf.template.disabled
-
-# Restart nginx
-docker compose restart nginx
+# Validate + reload
+sudo nginx -t
+sudo systemctl reload nginx
 
 # Verify core services still work
 curl https://flowbiz.cloud/healthz
@@ -223,8 +195,12 @@ git log --oneline -5
 # Revert to previous commit (replace <commit-sha> with actual SHA)
 git checkout <commit-sha>
 
-# Restart nginx
-docker compose -f docker-compose.yml -f docker-compose.prod.yml restart nginx
+# Re-deploy containers (if needed)
+docker compose up -d --build --remove-orphans
+
+# Ensure system nginx still has the expected vhost
+sudo nginx -t
+sudo systemctl reload nginx
 
 # Verify
 curl https://flowbiz.cloud/healthz
@@ -233,9 +209,12 @@ curl https://flowbiz.cloud/healthz
 ### Option 3: Disable SSL Certificate (Temporary)
 
 ```bash
-# If SSL certificate is causing issues, temporarily disable by commenting out in template
-# Then restart nginx
-docker compose restart nginx
+# If SSL certificate is causing issues, comment out SSL lines in:
+sudo vi /etc/nginx/conf.d/tiktok.flowbiz.cloud.conf
+
+# Then validate + reload
+sudo nginx -t
+sudo systemctl reload nginx
 ```
 
 ### Post-Rollback Verification
@@ -245,10 +224,10 @@ docker compose restart nginx
 curl https://flowbiz.cloud/healthz
 
 # Check nginx is healthy
-docker compose ps nginx
+sudo systemctl status nginx --no-pager
 
 # Review logs for errors
-docker compose logs nginx --tail=50
+sudo tail -n 80 /var/log/nginx/error.log
 ```
 
 ## Ops Notes
@@ -257,35 +236,35 @@ docker compose logs nginx --tail=50
 
 If the client service needs to use different ports in the future:
 
-1. **Locate the template:** `nginx/templates/tiktok.flowbiz.cloud.conf.template`
+1. **Locate the system vhost:** `/etc/nginx/conf.d/tiktok.flowbiz.cloud.conf`
 2. **Edit proxy_pass directives:**
    - Current: `proxy_pass http://127.0.0.1:3001;`
    - Change to: `proxy_pass http://127.0.0.1:<NEW_PORT>;`
-3. **Restart nginx:** `docker compose restart nginx`
+3. **Validate + reload nginx:** `sudo nginx -t && sudo systemctl reload nginx`
 4. **Test:** `curl https://tiktok.flowbiz.cloud/healthz`
 
 ### Exposing Dashboard Publicly (If Policy Changes)
 
 If future requirements dictate that the dashboard should be public:
 
-1. **Create new template:** `nginx/templates/tiktok-dash.flowbiz.cloud.conf.template`
-2. **Copy structure from tiktok API template**
+1. **Create new vhost file:** `/etc/nginx/conf.d/tiktok-dash.flowbiz.cloud.conf`
+2. **Copy structure from the repo template**: `nginx/templates/tiktok.flowbiz.cloud.conf.template`
 3. **Change:**
    - `server_name tiktok-dash.flowbiz.cloud;`
    - `proxy_pass http://127.0.0.1:3002;`
    - SSL certificate path: `/etc/letsencrypt/live/tiktok-dash.flowbiz.cloud/...`
    - Consider changing `X-Frame-Options: DENY` to `SAMEORIGIN` if dashboard needs embedding
 4. **Provision SSL:** `sudo certbot certonly --nginx -d tiktok-dash.flowbiz.cloud`
-5. **Restart nginx:** `docker compose restart nginx`
+5. **Validate + reload nginx:** `sudo nginx -t && sudo systemctl reload nginx`
 6. **Update CORS:** Ensure gateway's CORS env includes `https://tiktok-dash.flowbiz.cloud`
 
 ### Adding More Client Services
 
 Follow the same pattern:
-1. Create `nginx/templates/<service-name>.flowbiz.cloud.conf.template`
+1. Add a repo template under `nginx/templates/<service-name>.flowbiz.cloud.conf.template` (for review/versioning)
 2. Use unique subdomain and upstream port
 3. Provision SSL certificate
-4. Restart nginx
+4. Install/enable the vhost in `/etc/nginx/conf.d/` and reload nginx
 5. Test endpoints
 
 ### Certificate Renewal
@@ -340,7 +319,7 @@ sudo ls -la /etc/letsencrypt/live/tiktok.flowbiz.cloud/
 sudo certbot certificates
 
 # Check nginx error logs
-docker compose logs nginx | grep -i ssl
+sudo grep -i ssl /var/log/nginx/error.log | tail -n 50
 ```
 
 ### Issue: Connection Timeout
@@ -389,8 +368,7 @@ time curl http://127.0.0.1:3001/healthz
 ### Next Steps for VPS Deployment
 1. Pull latest changes from `main` branch
 2. Provision SSL certificate: `sudo certbot certonly --nginx -d tiktok.flowbiz.cloud`
-3. Restart nginx: `docker compose restart nginx`
-4. Validate: `docker compose exec nginx nginx -t`
+3. Validate + reload nginx: `sudo nginx -t && sudo systemctl reload nginx`
 5. Test: `curl https://tiktok.flowbiz.cloud/healthz`
 6. Verify security headers with: `curl -I https://tiktok.flowbiz.cloud/healthz`
 

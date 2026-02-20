@@ -26,7 +26,12 @@ You **MUST NOT** deploy anything unless **ALL** of the following are true:
 - [ ] Target service responds:
   - `curl http://127.0.0.1:<PORT>/healthz` → **200 OK**
 
-**If any item is missing or unclear → STOP immediately.**
+In addition, deployment is only allowed through **approved automation lanes**:
+
+- **GitHub Actions deploy workflow** (preferred, auditable)
+- **Local-to-VPS scripted deploy** using explicit SSH host alias: `ssh flowbiz-vps ...`
+
+If any item is missing or unclear → **STOP immediately** and switch to a doc-only proposal.
 
 ---
 
@@ -34,8 +39,8 @@ You **MUST NOT** deploy anything unless **ALL** of the following are true:
 
 You must **NEVER**:
 
-- ❌ Modify VPS configuration directly
-- ❌ Restart or reload nginx without explicit instruction
+- ❌ Make ad-hoc/manual VPS edits that are not represented in a PR (snowflake changes)
+- ❌ Restart or reload nginx without passing `sudo nginx -t` and without a rollback plan
 - ❌ Edit existing nginx configs for other domains
 - ❌ Add Docker nginx, proxy containers, or ingress tools
 - ❌ Guess ports, domains, or SSL paths
@@ -57,6 +62,8 @@ You **MAY**:
   - `curl`
   - `docker compose ps`
   - `systemctl status`
+
+You **MAY deploy** only if you are following an approved automation lane and the preconditions in this document (and related checklists) are fully satisfied.
 
 ---
 
@@ -124,6 +131,7 @@ This behavior lock is part of the FlowBiz infrastructure safety framework:
 - **[CODEX_SYSTEM_NGINX_FIRST.md](./CODEX_SYSTEM_NGINX_FIRST.md)** — System nginx operational guide
 - **[GUARDRAILS.md](./GUARDRAILS.md)** — General development guardrails
 - **[CODEX_PREFLIGHT.md](./CODEX_PREFLIGHT.md)** — Pre-flight checklist for all PRs
+- **[GOVERNANCE_AUTOMATION.md](./GOVERNANCE_AUTOMATION.md)** — Allowed automation lanes (review/merge/deploy)
 
 ---
 
@@ -152,6 +160,6 @@ sudo netstat -tlnp | grep ':80\|:443'
 
 ---
 
-**Document Version:** 1.0  
-**Last Updated:** 2025-12-26  
+**Document Version:** 1.1  
+**Last Updated:** 2026-02-20  
 **Status:** Active (Enforced)

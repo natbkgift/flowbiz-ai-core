@@ -101,7 +101,7 @@ Create or edit `C:\Users\<YourName>\.ssh\config`:
 > Tip (Thai keyboard): ถ้าพิมพ์ `.ssh` แล้ว “จุด” (`.`) ถูกพิมพ์เป็นอักษรไทย (U+0E41) ให้สลับคีย์บอร์ดเป็น EN ก่อน หรือรัน `scripts/fix-ssh-folder.ps1` เพื่อแก้ชื่อโฟลเดอร์
 
 ```ssh-config
-Host vps-prod
+Host flowbiz-vps
   HostName 203.0.113.45
   User flowbiz
   Port 22
@@ -114,7 +114,7 @@ Host vps-prod
 **Step 2: Test SSH connection**
 
 ```powershell
-ssh vps-prod
+ssh flowbiz-vps
 # Should connect without password
 ```
 
@@ -122,10 +122,10 @@ ssh vps-prod
 
 ```powershell
 # Create context pointing to VPS
-docker context create vps-prod --docker "host=ssh://vps-prod"
+docker context create flowbiz-vps --docker "host=ssh://flowbiz-vps"
 
 # Use the context
-docker context use vps-prod
+docker context use flowbiz-vps
 
 # Verify
 docker info
@@ -149,10 +149,10 @@ docker context use default
 
 ```powershell
 # Copy project to VPS
-scp -r . vps-prod:/home/flowbiz/my-project
+scp -r . flowbiz-vps:/home/flowbiz/my-project
 
 # Deploy via SSH
-ssh vps-prod "cd /home/flowbiz/my-project && docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d"
+ssh flowbiz-vps "cd /home/flowbiz/my-project && docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d"
 ```
 
 ## 🔐 SSH Key Setup

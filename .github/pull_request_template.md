@@ -26,6 +26,11 @@
 - Risks: 
 - Rollback plan: 
 
+## Automation (Optional)
+- [ ] Auto-merge enabled after CI + required reviews
+- [ ] Merge to main triggers deploy workflow
+- Target environment: 
+
 ## Guardrails
 - [ ] Guardrails followed
 

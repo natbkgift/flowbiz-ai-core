@@ -49,14 +49,14 @@ You **MAY** do the following:
 You **MUST NOT** do the following:
 
 ### Infrastructure Changes
-- ❌ Edit global nginx config at `/opt/flowbiz/flowbiz-ai-core/nginx/`
-- ❌ Stop, restart, or modify `flowbiz-ai-core` containers (nginx, api, db)
+- ❌ Edit global nginx configs (anything outside your service vhost file in `/etc/nginx/conf.d/`)
+- ❌ Stop, restart, or modify `flowbiz-ai-core` containers (api, postgres)
 - ❌ Remove or modify the `postgres-data` volume
 - ❌ Change firewall rules without authorization (`ufw`, iptables)
 - ❌ Modify systemd services (certbot timer, docker daemon)
 
 ### Port & Network
-- ❌ Bind services to `0.0.0.0:80` or `0.0.0.0:443` (conflicts with core nginx)
+- ❌ Bind services to `0.0.0.0:80` or `0.0.0.0:443` (system nginx owns 80/443)
 - ❌ Bind to ports already used by core services (8000, 5432)
 - ❌ Expose database ports publicly (5432, 3306, etc.)
 - ❌ Bypass the reverse proxy for public endpoints
@@ -403,7 +403,7 @@ If you encounter any of the following, **STOP** and escalate:
 1. **Uncertainty about infrastructure changes**  
    → Do not proceed; propose a doc-only PR or ask for review
 
-2. **Core services appear broken** (nginx, api, db)  
+2. **Core services appear broken** (system nginx routing, api, postgres)  
    → Do not attempt fixes; notify the core team immediately
 
 3. **SSL certificate issues** affecting `flowbiz.cloud`  

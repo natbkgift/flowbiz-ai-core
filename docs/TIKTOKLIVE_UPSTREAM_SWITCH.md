@@ -155,27 +155,25 @@ cd /opt/flowbiz/flowbiz-ai-core
 # 1. Revert to previous commit
 git checkout <previous-commit-hash>
 
-# 2. Restart nginx
-docker compose restart nginx
+# 2. Redeploy containers
+docker compose up -d --build --remove-orphans
 
 # 3. Verify rollback worked (should show Core API response)
 curl -k https://tiktoklive.flowbiz.cloud/v1/meta
 ```
 
-**Alternative:** Temporarily edit the template directly:
+**Alternative (routing-only rollback):** Temporarily revert the system nginx vhost for `tiktoklive.flowbiz.cloud`:
 
 ```bash
-# Edit template on VPS
-vi /opt/flowbiz/flowbiz-ai-core/nginx/templates/tiktoklive.flowbiz.cloud.conf.template
+# Edit vhost on VPS (one domain = one file)
+sudo vi /etc/nginx/conf.d/tiktoklive.flowbiz.cloud.conf
 
-# Change line:
-# proxy_pass http://127.0.0.1:3001;
-# Back to:
-# proxy_pass http://api:8000;
-
-# Force recreate nginx container
-docker compose up -d --force-recreate nginx
+# After editing, always validate + reload
+sudo nginx -t
+sudo systemctl reload nginx
 ```
+
+**Legacy note:** If your VPS still runs an nginx Docker container (legacy stack), migrate to system nginx per `docs/ADR_SYSTEM_NGINX.md`.
 
 ---
 

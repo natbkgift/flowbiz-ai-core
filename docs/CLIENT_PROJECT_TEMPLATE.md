@@ -186,6 +186,8 @@ docs/CODEX_PREFLIGHT.md
 - ใช้ **GitHub Actions + Secrets**
 - **ห้าม**ใส่ private key ในโค้ดหรือแชท
 - **Push main = auto deploy**
+- แนะนำให้เปิด **Auto-merge** สำหรับ PR ที่ผ่าน policy gates (CI + approvals)
+- ดูนโยบาย automation รวม: `docs/GOVERNANCE_AUTOMATION.md`
 
 ---
 

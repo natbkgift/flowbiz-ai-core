@@ -189,6 +189,20 @@ Shell command execution. Allows tools to run arbitrary shell commands on the hos
 
 **⚠️ High Risk:** This permission grants significant control and should be restricted to trusted personas only.
 
+#### `EXEC_SSH`
+Remote command execution over SSH (e.g., `ssh flowbiz-vps "..."`).
+
+**Use cases:** VPS deployments, remote diagnostics, controlled infrastructure operations
+
+**⚠️ High Risk:** This permission mutates remote state and should be restricted to trusted personas and approved hosts only.
+
+#### `REPO_WRITE`
+Repository write operations (branch/commit/PR/merge metadata).
+
+**Use cases:** Auto-merge enablement, release automation, version bumps, branch management
+
+**⚠️ High Risk:** This permission changes source-of-truth and should be restricted to trusted automation lanes only.
+
 ### Environment Permissions
 
 #### `READ_ENV`
@@ -221,6 +235,9 @@ The following personas represent the minimal viable set for Phase 2. Each person
 | `core` | `NET_HTTP`, `READ_ENV` | Business logic agents. Can make API calls and read configuration. **Cannot** write files or execute shell commands. Safe for production workflows. |
 | `infra` | `NET_HTTP`, `EXEC_SHELL`, `READ_FS`, `WRITE_FS` | Infrastructure management agents. Can deploy, configure, and manage system resources. **Path restrictions should be added later** to limit filesystem scope. Requires elevated trust. |
 | `docs` | `READ_FS`, `WRITE_FS` | Documentation agents. Can read and write documentation files. **Scoped to `docs/` directory only** (future enforcement). **Cannot** access network or execute shell commands. Safe for content work. |
+| `ops` | `NET_HTTP`, `READ_ENV`, `EXEC_SHELL`, `EXEC_SSH`, `READ_FS`, `WRITE_FS`, `REPO_WRITE` | High-trust automation persona used for controlled review/merge/deploy lanes. Should be restricted by branch protection and environment rules. |
+
+**Automation note:** See `docs/GOVERNANCE_AUTOMATION.md` for the policy gates and approved lanes for auto-review/auto-merge/auto-deploy.
 
 ### Design Rationale
 

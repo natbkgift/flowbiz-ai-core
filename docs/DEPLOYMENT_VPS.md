@@ -50,6 +50,15 @@ This guide provides step-by-step instructions for deploying FlowBiz AI Core to a
 ssh root@YOUR_VPS_IP
 ```
 
+If you already have an SSH config alias, you can use the FlowBiz standard alias:
+
+```bash
+ssh flowbiz-vps
+```
+
+For controlled local deployments over SSH, use the runbook:
+- [docs/RUNBOOK_LOCAL_VPS_DEPLOY.md](RUNBOOK_LOCAL_VPS_DEPLOY.md)
+
 Replace `YOUR_VPS_IP` with your server's IP address.
 
 ### 2. Update System Packages
