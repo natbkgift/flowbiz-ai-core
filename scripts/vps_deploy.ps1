@@ -93,9 +93,35 @@ docker compose $composeArgs ps
 
 echo "== health (local)"
 if [ "$HealthMode" = "container" ]; then
-  docker compose $composeArgs exec -T api python -c "import urllib.request; print(urllib.request.urlopen('$HealthUrlLocal').read()[:400].decode('utf-8','ignore'))"
+  ok=0
+  for i in $(seq 1 20); do
+    if docker compose $composeArgs exec -T api python -c "import urllib.request; print(urllib.request.urlopen('$HealthUrlLocal', timeout=2).read()[:400].decode('utf-8','ignore'))"; then
+      ok=1
+      break
+    fi
+    echo "health retry $i/20 (container) ..."
+    sleep 1
+  done
+  if [ "$ok" -ne 1 ]; then
+    echo "❌ health check failed (container). Recent api logs:" 1>&2
+    docker compose $composeArgs logs --tail=200 api || true
+    exit 1
+  fi
 else
-  curl -fsS "$HealthUrlLocal" >/dev/null
+  ok=0
+  for i in $(seq 1 20); do
+    if curl -fsS --max-time 2 "$HealthUrlLocal" >/dev/null; then
+      ok=1
+      break
+    fi
+    echo "health retry $i/20 (host) ..."
+    sleep 1
+  done
+  if [ "$ok" -ne 1 ]; then
+    echo "❌ health check failed (host). Recent api logs:" 1>&2
+    docker compose $composeArgs logs --tail=200 api || true
+    exit 1
+  fi
   curl -fsS "$HealthUrlLocal" | head -c 400 || true
 fi
 
