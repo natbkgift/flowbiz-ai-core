@@ -29,10 +29,14 @@ def test_version_info_defaults():
 
     version_info = get_version_info()
 
-    assert version_info == VersionInfo(version="dev", git_sha="unknown", build_time=None)
+    assert version_info == VersionInfo(
+        version="dev", git_sha="unknown", build_time=None
+    )
 
 
-def test_version_info_prefers_new_environment_variables(monkeypatch: pytest.MonkeyPatch):
+def test_version_info_prefers_new_environment_variables(
+    monkeypatch: pytest.MonkeyPatch,
+):
     """New FLOWBIZ_* variables should override default version values."""
 
     monkeypatch.setenv("FLOWBIZ_VERSION", "1.0.0")

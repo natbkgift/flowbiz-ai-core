@@ -8,7 +8,12 @@ from fastapi import APIRouter, Request
 
 from packages.core.agents import AgentResult, AgentRuntime as LegacyRuntime
 from packages.core.logging import REQUEST_ID_CTX_VAR
-from packages.core.runtime import AgentRuntime, RuntimeContext, RuntimeRequest, RuntimeResult
+from packages.core.runtime import (
+    AgentRuntime,
+    RuntimeContext,
+    RuntimeRequest,
+    RuntimeResult,
+)
 from packages.core.schemas.base import BaseSchema
 
 router = APIRouter(prefix="/v1")
@@ -28,7 +33,9 @@ _legacy_runtime = LegacyRuntime()
 _runtime = AgentRuntime()
 
 
-@router.post("/agent/run/legacy", summary="Execute agent (legacy)", response_model=AgentResult)
+@router.post(
+    "/agent/run/legacy", summary="Execute agent (legacy)", response_model=AgentResult
+)
 def run_agent_legacy(request: Request, body: AgentRunRequest) -> AgentResult:
     """Execute the default agent with the provided input (legacy endpoint)."""
 
@@ -44,7 +51,9 @@ def run_agent_legacy(request: Request, body: AgentRunRequest) -> AgentResult:
     )
 
 
-@router.post("/agent/run", summary="Execute agent - PR-022", response_model=RuntimeResult)
+@router.post(
+    "/agent/run", summary="Execute agent - PR-022", response_model=RuntimeResult
+)
 def run_agent_v2(request: Request, body: RuntimeRequest) -> RuntimeResult:
     """Execute agent using PR-022 runtime skeleton contract."""
 

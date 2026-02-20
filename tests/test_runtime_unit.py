@@ -7,7 +7,12 @@ import uuid
 import pytest
 from pydantic import ValidationError
 
-from packages.core.runtime import AgentRuntime, RuntimeContext, RuntimeRequest, RuntimeResult
+from packages.core.runtime import (
+    AgentRuntime,
+    RuntimeContext,
+    RuntimeRequest,
+    RuntimeResult,
+)
 from packages.core.runtime.agents import EchoAgent
 from packages.core.runtime.request import RuntimeRequestMeta
 from packages.core.runtime.result import RuntimeError

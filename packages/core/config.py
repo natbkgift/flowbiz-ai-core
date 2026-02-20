@@ -60,7 +60,8 @@ class StrictEnvValidationMixin:
 
         prefix = self.env_prefix.upper()
         allowed_keys = {key.upper() for key in self._expected_env_keys()}.union(
-            key.upper() for key in getattr(self.settings_cls, "allowed_unknown_env_keys", set())
+            key.upper()
+            for key in getattr(self.settings_cls, "allowed_unknown_env_keys", set())
         )
         unexpected_keys = {
             key
@@ -70,10 +71,14 @@ class StrictEnvValidationMixin:
 
         if unexpected_keys:
             message = ", ".join(sorted(unexpected_keys))
-            raise SettingsError(f"Unexpected environment variables for {self.settings_cls.__name__}: {message}")
+            raise SettingsError(
+                f"Unexpected environment variables for {self.settings_cls.__name__}: {message}"
+            )
 
 
-class StrictEnvSettingsSource(StrictEnvValidationMixin, CommaSeparatedListSettingsSource):
+class StrictEnvSettingsSource(
+    StrictEnvValidationMixin, CommaSeparatedListSettingsSource
+):
     """Env source that enforces known APP_* keys before parsing."""
 
     def __call__(self) -> dict[str, Any]:
@@ -81,13 +86,15 @@ class StrictEnvSettingsSource(StrictEnvValidationMixin, CommaSeparatedListSettin
         return super().__call__()
 
 
-class StrictDotEnvSettingsSource(StrictEnvValidationMixin, CommaSeparatedListDotEnvSource):
+class StrictDotEnvSettingsSource(
+    StrictEnvValidationMixin, CommaSeparatedListDotEnvSource
+):
     """Dotenv source that enforces known APP_* keys before parsing."""
 
     def __call__(self) -> dict[str, Any]:
         # Get raw dotenv data first
         raw_data = super(CommaSeparatedListDotEnvSource, self).__call__()
-        
+
         # Filter to only include variables with the expected prefix
         # or non-prefixed variables that are allowed (like FLOWBIZ_*, POSTGRES_*)
         prefix = getattr(self, "env_prefix", "").upper()
@@ -99,7 +106,7 @@ class StrictDotEnvSettingsSource(StrictEnvValidationMixin, CommaSeparatedListDot
             }
         else:
             filtered_data = raw_data
-            
+
         # Now validate against expected keys
         self._validate_unknown_env_vars()
         return filtered_data
@@ -128,7 +135,9 @@ class AppSettings(BaseSettings):
     name: str = Field(default="FlowBiz AI Core")
     log_level: str = Field(default="INFO")
     database_url: str = Field(default="postgresql://localhost:5432/flowbiz")
-    cors_allow_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
+    cors_allow_origins: list[str] = Field(
+        default_factory=lambda: ["http://localhost:3000"]
+    )
     cors_allow_methods: list[str] = Field(default_factory=lambda: ["*"])
     cors_allow_headers: list[str] = Field(default_factory=lambda: ["*"])
     cors_allow_credentials: bool = Field(default=False)

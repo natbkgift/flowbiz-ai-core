@@ -75,6 +75,4 @@ class ToolRegistrySnapshot(BaseModel):
 
     model_config = ConfigDict(frozen=True, extra="forbid")
 
-    tools: list[ToolRegistration] = Field(
-        ..., description="List of tool registrations"
-    )
+    tools: list[ToolRegistration] = Field(..., description="List of tool registrations")

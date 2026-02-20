@@ -51,15 +51,23 @@ def create_app() -> FastAPI:
     def _log_error(status_code: int, code: str, message: str) -> None:
         logger = getattr(app.state, "logger", get_logger("flowbiz.api"))
         level = logging.ERROR if status_code >= 500 else logging.WARNING
-        logger.log(level, "request error", extra={"status": status_code, "code": code, "error_message": message})
+        logger.log(
+            level,
+            "request error",
+            extra={"status": status_code, "code": code, "error_message": message},
+        )
 
     @app.exception_handler(StarletteHTTPException)
-    async def handle_http_exception(_request: Request, exc: StarletteHTTPException) -> JSONResponse:
+    async def handle_http_exception(
+        _request: Request, exc: StarletteHTTPException
+    ) -> JSONResponse:
         status_code = exc.status_code
         code = f"HTTP_{status_code}"
         message = exc.detail if isinstance(exc.detail, str) else str(exc.detail)
         _log_error(status_code, code, message)
-        return JSONResponse(status_code=status_code, content=build_error_response(code, message))
+        return JSONResponse(
+            status_code=status_code, content=build_error_response(code, message)
+        )
 
     @app.exception_handler(RequestValidationError)
     async def handle_validation_error(request: Request, exc: RequestValidationError):
@@ -67,7 +75,9 @@ def create_app() -> FastAPI:
         code = "HTTP_422"
         message = "Validation Error"
         _log_error(status_code, code, message)
-        return JSONResponse(status_code=status_code, content=build_error_response(code, message))
+        return JSONResponse(
+            status_code=status_code, content=build_error_response(code, message)
+        )
 
     @app.exception_handler(Exception)
     async def handle_unhandled_exception(request: Request, exc: Exception):
@@ -80,7 +90,9 @@ def create_app() -> FastAPI:
             extra={"status": status_code, "code": code, "error_message": message},
             exc_info=exc,
         )
-        return JSONResponse(status_code=status_code, content=build_error_response(code, message))
+        return JSONResponse(
+            status_code=status_code, content=build_error_response(code, message)
+        )
 
     app.include_router(health_router)
     app.include_router(meta_v1_router)
@@ -101,7 +113,11 @@ def create_app() -> FastAPI:
 
     if os.getenv("APP_ENV") == "test":
 
-        @app.get("/__test__/raise", summary="Trigger an internal error for testing", include_in_schema=False)
+        @app.get(
+            "/__test__/raise",
+            summary="Trigger an internal error for testing",
+            include_in_schema=False,
+        )
         async def raise_test_error() -> None:
             raise RuntimeError("Intentional test error")
 

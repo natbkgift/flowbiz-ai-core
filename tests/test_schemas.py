@@ -5,14 +5,27 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from packages.core.schemas import ErrorPayload, ErrorResponse, HealthResponse, MetaResponse
+from packages.core.schemas import (
+    ErrorPayload,
+    ErrorResponse,
+    HealthResponse,
+    MetaResponse,
+)
 
 
 @pytest.mark.parametrize(
     "response_cls, data",
     [
-        pytest.param(HealthResponse, {"status": "ok", "service": "flowbiz", "version": "1.0.0"}, id="health-response"),
-        pytest.param(MetaResponse, {"service": "flowbiz", "env": "test", "version": "1.0.0"}, id="meta-response"),
+        pytest.param(
+            HealthResponse,
+            {"status": "ok", "service": "flowbiz", "version": "1.0.0"},
+            id="health-response",
+        ),
+        pytest.param(
+            MetaResponse,
+            {"service": "flowbiz", "env": "test", "version": "1.0.0"},
+            id="meta-response",
+        ),
     ],
 )
 def test_response_dump_matches_payload(response_cls, data):

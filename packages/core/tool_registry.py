@@ -225,7 +225,11 @@ class InMemoryToolRegistry(ToolRegistryABC):
         # Different spec: check version
         if existing.spec.version == spec.version:
             # Same version, different spec: forbidden
-            version_str = f"'{spec.version}'" if spec.version is not None else "None (unversioned)"
+            version_str = (
+                f"'{spec.version}'"
+                if spec.version is not None
+                else "None (unversioned)"
+            )
             raise ValueError(
                 f"Cannot register tool '{tool_name}' with version {version_str}: "
                 f"a different specification already exists with this version. "

@@ -19,7 +19,9 @@ def _client() -> TestClient:
     return TestClient(create_app())
 
 
-def _assert_error_response(response, expected_status: int, expected_code: str, expected_message: str):
+def _assert_error_response(
+    response, expected_status: int, expected_code: str, expected_message: str
+):
     assert response.status_code == expected_status
     payload = response.json()
 

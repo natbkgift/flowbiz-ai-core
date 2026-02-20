@@ -61,4 +61,3 @@ def test_repo_does_not_contain_thai_ssh_typo(bad_substring: str) -> None:
             offenders.append(str(path))
 
     assert offenders == [], f"Found '{bad_substring}' in: {', '.join(offenders)}"
-

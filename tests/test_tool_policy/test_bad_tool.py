@@ -34,7 +34,9 @@ class BadTool(ToolBase):
 
     # VIOLATION: missing version property (warning)
 
-    def run(self, context: ToolContext) -> dict[str, Any]:  # VIOLATION: wrong return type
+    def run(
+        self, context: ToolContext
+    ) -> dict[str, Any]:  # VIOLATION: wrong return type
         """Execute the tool with the given context.
 
         Args:

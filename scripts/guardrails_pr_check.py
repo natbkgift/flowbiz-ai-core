@@ -34,41 +34,51 @@ def load_pr_data() -> Tuple[str, List[str]]:
     # Try direct env vars first (for testing)
     pr_body = os.environ.get("PR_BODY", "")
     pr_labels_str = os.environ.get("PR_LABELS", "")
-    pr_labels = [label.strip() for label in pr_labels_str.split(",") if label.strip()] if pr_labels_str else []
-    
+    pr_labels = (
+        [label.strip() for label in pr_labels_str.split(",") if label.strip()]
+        if pr_labels_str
+        else []
+    )
+
     # If we have both from env, return them
     if pr_body and pr_labels:
         return pr_body, pr_labels
-    
+
     # Otherwise try GitHub event path
     event_path = os.environ.get("GITHUB_EVENT_PATH", "")
     if event_path and os.path.exists(event_path):
         with open(event_path, "r", encoding="utf-8") as f:
             event = json.load(f)
-        
+
         pr_data = event.get("pull_request", {})
         if not pr_body:
             pr_body = pr_data.get("body", "")
         if not pr_labels:
             pr_labels = [label["name"] for label in pr_data.get("labels", [])]
-    
+
     return pr_body, pr_labels
 
 
 def check_persona_label(labels: List[str]) -> Tuple[bool, str]:
     """
     Check if exactly one persona label exists.
-    
+
     Returns:
         (missing, details) where missing=True if label is missing or multiple exist
     """
     allowed_labels = ["persona:core", "persona:infra", "persona:docs"]
     persona_labels = [label for label in labels if label in allowed_labels]
-    
+
     if len(persona_labels) == 0:
-        return True, "❌ Missing persona label. Add exactly one of: persona:core / persona:infra / persona:docs"
+        return (
+            True,
+            "❌ Missing persona label. Add exactly one of: persona:core / persona:infra / persona:docs",
+        )
     elif len(persona_labels) > 1:
-        return True, f"❌ Multiple persona labels found: {', '.join(persona_labels)}. Keep only one."
+        return (
+            True,
+            f"❌ Multiple persona labels found: {', '.join(persona_labels)}. Keep only one.",
+        )
     else:
         return False, f"✅ Valid persona label: {persona_labels[0]}"
 
@@ -76,32 +86,34 @@ def check_persona_label(labels: List[str]) -> Tuple[bool, str]:
 def check_pr_description(body: str) -> Tuple[bool, List[str]]:
     """
     Check if PR description contains required sections.
-    
+
     Required sections (case-insensitive):
     - ## Summary
     - ## Testing (or ## Verification / Testing)
-    
+
     Returns:
         (missing, issues) where missing=True if any required section is missing
     """
     issues = []
-    
+
     if not body.strip():
         return True, ["❌ PR description is empty. Use the PR template."]
-    
+
     # Check for Summary section
-    summary_pattern = re.compile(r"^\s*#{1,3}\s*summary\b", re.IGNORECASE | re.MULTILINE)
+    summary_pattern = re.compile(
+        r"^\s*#{1,3}\s*summary\b", re.IGNORECASE | re.MULTILINE
+    )
     if not summary_pattern.search(body):
         issues.append("❌ Missing '## Summary' section")
-    
+
     # Check for Testing section (accept multiple variants)
     testing_pattern = re.compile(
         r"^\s*#{1,3}\s*(testing|verification\s*/\s*testing|verification/testing)\b",
-        re.IGNORECASE | re.MULTILINE
+        re.IGNORECASE | re.MULTILINE,
     )
     if not testing_pattern.search(body):
         issues.append("❌ Missing '## Testing' or '## Verification / Testing' section")
-    
+
     if issues:
         return True, issues
     else:
@@ -112,18 +124,18 @@ def main():
     """Main entry point - always exits with 0."""
     try:
         pr_body, pr_labels = load_pr_data()
-        
+
         # Check persona label
         missing_persona, persona_details = check_persona_label(pr_labels)
-        
+
         # Check PR description
         missing_description, description_issues = check_pr_description(pr_body)
-        
+
         # Build details string
         details_lines = []
         details_lines.append(persona_details)
         details_lines.extend(description_issues)
-        
+
         # Output to GitHub Actions output file if available
         github_output = os.environ.get("GITHUB_OUTPUT")
         if github_output:
@@ -133,7 +145,7 @@ def main():
                 f.write("details<<EOF\n")
                 f.write("\n".join(details_lines))
                 f.write("\nEOF\n")
-        
+
         # Also output to stdout for visibility
         print(f"MISSING_PERSONA_LABEL={str(missing_persona).lower()}")
         print(f"MISSING_PR_DESCRIPTION={str(missing_description).lower()}")
@@ -141,16 +153,19 @@ def main():
         for line in details_lines:
             print(line)
         print("DETAILS_END")
-        
+
         # Summary to stderr for visibility in logs
         if missing_persona or missing_description:
             print("\n⚠️  Guardrails Check Summary (Non-blocking):", file=sys.stderr)
             for line in details_lines:
                 print(line, file=sys.stderr)
-            print("\n💡 This check does not fail CI. See PR comment for remediation steps.", file=sys.stderr)
+            print(
+                "\n💡 This check does not fail CI. See PR comment for remediation steps.",
+                file=sys.stderr,
+            )
         else:
             print("\n✅ Guardrails Check Summary: All checks passed!", file=sys.stderr)
-        
+
     except Exception as e:
         # Even on error, exit 0 (non-blocking)
         print(f"ERROR: {e}", file=sys.stderr)
@@ -165,7 +180,7 @@ def main():
         print("DETAILS_START")
         print(f"Error running guardrails check: {e}")
         print("DETAILS_END")
-    
+
     # Always exit 0 (non-blocking)
     sys.exit(0)
 

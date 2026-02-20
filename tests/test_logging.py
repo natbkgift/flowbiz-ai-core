@@ -17,7 +17,13 @@ def test_get_logger_configures_structured_handler():
     assert isinstance(handler.formatter, RequestIdFormatter)
 
     record = logging.LogRecord(
-        name="tests.logging", level=logging.INFO, pathname=__file__, lineno=1, msg="hello", args=(), exc_info=None
+        name="tests.logging",
+        level=logging.INFO,
+        pathname=__file__,
+        lineno=1,
+        msg="hello",
+        args=(),
+        exc_info=None,
     )
     formatted = handler.format(record)
 

@@ -17,7 +17,11 @@ HEADING_GROUPS: Dict[str, List[str]] = {
     # Keep Files Changed as optional (non-blocking warning for legacy PRs)
     "Files Changed": ["files changed"],
     # Accept combined, plus legacy separate headings (handled specially below)
-    "Verification / Testing": ["verification / testing", "verification/testing", "testing"],
+    "Verification / Testing": [
+        "verification / testing",
+        "verification/testing",
+        "testing",
+    ],
     "Risk & Rollback": [
         "risk & rollback",
         "risks & rollback",
@@ -100,6 +104,7 @@ def _find_sections_by_variants(body: str, variants: List[str]) -> List[Tuple[str
             results.append((v, match.group(1)))
     return results
 
+
 def find_section(body: str, canonical_header: str) -> str:
     """Return content of the section for a canonical header using variants.
 
@@ -112,12 +117,18 @@ def find_section(body: str, canonical_header: str) -> str:
     if canonical_header == "Risk & Rollback":
         # If combined exists, prefer it
         for name, content in found:
-            if name.lower() in {"risk & rollback", "risks & rollback", "risk and rollback"}:
+            if name.lower() in {
+                "risk & rollback",
+                "risks & rollback",
+                "risk and rollback",
+            }:
                 return content
         # Else, accept separate legacy headings if both present
         legacy_map = {name.lower(): content for name, content in found}
         if "risks" in legacy_map and "rollback" in legacy_map:
-            return (legacy_map["risks"].strip() + "\n\n" + legacy_map["rollback"].strip()).strip()
+            return (
+                legacy_map["risks"].strip() + "\n\n" + legacy_map["rollback"].strip()
+            ).strip()
         return ""
 
     # For In Scope / Out of Scope: if only legacy 'out of scope' present, accept it
@@ -137,11 +148,11 @@ def find_section(body: str, canonical_header: str) -> str:
 
 def _has_meaningful_subsection(content: str, subheadings: list[str]) -> bool:
     """Check if any subsection has meaningful content after its subheading.
-    
+
     Args:
         content: The section content to check.
         subheadings: List of subsection names (e.g., ["in scope", "out of scope"]).
-    
+
     Returns:
         True if at least one subsection has non-empty content.
     """
@@ -167,13 +178,15 @@ def has_meaningful_content(header: str, content: str) -> bool:
 
     if header == "In Scope / Out of Scope":
         # Accept either explicit sub-bullets or any non-empty descriptive text (legacy format)
-        return _has_meaningful_subsection(content, ["in scope", "out of scope"]) or bool(
-            re.search(r"\w", content)
-        )
+        return _has_meaningful_subsection(
+            content, ["in scope", "out of scope"]
+        ) or bool(re.search(r"\w", content))
 
     if header == "Verification / Testing":
         lowered = content.lower()
-        has_checked_item = bool(re.search(r"-\s*\[x\]\s+", content, flags=re.IGNORECASE))
+        has_checked_item = bool(
+            re.search(r"-\s*\[x\]\s+", content, flags=re.IGNORECASE)
+        )
         has_keyword_command = any(k in lowered for k in COMMAND_KEYWORDS)
         # Accept any inline or fenced code as executable evidence for docs-only or simple checks
         has_code_snippet = bool(re.search(r"`[^`]+`|```[\s\S]*?```", content))
@@ -224,9 +237,13 @@ def main() -> None:
     errors = validate_sections(body)
 
     # Non-blocking acknowledgement check for legacy PRs
-    ack_pattern = re.compile(r"(?:-\s*\[[xX]\]\s*)?guardrails\s+followed", re.IGNORECASE)
+    ack_pattern = re.compile(
+        r"(?:-\s*\[[xX]\]\s*)?guardrails\s+followed", re.IGNORECASE
+    )
     if not ack_pattern.search(body):
-        print("Warning: Missing acknowledgement: add '- [x] Guardrails followed' to PR body")
+        print(
+            "Warning: Missing acknowledgement: add '- [x] Guardrails followed' to PR body"
+        )
 
     if errors:
         print("PR template validation failed:")
@@ -234,7 +251,9 @@ def main() -> None:
             print(f"- {error}")
         sys.exit(1)
 
-    print("PR template validation passed: all required sections are present and non-empty.")
+    print(
+        "PR template validation passed: all required sections are present and non-empty."
+    )
 
 
 if __name__ == "__main__":

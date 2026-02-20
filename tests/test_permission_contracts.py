@@ -60,7 +60,11 @@ def test_json_round_trip():
     )
     original_policy = AgentPolicy(
         persona="infra",
-        allowed_permissions=[Permission.EXEC_SHELL, Permission.READ_ENV, Permission.NET_HTTP],
+        allowed_permissions=[
+            Permission.EXEC_SHELL,
+            Permission.READ_ENV,
+            Permission.NET_HTTP,
+        ],
         allowed_tools=[],
     )
     original_decision = PolicyDecision(allowed=True, reason="all good")

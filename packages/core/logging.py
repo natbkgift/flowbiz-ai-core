@@ -10,7 +10,9 @@ from typing import Final
 
 from .config import get_settings
 
-LOG_FORMAT: Final[str] = "%(asctime)s | %(levelname)s | %(message)s | request_id=%(request_id)s"
+LOG_FORMAT: Final[str] = (
+    "%(asctime)s | %(levelname)s | %(message)s | request_id=%(request_id)s"
+)
 _lock = threading.Lock()
 
 REQUEST_ID_CTX_VAR: ContextVar[str | None] = ContextVar("request_id", default=None)
@@ -41,7 +43,7 @@ class RequestIdFilter(logging.Filter):
         if "pytest" in sys.modules:
             message = record.getMessage()
             if "request_id=" not in message:
-                record.msg = f'{message} | request_id={record.request_id}'
+                record.msg = f"{message} | request_id={record.request_id}"
                 record.args = ()
 
         return True

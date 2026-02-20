@@ -85,9 +85,7 @@ class ToolPolicyChecker(ast.NodeVisitor):
         self.in_run_method = False
         self.run_method_returns_tool_result = False
 
-    def add_violation(
-        self, line: int, severity: str, rule: str, message: str
-    ) -> None:
+    def add_violation(self, line: int, severity: str, rule: str, message: str) -> None:
         """Add a violation to the list."""
         self.violations.append(
             Violation(

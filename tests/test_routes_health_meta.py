@@ -40,7 +40,10 @@ def test_health_endpoint_returns_status(client: TestClient):
     ],
 )
 def test_health_endpoint_version(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch, app_version: str | None, expected: str
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+    app_version: str | None,
+    expected: str,
 ):
     """Ensure the health check reports the correct version."""
 
@@ -61,7 +64,10 @@ def test_health_endpoint_version(
     ],
 )
 def test_meta_endpoint_returns_env(
-    client: TestClient, monkeypatch: pytest.MonkeyPatch, app_version: str | None, expected_version: str
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+    app_version: str | None,
+    expected_version: str,
 ):
     """Ensure the meta endpoint reports service name, environment, and version."""
 

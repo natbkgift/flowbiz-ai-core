@@ -140,7 +140,9 @@ class TestToolRegistrationContract:
             input_schema={"a": "string"},
             output_schema={"b": "number"},
         )
-        reg = ToolRegistration(spec=spec, enabled=False, created_at="2025-12-27T14:00:00Z")
+        reg = ToolRegistration(
+            spec=spec, enabled=False, created_at="2025-12-27T14:00:00Z"
+        )
         dumped = reg.model_dump()
         loaded = ToolRegistration.model_validate(dumped)
         assert loaded == reg
@@ -265,7 +267,7 @@ class TestInMemoryToolRegistry:
 
     def test_register_no_version_different_spec_raises_error(self):
         """Test that registering different specs with version=None raises ValueError.
-        
+
         This tests the edge case where both the existing and new specs have version=None.
         Since None == None, they are considered the "same version" (both unversioned),
         and attempting to register a different spec should raise an error.
