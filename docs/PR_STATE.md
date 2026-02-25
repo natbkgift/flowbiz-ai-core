@@ -127,7 +127,7 @@
 - 2026-02-25 | PR-117 | Web app shell | docs-only(out-of-scope) | 1625145 | ruff PASS | pytest PASS | web app shell specification only; no UI implementation in core
 - 2026-02-25 | PR-118 | Admin UI | docs-only(out-of-scope) | 57cf69d | ruff PASS | pytest PASS | admin UI specification only; no UI implementation in core
 - 2026-02-25 | PR-119 | Multi-tenant deploy | docs-only(out-of-scope) | d698dac | ruff PASS | pytest PASS | multi-tenant deploy specification only; no infra mutation/deploy execution in core
-- 2026-02-25 | PR-120 | GA release | docs-only(out-of-scope) | (pending) | ruff PASS | pytest PASS | GA release checklist docs + roadmap completion tracking updates
+- 2026-02-25 | PR-120 | GA release | docs-only(out-of-scope) | 230e272 | ruff PASS | pytest PASS | GA release checklist docs + roadmap completion tracking updates
 
 ## 3) Remaining (ordered)
 - None (roadmap complete through PR-120)
