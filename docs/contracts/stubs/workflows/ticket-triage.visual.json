@@ -1,0 +1,21 @@
+{
+  "workflow_id": "ticket-triage",
+  "positions": [
+    {
+      "step_id": "ingest",
+      "x": 100,
+      "y": 120
+    },
+    {
+      "step_id": "classify",
+      "x": 320,
+      "y": 120
+    },
+    {
+      "step_id": "assign",
+      "x": 540,
+      "y": 120
+    }
+  ],
+  "zoom": 1.0
+}

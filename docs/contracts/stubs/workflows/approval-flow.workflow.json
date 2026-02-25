@@ -1,0 +1,37 @@
+{
+  "workflow_id": "approval-flow",
+  "name": "Approval Flow",
+  "version": "1.0.0",
+  "description": "Example workflow with condition and human step",
+  "steps": [
+    {
+      "step_id": "prepare",
+      "step_type": "action",
+      "name": "Prepare Request",
+      "handler": "request.prepare"
+    },
+    {
+      "step_id": "needs_approval",
+      "step_type": "condition",
+      "name": "Check Threshold",
+      "handler": "condition.eval",
+      "depends_on": [
+        "prepare"
+      ],
+      "condition": "amount == high"
+    },
+    {
+      "step_id": "human_approval",
+      "step_type": "human",
+      "name": "Human Approval",
+      "handler": "hitl.request",
+      "depends_on": [
+        "needs_approval"
+      ]
+    }
+  ],
+  "metadata": {
+    "example": true,
+    "persona": "docs"
+  }
+}

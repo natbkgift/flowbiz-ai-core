@@ -1,0 +1,39 @@
+{
+  "workflow_id": "ticket-triage",
+  "name": "Ticket Triage",
+  "version": "1.0.0",
+  "description": "Example workflow for intake and routing",
+  "steps": [
+    {
+      "step_id": "ingest",
+      "step_type": "action",
+      "name": "Ingest Ticket",
+      "handler": "ticket.ingest",
+      "inputs": {
+        "source": "api"
+      }
+    },
+    {
+      "step_id": "classify",
+      "step_type": "action",
+      "name": "Classify",
+      "handler": "classifier.route",
+      "depends_on": [
+        "ingest"
+      ]
+    },
+    {
+      "step_id": "assign",
+      "step_type": "action",
+      "name": "Assign Queue",
+      "handler": "queue.assign",
+      "depends_on": [
+        "classify"
+      ]
+    }
+  ],
+  "metadata": {
+    "example": true,
+    "owner": "ops"
+  }
+}

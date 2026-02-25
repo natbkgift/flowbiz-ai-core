@@ -1630,7 +1630,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-105 to PR-120)
+## PR-105: Example workflows
+
+**Goal:** Add validated example workflow JSON stubs using existing workflow contracts.
+
+**Key Changes:**
+- Added workflow example stubs under `docs/contracts/stubs/workflows/`
+- Added `tests/test_workflow_examples.py` to validate stubs against `WorkflowSpec` and `WorkflowVisualSpec`
+- Added `docs/EXAMPLE_WORKFLOWS.md` documenting examples and scope
+
+**Status:** ✅ Merged
+
+**Notes:** Examples/docs/tests only; no workflow engine or UI implementation changes.
+
+---
+
+## Future PRs (PR-106 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
