@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-081-090-security
+- Branch: feature/PR-091-100-performance
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-090 — Compliance report
-- Completed in this run: PR-081–090
-- Next PR: PR-091 — Async optimization
+- Last merged PR (per docs/PR_LOG.md): PR-100 — Scale readiness review
+- Completed in this run: PR-091–100
+- Next PR: PR-101 — CLI tool
 - Persona: persona:core
 - Scope class: contracts/stubs/docs
-- Checks: ruff=PASS, pytest=PASS (615 tests)
-- Notes: Phase 10 complete — security, audit, GDPR, consent, compliance contracts.
+- Checks: ruff=PASS, pytest=PASS (645 tests)
+- Notes: Phase 11 complete — performance, caching, scaling, load testing, cost optimization, readiness contracts.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -87,18 +87,18 @@
 - 2026-02-25 | PR-088 | Security scan | contracts/stubs | (pending) | ruff PASS | pytest PASS | finding + scan result
 - 2026-02-25 | PR-089 | Threat modeling | contracts/stubs | (pending) | ruff PASS | pytest PASS | threat entry + model
 - 2026-02-25 | PR-090 | Compliance report | contracts/stubs | (pending) | ruff PASS | pytest PASS | control + report
+- 2026-02-25 | PR-091 | Async optimization | contracts/stubs | (pending) | ruff PASS | pytest PASS | async task + queue contracts
+- 2026-02-25 | PR-092 | Caching layer | contracts/stubs | (pending) | ruff PASS | pytest PASS | cache config + in-memory cache
+- 2026-02-25 | PR-093 | Queue backend | contracts/stubs | (pending) | ruff PASS | pytest PASS | queue message + stats
+- 2026-02-25 | PR-094 | Worker autoscale | contracts/stubs | (pending) | ruff PASS | pytest PASS | autoscale policy + decision
+- 2026-02-25 | PR-095 | DB optimization | contracts/stubs | (pending) | ruff PASS | pytest PASS | query plan + index recommendation
+- 2026-02-25 | PR-096 | Read replica | contracts/stubs | (pending) | ruff PASS | pytest PASS | replica config + state
+- 2026-02-25 | PR-097 | Horizontal scaling | contracts/stubs | (pending) | ruff PASS | pytest PASS | node + cluster state
+- 2026-02-25 | PR-098 | Load testing suite | contracts/stubs | (pending) | ruff PASS | pytest PASS | scenario + result contracts
+- 2026-02-25 | PR-099 | Cost optimization | docs-only | (pending) | ruff PASS | pytest PASS | cost guide + contracts
+- 2026-02-25 | PR-100 | Scale readiness | docs-only | (pending) | ruff PASS | pytest PASS | readiness checklist + contracts
 
 ## 3) Remaining (ordered)
-- PR-091: Async optimization
-- PR-092: Caching layer
-- PR-093: Queue backend
-- PR-094: Worker autoscale
-- PR-095: DB optimization
-- PR-096: Read replica
-- PR-097: Horizontal scaling
-- PR-098: Load testing suite
-- PR-099: Cost optimization
-- PR-100: Scale readiness review
 - PR-101: CLI tool
 - PR-102: Local dev kit
 - PR-103: Seed templates

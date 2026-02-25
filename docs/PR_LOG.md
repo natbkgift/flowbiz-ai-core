@@ -1317,7 +1317,119 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-015 to PR-120)
+## PR-091: Async optimization
+
+**Goal:** Define async task/queue contracts.
+
+**Key Changes:**
+- Added `AsyncTask`, `AsyncTaskResult`, `InMemoryTaskQueue` to `performance.py`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-092: Caching layer
+
+**Goal:** Define cache strategy contracts with TTL support.
+
+**Key Changes:**
+- Added `CacheConfig`, `CacheStats`, `InMemoryCache` (LRU/TTL eviction, stats tracking)
+
+**Status:** ✅ Merged
+
+---
+
+## PR-093: Queue backend
+
+**Goal:** Define queue message and stats contracts.
+
+**Key Changes:**
+- Added `QueueMessage`, `QueueStats` with priority support
+
+**Status:** ✅ Merged
+
+---
+
+## PR-094: Worker autoscale
+
+**Goal:** Define autoscale policy contracts.
+
+**Key Changes:**
+- Added `AutoscalePolicy`, `AutoscaleDecision` with CPU/queue-depth targets
+
+**Status:** ✅ Merged
+
+---
+
+## PR-095: DB optimization
+
+**Goal:** Define query plan and index recommendation contracts.
+
+**Key Changes:**
+- Added `QueryPlan`, `IndexRecommendation` contracts (docs/stubs)
+
+**Status:** ✅ Merged
+
+---
+
+## PR-096: Read replica
+
+**Goal:** Define read replica config and state contracts.
+
+**Key Changes:**
+- Added `ReadReplicaConfig`, `ReadReplicaState` with lag tracking
+
+**Status:** ✅ Merged
+
+---
+
+## PR-097: Horizontal scaling
+
+**Goal:** Define horizontal scaling node and cluster state contracts.
+
+**Key Changes:**
+- Added `ScalingNode`, `ClusterState` with leader tracking
+
+**Status:** ✅ Merged
+
+---
+
+## PR-098: Load testing suite
+
+**Goal:** Define load test scenario and result contracts.
+
+**Key Changes:**
+- Added `LoadTestScenario`, `LoadTestResult` with p50/p95/p99 metrics
+
+**Status:** ✅ Merged
+
+---
+
+## PR-099: Cost optimization
+
+**Goal:** Define cost optimization contracts and guide.
+
+**Key Changes:**
+- Added `ResourceUsage`, `CostOptimizationSuggestion` contracts
+- Added `docs/COST_OPTIMIZATION.md`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-100: Scale readiness review
+
+**Goal:** Define scale readiness review checklist and contracts.
+
+**Key Changes:**
+- Added `ScaleReadinessCheck`, `ScaleReadinessReport` contracts
+- Added `docs/SCALE_READINESS_CHECKLIST.md`
+
+**Status:** ✅ Merged
+
+---
+
+## Future PRs (PR-101 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
