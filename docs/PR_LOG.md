@@ -1585,7 +1585,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-102 to PR-120)
+## PR-102: Local dev kit
+
+**Goal:** Define local dev kit contracts and documentation for core-safe local development composition and readiness checks.
+
+**Key Changes:**
+- Added `packages/core/contracts/devx.py` (PR-102 section) with `LocalDevServiceSpec`, `LocalDevCheck`, `LocalDevKitPlan`, and `summarize_local_dev_kit()`
+- Added `tests/test_devx_contracts.py` covering defaults, validation, and summary counters
+- Added `docs/LOCAL_DEV_KIT.md` documenting scope boundaries and platform-side integration notes
+
+**Status:** ✅ Merged
+
+**Notes:** Contracts/docs only; no compose/nginx/VPS/deploy changes.
+
+---
+
+## Future PRs (PR-103 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
