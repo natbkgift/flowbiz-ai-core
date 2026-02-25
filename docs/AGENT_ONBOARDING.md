@@ -1,5 +1,7 @@
 # Agent Onboarding — FlowBiz VPS
 
+For contributor/agent onboarding within this core repo (non-deploy workflow), also read `docs/ONBOARDING_FLOW.md` (PR-110).
+
 **Purpose:** This document provides actionable instructions for new agents/teams deploying additional services to the FlowBiz VPS without breaking existing infrastructure.
 
 ---

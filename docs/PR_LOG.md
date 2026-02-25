@@ -1702,7 +1702,21 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-110 to PR-120)
+## PR-110: Onboarding flow
+
+**Goal:** Document contributor/agent onboarding flow for working in `flowbiz-ai-core`.
+
+**Key Changes:**
+- Added `docs/ONBOARDING_FLOW.md` with step-by-step onboarding process and stop conditions
+- Updated `docs/AGENT_ONBOARDING.md` with a cross-link to the core repo onboarding flow
+
+**Status:** ✅ Merged
+
+**Notes:** In-scope docs update only; no onboarding UI or automation implementation.
+
+---
+
+## Future PRs (PR-111 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
