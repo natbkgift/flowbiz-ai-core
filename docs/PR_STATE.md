@@ -1,23 +1,23 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T09:06:53.1994366+07:00
-- Branch: feature/PR-024-2-version-pinning-integration-notes
-- HEAD: 85cf0be
-- Last merged PR (per docs/PR_LOG.md): PR-024.2 — Version pinning & integration notes
-- Completed in this run: PR-024.2 — Version pinning & integration notes
-- Next PR: PR-024 — Agent registry v2 (register/enable/disable)
-- Persona: persona:docs
+- Last updated: 2026-02-25T09:11:04.3462853+07:00
+- Branch: feature/PR-024-agent-registry-v2
+- HEAD: 36539d0
+- Last merged PR (per docs/PR_LOG.md): PR-024 — Agent registry v2 (register/enable/disable)
+- Completed in this run: PR-024 — Agent registry v2 (register/enable/disable)
+- Next PR: PR-026 — Response contract schemas (agent/tool envelopes + errors)
+- Persona: persona:core
 - Scope class: in-scope
 - Checks: ruff=PASS, pytest=PASS
-- Notes: Added contract version pinning policy and downstream integration guidance.
+- Notes: Added Agent Registry v2 contracts, in-memory implementation, and runtime enable/disable lifecycle.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
 - 2026-02-25 | PR-024.2 | Version pinning & integration notes | in-scope | 85cf0be | ruff PASS | pytest PASS | docs-only policy and integration guidance
+- 2026-02-25 | PR-024 | Agent registry v2 (register/enable/disable) | in-scope | 36539d0 | ruff PASS | pytest PASS | registry contracts+runtime lifecycle controls
 
 ## 3) Remaining (ordered)
-- PR-024: Agent registry v2 (register/enable/disable)
 - PR-026: Response contract schemas (agent/tool envelopes + errors)
 - PR-027: Observability hooks (trace_id + tool-call log schema)
 - PR-028: Safety gate hook (optional)
