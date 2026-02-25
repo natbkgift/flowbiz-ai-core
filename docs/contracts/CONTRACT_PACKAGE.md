@@ -34,4 +34,4 @@ Out-of-scope for this package:
 
 ## Integration note
 
-Version pinning/release process for downstream consumers is tracked separately in PR-024.2.
+Version pinning and downstream integration guidance are documented in `docs/contracts/VERSION_PINNING_AND_INTEGRATION.md`.

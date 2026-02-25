@@ -357,6 +357,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-024.2: Version pinning & integration notes
+
+**Goal:** Define practical version pinning policy and downstream integration guidance for consumers of `flowbiz-ai-core` contracts.
+
+**Key Changes:**
+- Added `docs/contracts/VERSION_PINNING_AND_INTEGRATION.md` with pinning policy and upgrade workflow
+- Updated `docs/contracts/CONTRACT_PACKAGE.md` integration reference to point to the new guidance
+- Linked contract version pinning guidance from `README.md`
+- Added pre-flight trace note at `docs/pr_notes/PR-024.2.md`
+
+**Status:** ✅ Merged
+
+**Notes:** Docs-only PR; no runtime logic, infra, deploy, or integration execution changes.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
