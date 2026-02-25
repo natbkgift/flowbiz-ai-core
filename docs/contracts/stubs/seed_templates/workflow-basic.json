@@ -1,0 +1,32 @@
+{
+  "template_id": "workflow-basic",
+  "name": "Workflow Basic",
+  "version": "1.0.0",
+  "category": "workflow",
+  "variables": [
+    {
+      "key": "workflow_id",
+      "description": "Workflow identifier",
+      "required": true,
+      "example": "ticket-triage"
+    },
+    {
+      "key": "owner_team",
+      "description": "Owning team label",
+      "required": false,
+      "example": "ops"
+    }
+  ],
+  "files": [
+    {
+      "path": "workflow.json",
+      "mode": "template",
+      "description": "Workflow spec starter"
+    }
+  ],
+  "tags": [
+    "workflow",
+    "starter"
+  ],
+  "notes": "Contract stub only."
+}

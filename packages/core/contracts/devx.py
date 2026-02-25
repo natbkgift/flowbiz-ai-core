@@ -3,6 +3,7 @@
 This module accumulates contracts/stubs for PR-102+ developer experience work.
 Current contents:
 - PR-102: Local dev kit
+- PR-103: Seed templates
 """
 
 from __future__ import annotations
@@ -70,3 +71,51 @@ def summarize_local_dev_kit(plan: LocalDevKitPlan) -> dict[str, int | str]:
         "check_fail_count": checks_failed,
         "check_warn_count": checks_warn,
     }
+
+
+# ── PR-103: Seed templates ────────────────────────────────────────────────
+
+TemplateFileMode = Literal["template", "static"]
+
+
+class SeedTemplateVariable(BaseModel):
+    """Template variable definition for seed generation tooling."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    key: str
+    description: str = ""
+    required: bool = True
+    default: str | None = None
+    example: str | None = None
+
+
+class SeedTemplateFile(BaseModel):
+    """File entry included in a seed template manifest."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    path: str
+    mode: TemplateFileMode = "template"
+    description: str = ""
+
+
+class SeedTemplateManifest(BaseModel):
+    """Manifest describing a reusable project seed template."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    template_id: str
+    name: str
+    version: str = "1.0.0"
+    category: Literal["agent", "workflow", "service", "docs"] = "agent"
+    variables: list[SeedTemplateVariable] = Field(default_factory=list)
+    files: list[SeedTemplateFile] = Field(default_factory=list)
+    tags: list[str] = Field(default_factory=list)
+    notes: str = ""
+
+
+def required_template_variables(manifest: SeedTemplateManifest) -> list[str]:
+    """Return required variable keys in stable declaration order."""
+
+    return [variable.key for variable in manifest.variables if variable.required]

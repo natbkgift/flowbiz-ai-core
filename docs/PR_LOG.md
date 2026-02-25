@@ -1600,7 +1600,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-103 to PR-120)
+## PR-103: Seed templates
+
+**Goal:** Define seed template manifest contracts and example template stubs for downstream generators.
+
+**Key Changes:**
+- Extended `packages/core/contracts/devx.py` (PR-103 section) with `SeedTemplateManifest`, `SeedTemplateVariable`, `SeedTemplateFile`, and `required_template_variables()`
+- Extended `tests/test_devx_contracts.py` for manifest validation and required-variable extraction
+- Added `docs/SEED_TEMPLATES.md` and example stubs under `docs/contracts/stubs/seed_templates/`
+
+**Status:** ✅ Merged
+
+**Notes:** Contracts/templates/docs only; no generator runtime or platform-specific scaffolding implementation.
+
+---
+
+## Future PRs (PR-104 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 

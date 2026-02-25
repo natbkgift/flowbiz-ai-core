@@ -9,6 +9,10 @@ from packages.core.contracts.devx import (
     LocalDevCheck,
     LocalDevKitPlan,
     LocalDevServiceSpec,
+    SeedTemplateFile,
+    SeedTemplateManifest,
+    SeedTemplateVariable,
+    required_template_variables,
     summarize_local_dev_kit,
 )
 
@@ -59,3 +63,37 @@ class TestLocalDevKitPlan:
         assert summary["check_count"] == 3
         assert summary["check_warn_count"] == 1
         assert summary["check_fail_count"] == 1
+
+
+class TestSeedTemplateManifest:
+    def test_manifest_defaults(self) -> None:
+        manifest = SeedTemplateManifest(template_id="agent-basic", name="Agent Basic")
+        assert manifest.version == "1.0.0"
+        assert manifest.category == "agent"
+        assert manifest.variables == []
+        assert manifest.files == []
+
+    def test_required_template_variables(self) -> None:
+        manifest = SeedTemplateManifest(
+            template_id="workflow-basic",
+            name="Workflow Basic",
+            category="workflow",
+            variables=[
+                SeedTemplateVariable(key="project_name", required=True),
+                SeedTemplateVariable(key="author", required=False),
+                SeedTemplateVariable(key="persona", required=True, default="core"),
+            ],
+            files=[
+                SeedTemplateFile(path="README.md", mode="template"),
+                SeedTemplateFile(path=".gitignore", mode="static"),
+            ],
+        )
+        assert required_template_variables(manifest) == ["project_name", "persona"]
+
+    def test_manifest_forbid_extra(self) -> None:
+        with pytest.raises(ValidationError):
+            SeedTemplateManifest(  # type: ignore[call-arg]
+                template_id="bad",
+                name="Bad",
+                extra_field=True,
+            )

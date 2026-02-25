@@ -1,0 +1,37 @@
+{
+  "template_id": "agent-basic",
+  "name": "Agent Basic",
+  "version": "1.0.0",
+  "category": "agent",
+  "variables": [
+    {
+      "key": "agent_name",
+      "description": "Agent identifier",
+      "required": true,
+      "example": "support-bot"
+    },
+    {
+      "key": "persona",
+      "description": "Persona for policy defaults",
+      "required": true,
+      "default": "core"
+    }
+  ],
+  "files": [
+    {
+      "path": "agent.py",
+      "mode": "template",
+      "description": "Agent implementation skeleton"
+    },
+    {
+      "path": "README.md",
+      "mode": "template",
+      "description": "Usage notes"
+    }
+  ],
+  "tags": [
+    "agent",
+    "starter"
+  ],
+  "notes": "Example manifest only; generation engine lives outside core."
+}
