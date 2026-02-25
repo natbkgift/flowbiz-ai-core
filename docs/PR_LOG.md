@@ -389,6 +389,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-026: Response contract schemas (agent/tool envelopes + errors)
+
+**Goal:** Add canonical schema-only response envelopes for agent/tool outputs with normalized error payloads.
+
+**Key Changes:**
+- Added `packages/core/contracts/response.py` with `ResponseError`, `AgentResponseEnvelope`, and `ToolResponseEnvelope`
+- Exported new response contracts in `packages/core/contracts/__init__.py`
+- Added contract tests in `tests/test_response_contracts.py`
+- Updated contract export assertions in `tests/test_contract_package.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Contract-first schema addition only; no API integration behavior change in this PR.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
