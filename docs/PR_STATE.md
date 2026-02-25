@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T09:16:10.5787906+07:00
-- Branch: feature/PR-027-observability-hooks
-- HEAD: 326b61c
-- Last merged PR (per docs/PR_LOG.md): PR-027 — Observability hooks (trace_id + tool-call log schema)
-- Completed in this run: PR-027 — Observability hooks (trace_id + tool-call log schema)
-- Next PR: PR-028 — Safety gate hook (optional)
+- Last updated: 2026-02-25T09:20:27.4554660+07:00
+- Branch: feature/PR-028-safety-gate-hook-optional
+- HEAD: c365580
+- Last merged PR (per docs/PR_LOG.md): PR-028 — Safety gate hook (optional)
+- Completed in this run: PR-028 — Safety gate hook (optional)
+- Next PR: PR-028.1 — LLM adapter abstraction
 - Persona: persona:core
 - Scope class: in-scope
 - Checks: ruff=PASS, pytest=PASS
-- Notes: Added trace context and tool-call log schemas with deterministic hook helpers.
+- Notes: Added optional safety pre-check contracts and runtime hook with default allow behavior.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -18,9 +18,9 @@
 - 2026-02-25 | PR-024 | Agent registry v2 (register/enable/disable) | in-scope | 36539d0 | ruff PASS | pytest PASS | registry contracts+runtime lifecycle controls
 - 2026-02-25 | PR-026 | Response contract schemas (agent/tool envelopes + errors) | in-scope | 24304c6 | ruff PASS | pytest PASS | contract schemas only, no runtime integration
 - 2026-02-25 | PR-027 | Observability hooks (trace_id + tool-call log schema) | in-scope | 326b61c | ruff PASS | pytest PASS | schema/hooks only, no external backend integration
+- 2026-02-25 | PR-028 | Safety gate hook (optional) | in-scope | c365580 | ruff PASS | pytest PASS | optional safety contracts+runtime pre-check hook
 
 ## 3) Remaining (ordered)
-- PR-028: Safety gate hook (optional)
 - PR-028.1: LLM adapter abstraction
 - PR-028.2: Prompt template system
 - PR-028.3: Prompt versioning
