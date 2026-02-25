@@ -551,6 +551,23 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-033: Docs Agent safe IO rules (no code exec)
+
+**Goal:** Define canonical persona policies encoding least-privilege rules — docs agents can only read/write files, with no shell, network, or DB access.
+
+**Key Changes:**
+- Added `packages/core/persona_policies.py` with `DOCS_AGENT_POLICY`, `INFRA_AGENT_POLICY`, `CORE_AGENT_POLICY`, and `ALL_AGENT_POLICIES` dict
+- Docs: READ_FS + WRITE_FS only. No EXEC_SHELL, NET_HTTP, DB_*, READ_ENV
+- Infra: READ_FS + WRITE_FS + NET_HTTP + EXEC_SHELL + READ_ENV
+- Core: READ_FS + NET_HTTP + READ_ENV
+- Added 17 tests in `tests/test_persona_policies.py` verifying allow/deny per persona
+
+**Status:** ✅ Merged
+
+**Notes:** Policy constants only; not yet wired into runtime enforcement.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
