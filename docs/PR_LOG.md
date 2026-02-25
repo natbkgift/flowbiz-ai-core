@@ -731,44 +731,185 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## PR-044.1 to PR-044.10: Workflow contracts (schema v2, conditions, parallel, HITL, pause/resume, state, audit, replay, import/export, visual spec)
+## PR-044.1: Workflow schema v2
 
-**Goal:** Define comprehensive workflow contract schemas covering the full lifecycle from definition through execution, auditing, and visualization.
+**Goal:** Define core workflow schema v2 contracts for workflow definitions and steps.
 
 **Key Changes:**
-- Added `packages/core/contracts/workflow.py` with 15+ Pydantic contracts:
-  - PR-044.1: `WorkflowSpec`, `WorkflowStepDef` (workflow schema v2)
-  - PR-044.2: `StepCondition`, `evaluate_condition()` (step condition engine)
-  - PR-044.3: `ParallelGroup` (parallel steps with join strategies)
-  - PR-044.4: `HITLRequest` (human-in-the-loop)
-  - PR-044.5: `WorkflowPauseEvent`, `WorkflowResumeEvent`
-  - PR-044.6: `WorkflowState`, `InMemoryWorkflowStateStore`
-  - PR-044.7: `WorkflowAuditEntry` (audit trail)
-  - PR-044.8: `WorkflowReplayRequest`
-  - PR-044.9: `WorkflowExport` (import/export)
-  - PR-044.10: `WorkflowVisualSpec`, `WorkflowNodePosition`
-- Added 25 tests in `tests/test_workflow_contracts.py`
+- Added `WorkflowSpec` and `WorkflowStepDef` contracts in `packages/core/contracts/workflow.py`
+- Covered schema validation behavior in `tests/test_workflow_contracts.py`
 
 **Status:** ✅ Merged
 
-**Notes:** Schema-only contracts with in-memory stubs; actual orchestration engine is deferred.
+**Notes:** Implemented as contracts-first schema definitions; actual orchestration engine is deferred.
 
 ---
 
-## PR-044.11 to PR-044.13: Auth contracts (API key, RBAC, rate limiting)
+## PR-044.2: Step condition engine
 
-**Goal:** Define authentication, authorization, and rate limiting contracts/stubs for the API layer.
+**Goal:** Add workflow step condition contracts and deterministic condition evaluation helpers.
 
 **Key Changes:**
-- Added `packages/core/contracts/auth.py` with:
-  - PR-044.11: `APIKeyInfo`, `APIKeyValidationResult`, `StubAPIKeyValidator`
-  - PR-044.12: `RoleDefinition`, `PrincipalRoles`, `check_permission()`
-  - PR-044.13: `RateLimitPolicy`, `RateLimitResult`, `InMemoryRateLimiter`
-- Added 15 tests in `tests/test_auth_contracts.py`
+- Added `StepCondition` and `evaluate_condition()` in `packages/core/contracts/workflow.py`
+- Added tests for condition evaluation edge cases
 
 **Status:** ✅ Merged
 
-**Notes:** Stub implementations for development; production backends (Redis, DB) belong in platform layer.
+**Notes:** Contract/helper level only; no runtime workflow executor integration.
+
+---
+
+## PR-044.3: Parallel steps
+
+**Goal:** Define contracts for parallel workflow step groups and join behavior.
+
+**Key Changes:**
+- Added `ParallelGroup` contract with join strategy fields
+- Added validation tests for parallel group structure
+
+**Status:** ✅ Merged
+
+**Notes:** Schema-only representation of parallel execution intent.
+
+---
+
+## PR-044.4: Human-in-the-loop
+
+**Goal:** Define contracts for human approval/input pauses inside workflows.
+
+**Key Changes:**
+- Added `HITLRequest` contract in `packages/core/contracts/workflow.py`
+- Added tests for request payload validation
+
+**Status:** ✅ Merged
+
+**Notes:** Contracts/stubs only; no UI or external inbox integration.
+
+---
+
+## PR-044.5: Workflow pause / resume
+
+**Goal:** Define workflow pause/resume event contracts.
+
+**Key Changes:**
+- Added `WorkflowPauseEvent` and `WorkflowResumeEvent` contracts
+- Added tests validating pause/resume event payloads
+
+**Status:** ✅ Merged
+
+**Notes:** Event schema only; no persistent scheduler integration.
+
+---
+
+## PR-044.6: Workflow state persistence
+
+**Goal:** Add workflow state contracts and an in-memory persistence stub.
+
+**Key Changes:**
+- Added `WorkflowState` contract and `InMemoryWorkflowStateStore`
+- Added tests for in-memory state read/write behavior
+
+**Status:** ✅ Merged
+
+**Notes:** In-memory stub only; production persistence backend deferred.
+
+---
+
+## PR-044.7: Workflow audit trail
+
+**Goal:** Define workflow audit trail event contracts.
+
+**Key Changes:**
+- Added `WorkflowAuditEntry` contract
+- Added tests for audit entry validation
+
+**Status:** ✅ Merged
+
+**Notes:** Contracts-only for audit event shape and validation.
+
+---
+
+## PR-044.8: Workflow replay
+
+**Goal:** Define contracts for replaying workflow runs.
+
+**Key Changes:**
+- Added `WorkflowReplayRequest` contract
+- Added tests for replay request validation semantics
+
+**Status:** ✅ Merged
+
+**Notes:** Request schema only; replay engine implementation deferred.
+
+---
+
+## PR-044.9: Workflow import/export
+
+**Goal:** Define workflow import/export payload contracts.
+
+**Key Changes:**
+- Added `WorkflowExport` contract for serialized workflow payloads
+- Added tests for import/export contract validation
+
+**Status:** ✅ Merged
+
+**Notes:** Contract format only; storage/transport integration out of scope.
+
+---
+
+## PR-044.10: Visual workflow JSON spec
+
+**Goal:** Define visual layout JSON contracts for workflow editors/viewers.
+
+**Key Changes:**
+- Added `WorkflowVisualSpec` and `WorkflowNodePosition` contracts
+- Added tests for visual spec validation
+
+**Status:** ✅ Merged
+
+**Notes:** JSON spec only; visual editor UI remains out of scope in core.
+
+---
+
+## PR-044.11: API key auth
+
+**Goal:** Define API key authentication contracts and a development stub validator.
+
+**Key Changes:**
+- Added `APIKeyInfo`, `APIKeyValidationResult`, and `StubAPIKeyValidator` in `packages/core/contracts/auth.py`
+- Added auth contract tests in `tests/test_auth_contracts.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Stub validation only; production key store belongs in platform layer.
+
+---
+
+## PR-044.12: Role / permission model
+
+**Goal:** Define RBAC role and principal permission contracts.
+
+**Key Changes:**
+- Added `RoleDefinition`, `PrincipalRoles`, and `check_permission()` helper
+- Added tests for allow/deny permission checks
+
+**Status:** ✅ Merged
+
+**Notes:** Contract/helper layer only; no external identity provider integration.
+
+---
+
+## PR-044.13: Rate limiting
+
+**Goal:** Define rate limiting policy/result contracts and an in-memory limiter stub.
+
+**Key Changes:**
+- Added `RateLimitPolicy`, `RateLimitResult`, and `InMemoryRateLimiter`
+- Added tests for limiter behavior and counter resets
+
+**Status:** ✅ Merged
+
+**Notes:** In-memory stub only; Redis/distributed limiter implementation deferred to platform layer.
 
 ---
 

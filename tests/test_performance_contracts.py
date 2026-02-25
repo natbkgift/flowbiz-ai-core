@@ -121,7 +121,9 @@ class TestInMemoryCache:
         cache.set("a", 1)
         cache.set("b", 2)
         cache.set("c", 3)
-        assert cache.stats().size == 2
+        stats = cache.stats()
+        assert stats.size == 2
+        assert stats.evictions == 1
 
     def test_clear(self) -> None:
         cache = InMemoryCache()
@@ -131,6 +133,7 @@ class TestInMemoryCache:
         s = cache.stats()
         assert s.size == 0
         assert s.hits == 0
+        assert s.evictions == 0
 
 
 # ---------------------------------------------------------------------------

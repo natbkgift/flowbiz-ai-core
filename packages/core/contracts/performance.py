@@ -118,6 +118,7 @@ class InMemoryCache:
         self._store: dict[str, tuple[Any, float]] = {}
         self._hits = 0
         self._misses = 0
+        self._evictions = 0
 
     def get(self, key: str) -> Any | None:
         entry = self._store.get(key)
@@ -139,6 +140,7 @@ class InMemoryCache:
         while len(self._store) > self._config.max_size:
             oldest = next(iter(self._store))
             del self._store[oldest]
+            self._evictions += 1
 
     def delete(self, key: str) -> bool:
         return self._store.pop(key, None) is not None
@@ -149,6 +151,7 @@ class InMemoryCache:
             name=self._config.name,
             hits=self._hits,
             misses=self._misses,
+            evictions=self._evictions,
             size=len(self._store),
             hit_rate=round(self._hits / total, 4) if total > 0 else 0.0,
         )
@@ -157,6 +160,7 @@ class InMemoryCache:
         self._store.clear()
         self._hits = 0
         self._misses = 0
+        self._evictions = 0
 
 
 # ---------------------------------------------------------------------------
