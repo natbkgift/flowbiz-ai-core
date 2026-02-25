@@ -1,0 +1,132 @@
+# PR State Tracking
+
+## 1) Current Snapshot
+- Last updated: 2026-02-25T09:04:47.5552887+07:00
+- Branch: feature/PR-024-1-contract-package-schema-only
+- HEAD: eff5b28
+- Last merged PR (per docs/PR_LOG.md): PR-024.1 — Contract Package (schema-only)
+- Completed in this run: PR-024.1 — Contract Package (schema-only)
+- Next PR: PR-024.2 — Version pinning & integration notes
+- Persona: persona:core
+- Scope class: in-scope
+- Checks: ruff=PASS, pytest=PASS
+- Notes: Created schema-only contract package documentation and invariant tests.
+
+## 2) Completed (append-only)
+- 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
+
+## 3) Remaining (ordered)
+- PR-024.2: Version pinning & integration notes
+- PR-024: Agent registry v2 (register/enable/disable)
+- PR-026: Response contract schemas (agent/tool envelopes + errors)
+- PR-027: Observability hooks (trace_id + tool-call log schema)
+- PR-028: Safety gate hook (optional)
+- PR-028.1: LLM adapter abstraction
+- PR-028.2: Prompt template system
+- PR-028.3: Prompt versioning
+- PR-029: Personas: core/infra/docs
+- PR-030: Routing rules v1 (rule-based intent router)
+- PR-031: Tool permissions per persona (allowlist)
+- PR-032: Agent config loader (yaml/env)
+- PR-033: Docs Agent safe IO rules (no code exec)
+- PR-034: Infra Agent ops guardrails (compose/health/logs only)
+- PR-035: Execution pipeline v1 (steps, stop conditions)
+- PR-036: Short-term memory object (in-memory)
+- PR-037: Conversation state schema (deterministic)
+- PR-038: Retry/timeout/abort rules
+- PR-039: Deterministic vs non-deterministic toggle (optional)
+- PR-040: /agent/tools endpoint
+- PR-041: /agent/health endpoint
+- PR-042: Golden-path tests (runtime + router + tool)
+- PR-043: Failure scenario tests
+- PR-044: Light load/smoke tests (optional)
+- PR-044.1: Workflow schema v2
+- PR-044.2: Step condition engine
+- PR-044.3: Parallel steps
+- PR-044.4: Human-in-the-loop
+- PR-044.5: Workflow pause / resume
+- PR-044.6: Workflow state persistence
+- PR-044.7: Workflow audit trail
+- PR-044.8: Workflow replay
+- PR-044.9: Workflow import/export
+- PR-044.10: Visual workflow JSON spec
+- PR-044.11: API key auth
+- PR-044.12: Role / permission model
+- PR-044.13: Rate limiting
+- PR-044.14: api.flowbiz.cloud
+- PR-045: Versioned API (v1/v2)
+- PR-046: Webhook framework
+- PR-047: Webhook retry & signature
+- PR-048: Public SDK spec
+- PR-049: OpenAPI hardening
+- PR-050: API deprecation policy
+- PR-051: Metrics endpoint
+- PR-052: Prometheus exporter
+- PR-053: Tracing (OpenTelemetry)
+- PR-054: Error aggregation
+- PR-055: Slow query tracking
+- PR-056: Request analytics
+- PR-057: Health dashboard
+- PR-058: Alert rules
+- PR-059: Uptime monitoring
+- PR-060: Incident runbook
+- PR-061: Organization model
+- PR-062: Project / workspace
+- PR-063: Usage tracking
+- PR-064: Quota system
+- PR-065: Billing abstraction
+- PR-066: Plan tiers
+- PR-067: Invoice events
+- PR-068: Cost attribution
+- PR-069: Usage dashboard
+- PR-070: Billing webhooks
+- PR-071: Agent manifest
+- PR-072: Tool manifest
+- PR-073: Agent versioning
+- PR-074: Agent sandbox
+- PR-075: Permission isolation
+- PR-076: Marketplace API
+- PR-077: Agent rating
+- PR-078: Agent install/update
+- PR-079: Agent usage analytics
+- PR-080: Marketplace UI API
+- PR-081: Secrets manager
+- PR-082: Key rotation
+- PR-083: Audit log
+- PR-084: Data masking
+- PR-085: GDPR tools
+- PR-086: Consent tracking
+- PR-087: Access review
+- PR-088: Security scan
+- PR-089: Threat modeling
+- PR-090: Compliance report
+- PR-091: Async optimization
+- PR-092: Caching layer
+- PR-093: Queue backend
+- PR-094: Worker autoscale
+- PR-095: DB optimization
+- PR-096: Read replica
+- PR-097: Horizontal scaling
+- PR-098: Load testing suite
+- PR-099: Cost optimization
+- PR-100: Scale readiness review
+- PR-101: CLI tool
+- PR-102: Local dev kit
+- PR-103: Seed templates
+- PR-104: Example agents
+- PR-105: Example workflows
+- PR-106: Docs site
+- PR-107: API playground
+- PR-108: SDK generators
+- PR-109: Contribution guide
+- PR-110: Onboarding flow
+- PR-111: Slack connector
+- PR-112: LINE OA connector
+- PR-113: WhatsApp connector
+- PR-114: Email agent
+- PR-115: CRM integration
+- PR-116: Payment gateway
+- PR-117: Web app shell
+- PR-118: Admin UI
+- PR-119: Multi-tenant deploy
+- PR-120: GA release
