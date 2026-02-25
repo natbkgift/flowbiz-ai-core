@@ -437,6 +437,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-028.1: LLM adapter abstraction
+
+**Goal:** Add transport-agnostic LLM adapter contracts and a deterministic stub adapter for future provider integrations.
+
+**Key Changes:**
+- Added contracts in `packages/core/contracts/llm_adapter.py` (`LLMRequest`, `LLMResponse`, `LLMAdapterInfo`)
+- Added adapter abstraction in `packages/core/llm_adapter.py` (`LLMAdapterProtocol`, `StubLLMAdapter`)
+- Exported new contract symbols via `packages/core/contracts/__init__.py`
+- Added tests in `tests/test_llm_adapter.py` and updated contract export assertions
+
+**Status:** ✅ Merged
+
+**Notes:** Contract/stub abstraction only; no external LLM SDK integration or secret handling.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

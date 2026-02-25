@@ -3,6 +3,7 @@
 from .agent_registry import AgentRegistration, AgentRegistrySnapshot, AgentSpec
 from .health import HealthResponse
 from .jobs import JobEnvelope
+from .llm_adapter import LLMAdapterInfo, LLMRequest, LLMResponse
 from .meta import RuntimeMeta
 from .observability import ToolCallLogEntry, TraceContextContract
 from .response import AgentResponseEnvelope, ResponseError, ToolResponseEnvelope
@@ -22,6 +23,9 @@ __all__ = [
     "SafetyGateInput",
     "HealthResponse",
     "JobEnvelope",
+    "LLMRequest",
+    "LLMResponse",
+    "LLMAdapterInfo",
     "RuntimeMeta",
     "ToolSpec",
     "ToolRegistration",
