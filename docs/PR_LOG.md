@@ -1673,7 +1673,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-108 to PR-120)
+## PR-108: SDK generators
+
+**Goal:** Define SDK generator specification contracts and examples without implementing generator runtimes in core.
+
+**Key Changes:**
+- Extended `packages/core/contracts/devx.py` (PR-108 section) with `SDKGeneratorTarget`, `SDKGeneratorSpec`, and `sdk_target_languages()`
+- Extended `tests/test_devx_contracts.py` for SDK generator spec validation
+- Added `docs/SDK_GENERATORS.md` and example stub `docs/contracts/stubs/sdk_generators/openapi-python-ts.json`
+
+**Status:** ✅ Merged
+
+**Notes:** Contracts/examples/docs only; generator pipelines and publishing tooling remain out of scope for core.
+
+---
+
+## Future PRs (PR-109 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 

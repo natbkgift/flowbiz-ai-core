@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T14:15:22+07:00
-- Branch: feature/PR-107-api-playground
+- Last updated: 2026-02-25T14:17:54+07:00
+- Branch: feature/PR-108-sdk-generators
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-107 — API playground
-- Completed in this run: PR-107 — API playground
-- Next PR: PR-108 — SDK generators
-- Persona: persona:docs
-- Scope class: docs-only(out-of-scope)
-- Checks: ruff=PASS, pytest=PASS (665 passed)
-- Notes: Added API playground specification only; UI/proxy/hosting implementation remains outside core repo.
+- Last merged PR (per docs/PR_LOG.md): PR-108 — SDK generators
+- Completed in this run: PR-108 — SDK generators
+- Next PR: PR-109 — Contribution guide
+- Persona: persona:core
+- Scope class: contracts-only
+- Checks: ruff=PASS, pytest=PASS (667 passed)
+- Notes: Added SDK generator specification contracts/examples/docs only; no generator runtime or publishing pipeline implementation.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -114,10 +114,10 @@
 - 2026-02-25 | PR-104 | Example agents | in-scope | bae2559 | ruff PASS | pytest PASS | deterministic example agents + tests/docs
 - 2026-02-25 | PR-105 | Example workflows | contracts-only | 893f46d | ruff PASS | pytest PASS | workflow example stubs + validation tests/docs
 - 2026-02-25 | PR-106 | Docs site | docs-only(out-of-scope) | 6aa9a21 | ruff PASS | pytest PASS | docs site specification only; no frontend/build/deploy implementation in core
-- 2026-02-25 | PR-107 | API playground | docs-only(out-of-scope) | (pending) | ruff PASS | pytest PASS | API playground specification only; no UI/proxy/hosting implementation in core
+- 2026-02-25 | PR-107 | API playground | docs-only(out-of-scope) | dd3065a | ruff PASS | pytest PASS | API playground specification only; no UI/proxy/hosting implementation in core
+- 2026-02-25 | PR-108 | SDK generators | contracts-only | (pending) | ruff PASS | pytest PASS | SDK generator spec contracts + examples/docs; pending SHA due single-commit self-reference
 
 ## 3) Remaining (ordered)
-- PR-108: SDK generators
 - PR-109: Contribution guide
 - PR-110: Onboarding flow
 - PR-111: Slack connector

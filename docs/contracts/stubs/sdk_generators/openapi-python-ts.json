@@ -1,0 +1,23 @@
+{
+  "generator_id": "flowbiz-public-sdk",
+  "source_kind": "hybrid",
+  "source_ref": "openapi:v2 + contracts:core",
+  "targets": [
+    {
+      "language": "python",
+      "package_name": "flowbiz-ai-sdk",
+      "package_version": "0.1.0",
+      "transport": "http-rest",
+      "output_dir": "generated/python"
+    },
+    {
+      "language": "typescript",
+      "package_name": "@flowbiz/ai-sdk",
+      "package_version": "0.1.0",
+      "transport": "http-rest",
+      "output_dir": "generated/typescript"
+    }
+  ],
+  "include_examples": true,
+  "notes": "Contract stub only; actual generation pipeline lives outside core."
+}

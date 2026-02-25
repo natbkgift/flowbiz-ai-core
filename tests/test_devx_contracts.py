@@ -9,10 +9,13 @@ from packages.core.contracts.devx import (
     LocalDevCheck,
     LocalDevKitPlan,
     LocalDevServiceSpec,
+    SDKGeneratorSpec,
+    SDKGeneratorTarget,
     SeedTemplateFile,
     SeedTemplateManifest,
     SeedTemplateVariable,
     required_template_variables,
+    sdk_target_languages,
     summarize_local_dev_kit,
 )
 
@@ -97,3 +100,24 @@ class TestSeedTemplateManifest:
                 name="Bad",
                 extra_field=True,
             )
+
+
+class TestSdkGeneratorSpec:
+    def test_defaults(self) -> None:
+        spec = SDKGeneratorSpec(generator_id="sdk-gen", source_ref="docs/openapi.json")
+        assert spec.source_kind == "openapi"
+        assert spec.targets == []
+        assert spec.include_examples is True
+
+    def test_target_languages_unique_stable(self) -> None:
+        spec = SDKGeneratorSpec(
+            generator_id="sdk-gen",
+            source_kind="hybrid",
+            source_ref="contracts+openapi",
+            targets=[
+                SDKGeneratorTarget(language="python", package_name="flowbiz_core"),
+                SDKGeneratorTarget(language="typescript", package_name="@flowbiz/core"),
+                SDKGeneratorTarget(language="python", package_name="flowbiz_core_alt"),
+            ],
+        )
+        assert sdk_target_languages(spec) == ["python", "typescript"]

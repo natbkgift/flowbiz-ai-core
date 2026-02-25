@@ -4,6 +4,7 @@ This module accumulates contracts/stubs for PR-102+ developer experience work.
 Current contents:
 - PR-102: Local dev kit
 - PR-103: Seed templates
+- PR-108: SDK generators
 """
 
 from __future__ import annotations
@@ -119,3 +120,46 @@ def required_template_variables(manifest: SeedTemplateManifest) -> list[str]:
     """Return required variable keys in stable declaration order."""
 
     return [variable.key for variable in manifest.variables if variable.required]
+
+
+# ── PR-108: SDK generators ────────────────────────────────────────────────
+
+SDKLanguage = Literal["python", "typescript", "go", "java"]
+SDKTransport = Literal["http-rest", "webhook-client"]
+
+
+class SDKGeneratorTarget(BaseModel):
+    """Target language/runtime for SDK generation."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    language: SDKLanguage
+    package_name: str
+    package_version: str = "0.1.0"
+    transport: SDKTransport = "http-rest"
+    output_dir: str = "generated"
+
+
+class SDKGeneratorSpec(BaseModel):
+    """Generator spec contract for producing SDKs from API/contract sources."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    generator_id: str
+    source_kind: Literal["openapi", "contracts", "hybrid"] = "openapi"
+    source_ref: str
+    targets: list[SDKGeneratorTarget] = Field(default_factory=list)
+    include_examples: bool = True
+    notes: str = ""
+
+
+def sdk_target_languages(spec: SDKGeneratorSpec) -> list[str]:
+    """Return unique target languages in stable order of first appearance."""
+
+    seen: set[str] = set()
+    result: list[str] = []
+    for target in spec.targets:
+        if target.language not in seen:
+            seen.add(target.language)
+            result.append(target.language)
+    return result
