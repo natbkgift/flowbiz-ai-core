@@ -43,6 +43,10 @@ def test_contract_package_exports_expected_symbols():
         "RoutingResult",
         "AgentConfig",
         "AgentConfigSet",
+        "PipelineStep",
+        "StepResult",
+        "PipelineSpec",
+        "PipelineResult",
     }
     assert set(contracts.__all__) == expected
 

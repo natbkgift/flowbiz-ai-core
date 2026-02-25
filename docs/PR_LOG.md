@@ -585,6 +585,79 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-035: Execution pipeline v1 (steps, stop conditions)
+
+**Goal:** Implement a contract-first execution pipeline with ordered steps, stop conditions, and handler registration.
+
+**Key Changes:**
+- Added `packages/core/contracts/pipeline.py` with `StepStatus`/`StopCondition` literals, `PipelineStep`, `StepResult`, `PipelineSpec`, `PipelineResult` schemas
+- Added `packages/core/pipeline_runner.py` with `PipelineRunner` class (register_handler, run with stop conditions: on_error/on_success/always/never)
+- Exported pipeline contracts via `packages/core/contracts/__init__.py`
+- Added 15 tests in `tests/test_pipeline_runner.py` (6 contract + 9 runner)
+
+**Status:** ✅ Merged
+
+**Notes:** Core runtime primitive; no external orchestrator integration.
+
+---
+
+## PR-036: Short-term memory object (in-memory)
+
+**Goal:** Provide a simple key-value memory store scoped to a session/run for passing data between pipeline steps.
+
+**Key Changes:**
+- Added `packages/core/short_term_memory.py` with `MemoryEntry`, `MemorySnapshot` contracts and `ShortTermMemory` class (set/get/delete/keys/snapshot/clear)
+- Added 10 tests in `tests/test_short_term_memory.py`
+
+**Status:** ✅ Merged
+
+**Notes:** In-memory only; no persistence backend.
+
+---
+
+## PR-037: Conversation state schema (deterministic)
+
+**Goal:** Define a deterministic, serialisable conversation state that tracks turns between user, agent, and system.
+
+**Key Changes:**
+- Added `packages/core/conversation.py` with `Role` literal, `ConversationTurn`, `ConversationState` contracts and `ConversationManager` class (add_turn/snapshot/clear)
+- Added 8 tests in `tests/test_conversation.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Schema + manager primitives; no persistence or transport coupling.
+
+---
+
+## PR-038: Retry/timeout/abort rules
+
+**Goal:** Provide a configurable retry policy contract and executor with backoff and abort-on-exception support.
+
+**Key Changes:**
+- Added `packages/core/retry.py` with `RetryPolicy`, `RetryResult` contracts and `run_with_retry()` function
+- Supports max retries, backoff seconds, and abort-on exception class names
+- Added 7 tests in `tests/test_retry.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Timeout is advisory; actual timeout mechanisms (threading) are left to callers.
+
+---
+
+## PR-039: Deterministic vs non-deterministic toggle
+
+**Goal:** Provide an optional runtime flag controlling deterministic (reproducible) vs non-deterministic (creative) execution mode.
+
+**Key Changes:**
+- Added `packages/core/execution_mode.py` with `ExecutionMode` contract, `DETERMINISTIC_MODE`/`CREATIVE_MODE` constants, and `resolve_mode()` function
+- Added 7 tests in `tests/test_execution_mode.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Optional contract — agents may ignore the mode hint.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

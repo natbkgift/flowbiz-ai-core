@@ -8,6 +8,7 @@ from .llm_adapter import LLMAdapterInfo, LLMRequest, LLMResponse
 from .meta import RuntimeMeta
 from .observability import ToolCallLogEntry, TraceContextContract
 from .persona import PersonaAssignment, PersonaSpec
+from .pipeline import PipelineResult, PipelineSpec, PipelineStep, StepResult
 from .prompt_template import PromptRenderRequest, PromptRenderResult, PromptTemplateSpec
 from .response import AgentResponseEnvelope, ResponseError, ToolResponseEnvelope
 from .routing import RoutingResult, RoutingRule
@@ -43,4 +44,8 @@ __all__ = [
     "RoutingResult",
     "AgentConfig",
     "AgentConfigSet",
+    "PipelineStep",
+    "StepResult",
+    "PipelineSpec",
+    "PipelineResult",
 ]

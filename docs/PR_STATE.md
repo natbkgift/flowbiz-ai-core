@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-034-infra-agent-ops-guardrails
+- Branch: feature/PR-035-execution-pipeline-v1
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-034 — Infra Agent ops guardrails
-- Completed in this run: PR-029, PR-030, PR-031, PR-032, PR-033, PR-034
-- Next PR: PR-035 — Execution pipeline v1
+- Last merged PR (per docs/PR_LOG.md): PR-039 — Deterministic toggle
+- Completed in this run: PR-035, PR-036, PR-037, PR-038, PR-039
+- Next PR: PR-040 — /agent/tools endpoint
 - Persona: persona:core
 - Scope class: in-scope
-- Checks: ruff=PASS, pytest=PASS (343 tests)
-- Notes: Ops command guardrails with prefix allowlist + deny patterns.
+- Checks: ruff=PASS, pytest=PASS
+- Notes: Phase 3 complete — execution pipeline, memory, conversation, retry, deterministic toggle.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -28,13 +28,13 @@
 - 2026-02-25 | PR-032 | Agent config loader | in-scope | (pending) | ruff PASS | pytest PASS | agent config contracts + dict-based loader
 - 2026-02-25 | PR-033 | Docs Agent safe IO rules | in-scope | (pending) | ruff PASS | pytest PASS | canonical persona policies with least-privilege
 - 2026-02-25 | PR-034 | Infra Agent ops guardrails | in-scope | (pending) | ruff PASS | pytest PASS | ops command guardrails with prefix allowlist + deny patterns
+- 2026-02-25 | PR-035 | Execution pipeline v1 | in-scope | (pending) | ruff PASS | pytest PASS | pipeline contracts + runner with stop conditions
+- 2026-02-25 | PR-036 | Short-term memory | in-scope | (pending) | ruff PASS | pytest PASS | in-memory key-value store for session data
+- 2026-02-25 | PR-037 | Conversation state | in-scope | (pending) | ruff PASS | pytest PASS | deterministic conversation state + manager
+- 2026-02-25 | PR-038 | Retry/timeout/abort | in-scope | (pending) | ruff PASS | pytest PASS | retry policy + executor with backoff/abort
+- 2026-02-25 | PR-039 | Deterministic toggle | in-scope | (pending) | ruff PASS | pytest PASS | execution mode contract + resolve function
 
 ## 3) Remaining (ordered)
-- PR-035: Execution pipeline v1 (steps, stop conditions)
-- PR-036: Short-term memory object (in-memory)
-- PR-037: Conversation state schema (deterministic)
-- PR-038: Retry/timeout/abort rules
-- PR-039: Deterministic vs non-deterministic toggle (optional)
 - PR-040: /agent/tools endpoint
 - PR-041: /agent/health endpoint
 - PR-042: Golden-path tests (runtime + router + tool)
