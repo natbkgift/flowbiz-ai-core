@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-030-routing-rules-v1
+- Branch: feature/PR-031-tool-permissions-per-persona
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-030 — Routing rules v1
-- Completed in this run: PR-029, PR-030
-- Next PR: PR-031 — Tool permissions per persona
+- Last merged PR (per docs/PR_LOG.md): PR-031 — Tool permissions per persona
+- Completed in this run: PR-029, PR-030, PR-031
+- Next PR: PR-032 — Agent config loader (yaml/env)
 - Persona: persona:core
 - Scope class: in-scope
-- Checks: ruff=PASS, pytest=PASS (256 tests)
-- Notes: Rule-based intent router with keyword+regex matching.
+- Checks: ruff=PASS, pytest=PASS (268 tests)
+- Notes: Tool permission checker with deny-first authorization logic.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -24,9 +24,9 @@
 - 2026-02-25 | PR-028.3 | Prompt versioning | in-scope | f703a38 | ruff PASS | pytest PASS | versioned templates with latest fallback + explicit version
 - 2026-02-25 | PR-029 | Personas: core/infra/docs | in-scope | (pending) | ruff PASS | pytest PASS | persona contracts+registry primitives
 - 2026-02-25 | PR-030 | Routing rules v1 | in-scope | (pending) | ruff PASS | pytest PASS | rule-based intent router with keyword+regex matching
+- 2026-02-25 | PR-031 | Tool permissions per persona | in-scope | (pending) | ruff PASS | pytest PASS | deny-first tool permission checker
 
 ## 3) Remaining (ordered)
-- PR-031: Tool permissions per persona (allowlist)
 - PR-032: Agent config loader (yaml/env)
 - PR-033: Docs Agent safe IO rules (no code exec)
 - PR-034: Infra Agent ops guardrails (compose/health/logs only)

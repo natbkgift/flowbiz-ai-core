@@ -519,6 +519,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-031: Tool permissions per persona (allowlist)
+
+**Goal:** Implement runtime tool permission checking that ties persona-based `AgentPolicy` to tool `ToolPermissions` declarations, producing a `PolicyDecision`.
+
+**Key Changes:**
+- Added `packages/core/tool_permission_checker.py` with `check_tool_permission(policy, tool_perms, tool_name)` function
+- Deny-first evaluation: tool allowlist → required permissions → allow
+- Optional permissions do not block execution
+- Added 12 tests in `tests/test_tool_permission_checker.py` covering allow/deny/ordering scenarios and persona integration examples
+
+**Status:** ✅ Merged
+
+**Notes:** Authorization checker only; not yet wired into execution pipeline.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
