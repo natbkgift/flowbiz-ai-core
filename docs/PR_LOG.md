@@ -1832,7 +1832,21 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-119 to PR-120)
+## PR-119: Multi-tenant deploy
+
+**Goal:** Document multi-tenant deployment requirements and safety boundaries only, without infra changes in core.
+
+**Key Changes:**
+- Added `docs/MULTI_TENANT_DEPLOY_SPEC.md` with explicit core/platform ownership and infra safety constraints
+- Referenced `docs/CODEX_AGENT_BEHAVIOR_LOCK.md` and related guardrails
+
+**Status:** ✅ Merged
+
+**Notes:** Docs-only(out-of-scope); multi-tenant deploy implementation belongs in platform/infra repos and requires explicit deploy authorization.
+
+---
+
+## Future PRs (PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
