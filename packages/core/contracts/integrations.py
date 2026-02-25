@@ -6,6 +6,7 @@ must be implemented outside `flowbiz-ai-core`.
 Current contents:
 - PR-111: Slack connector
 - PR-112: LINE OA connector
+- PR-113: WhatsApp connector
 """
 
 from __future__ import annotations
@@ -119,3 +120,57 @@ class LineOAConnectorStub:
 
     def sent_replies(self) -> list[LineOAReplyRequest]:
         return list(self._replies)
+
+
+# ── PR-113: WhatsApp connector (contracts/stubs only) ────────────────────
+
+WhatsAppEventType = Literal["message", "status", "template_status"]
+
+
+class WhatsAppConnectorConfig(BaseModel):
+    """WhatsApp connector configuration contract (provider-agnostic stub)."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    phone_number_id: str
+    business_account_id: str = ""
+    access_token_ref: str = ""
+    verify_token_ref: str = ""
+    enabled: bool = True
+
+
+class WhatsAppWebhookEvent(BaseModel):
+    """Normalized WhatsApp webhook event contract."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    event_id: str
+    type: WhatsAppEventType
+    from_user: str = ""
+    to_number_id: str = ""
+    payload: dict[str, Any] = Field(default_factory=dict)
+
+
+class WhatsAppSendMessageRequest(BaseModel):
+    """Outbound WhatsApp message request contract (stub only)."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    to_user: str
+    message_type: Literal["text", "template"] = "text"
+    text: str = ""
+    template_name: str | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class WhatsAppConnectorStub:
+    """In-memory WhatsApp connector stub for contract testing."""
+
+    def __init__(self) -> None:
+        self._messages: list[WhatsAppSendMessageRequest] = []
+
+    def send(self, request: WhatsAppSendMessageRequest) -> None:
+        self._messages.append(request)
+
+    def sent_messages(self) -> list[WhatsAppSendMessageRequest]:
+        return list(self._messages)

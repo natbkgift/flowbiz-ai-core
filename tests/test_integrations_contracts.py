@@ -11,6 +11,10 @@ from packages.core.contracts.integrations import (
     SlackConnectorStub,
     SlackEventEnvelope,
     SlackMessageRequest,
+    WhatsAppConnectorConfig,
+    WhatsAppConnectorStub,
+    WhatsAppSendMessageRequest,
+    WhatsAppWebhookEvent,
 )
 
 
@@ -58,3 +62,24 @@ class TestLineOAConnectorContracts:
         stub = LineOAConnectorStub()
         stub.send(LineOAReplyRequest(to_user_id="U1", messages=[{"type": "text"}]))
         assert len(stub.sent_replies()) == 1
+
+
+class TestWhatsAppConnectorContracts:
+    def test_whatsapp_config_defaults(self) -> None:
+        cfg = WhatsAppConnectorConfig(phone_number_id="P1")
+        assert cfg.enabled is True
+
+    def test_whatsapp_webhook_event(self) -> None:
+        event = WhatsAppWebhookEvent(
+            event_id="wa-evt-1",
+            type="message",
+            from_user="15551234567",
+            payload={"text": {"body": "hello"}},
+        )
+        assert event.type == "message"
+        assert event.payload["text"]["body"] == "hello"
+
+    def test_whatsapp_stub_send(self) -> None:
+        stub = WhatsAppConnectorStub()
+        stub.send(WhatsAppSendMessageRequest(to_user="1555", text="hello"))
+        assert len(stub.sent_messages()) == 1

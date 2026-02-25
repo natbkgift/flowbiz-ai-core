@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T14:27:38+07:00
-- Branch: feature/PR-112-line-oa-connector
+- Last updated: 2026-02-25T14:30:27+07:00
+- Branch: feature/PR-113-whatsapp-connector
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-112 — LINE OA connector
-- Completed in this run: PR-112 — LINE OA connector
-- Next PR: PR-113 — WhatsApp connector
+- Last merged PR (per docs/PR_LOG.md): PR-113 — WhatsApp connector
+- Completed in this run: PR-113 — WhatsApp connector
+- Next PR: PR-114 — Email agent
 - Persona: persona:core
 - Scope class: contracts-only
-- Checks: ruff=PASS, pytest=PASS (673 passed)
-- Notes: Added LINE OA connector contracts/stubs/docs only; actual webhook/signature/API integration belongs to platform/client layer.
+- Checks: ruff=PASS, pytest=PASS (676 passed)
+- Notes: Added WhatsApp connector contracts/stubs/docs only; actual provider integration belongs to platform/client layer.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -119,10 +119,10 @@
 - 2026-02-25 | PR-109 | Contribution guide | in-scope | d192963 | ruff PASS | pytest PASS | CONTRIBUTING.md aligned with scope/guardrails/preflight
 - 2026-02-25 | PR-110 | Onboarding flow | in-scope | 0029a0b | ruff PASS | pytest PASS | onboarding flow docs + AGENT_ONBOARDING cross-link
 - 2026-02-25 | PR-111 | Slack connector | contracts-only | 9144969 | ruff PASS | pytest PASS | Slack connector contracts/stubs/docs + JSON event example
-- 2026-02-25 | PR-112 | LINE OA connector | contracts-only | (pending) | ruff PASS | pytest PASS | LINE OA connector contracts/stubs/docs + JSON event example
+- 2026-02-25 | PR-112 | LINE OA connector | contracts-only | 14a5fed | ruff PASS | pytest PASS | LINE OA connector contracts/stubs/docs + JSON event example
+- 2026-02-25 | PR-113 | WhatsApp connector | contracts-only | (pending) | ruff PASS | pytest PASS | WhatsApp connector contracts/stubs/docs + JSON event example
 
 ## 3) Remaining (ordered)
-- PR-113: WhatsApp connector
 - PR-114: Email agent
 - PR-115: CRM integration
 - PR-116: Payment gateway

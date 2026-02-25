@@ -1,0 +1,11 @@
+{
+  "event_id": "wa-evt-1",
+  "type": "message",
+  "from_user": "15551234567",
+  "to_number_id": "1234567890",
+  "payload": {
+    "text": {
+      "body": "hello"
+    }
+  }
+}
