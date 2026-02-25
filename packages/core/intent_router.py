@@ -65,6 +65,7 @@ class IntentRouter:
 
 # ── helpers ────────────────────────────────────────────────────────────────
 
+
 def _matches(rule: RoutingRule, intent: str) -> bool:
     if rule.match_strategy == "keyword":
         return rule.match_value.lower() in intent.lower()

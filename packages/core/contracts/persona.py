@@ -21,9 +21,7 @@ class PersonaSpec(BaseModel):
 
     persona: PersonaType = Field(..., description="Persona identifier")
     display_name: str = Field(..., description="Human-friendly label")
-    description: str = Field(
-        "", description="What this persona is responsible for"
-    )
+    description: str = Field("", description="What this persona is responsible for")
 
 
 class PersonaAssignment(BaseModel):

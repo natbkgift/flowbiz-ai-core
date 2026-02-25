@@ -18,6 +18,7 @@ from packages.core.persona_registry import PersonaRegistry
 
 # ── contract immutability ─────────────────────────────────────────────────
 
+
 class TestPersonaContracts:
     def test_persona_spec_frozen(self) -> None:
         with pytest.raises(ValidationError):
@@ -47,6 +48,7 @@ class TestPersonaContracts:
 
 
 # ── registry ──────────────────────────────────────────────────────────────
+
 
 class TestPersonaRegistry:
     def test_list_personas_returns_all(self) -> None:

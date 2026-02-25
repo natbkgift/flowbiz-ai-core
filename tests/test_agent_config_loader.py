@@ -15,6 +15,7 @@ from packages.core.contracts.agent_config import AgentConfig, AgentConfigSet
 
 # ── contract tests ────────────────────────────────────────────────────────
 
+
 class TestAgentConfigContract:
     def test_minimal_config(self) -> None:
         cfg = AgentConfig(agent_name="echo", persona="core")
@@ -71,6 +72,7 @@ class TestAgentConfigSet:
 
 
 # ── loader tests ──────────────────────────────────────────────────────────
+
 
 class TestLoadAgentConfig:
     def test_load_valid(self) -> None:

@@ -42,9 +42,7 @@ def check_tool_permission(
     # 2) Required permission check
     allowed_set = set(policy.allowed_permissions)
     missing = [
-        p.value
-        for p in tool_permissions.required_permissions
-        if p not in allowed_set
+        p.value for p in tool_permissions.required_permissions if p not in allowed_set
     ]
     if missing:
         return PolicyDecision(

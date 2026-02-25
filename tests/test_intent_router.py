@@ -11,6 +11,7 @@ from packages.core.intent_router import IntentRouter
 
 # ── contract immutability ─────────────────────────────────────────────────
 
+
 class TestRoutingContracts:
     def test_routing_rule_frozen(self) -> None:
         r = RoutingRule(
@@ -57,6 +58,7 @@ class TestRoutingContracts:
 
 
 # ── intent router ─────────────────────────────────────────────────────────
+
 
 class TestIntentRouter:
     @staticmethod

@@ -53,9 +53,7 @@ class PersonaRegistry:
 
     def agents_for_persona(self, persona: PersonaType) -> list[str]:
         """Return sorted list of agent names assigned to a persona."""
-        return sorted(
-            name for name, p in self._assignments.items() if p == persona
-        )
+        return sorted(name for name, p in self._assignments.items() if p == persona)
 
     def remove_assignment(self, agent_name: str) -> bool:
         """Remove an agent's persona assignment. Returns True if it existed."""
