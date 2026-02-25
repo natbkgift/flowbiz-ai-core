@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from packages.core.contracts.integrations import (
+    EmailAgentConfig,
+    EmailAgentStub,
+    EmailSendRequest,
     LineOAConnectorConfig,
     LineOAConnectorStub,
     LineOAReplyRequest,
@@ -83,3 +86,24 @@ class TestWhatsAppConnectorContracts:
         stub = WhatsAppConnectorStub()
         stub.send(WhatsAppSendMessageRequest(to_user="1555", text="hello"))
         assert len(stub.sent_messages()) == 1
+
+
+class TestEmailAgentContracts:
+    def test_email_config_defaults(self) -> None:
+        cfg = EmailAgentConfig(from_address="noreply@example.com")
+        assert cfg.provider == "stub"
+        assert cfg.enabled is True
+
+    def test_email_stub_send(self) -> None:
+        stub = EmailAgentStub()
+        result = stub.send(
+            EmailSendRequest(
+                to=["user@example.com"],
+                subject="Hello",
+                body_text="World",
+            )
+        )
+        assert result.accepted is True
+        assert result.provider == "stub"
+        assert result.message_id == "stub-1"
+        assert len(stub.sent_requests()) == 1

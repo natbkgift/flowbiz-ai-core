@@ -1,0 +1,13 @@
+{
+  "to": [
+    "user@example.com"
+  ],
+  "cc": [],
+  "bcc": [],
+  "subject": "Welcome",
+  "body_text": "Hello from FlowBiz",
+  "body_html": "<p>Hello from FlowBiz</p>",
+  "metadata": {
+    "template_id": "welcome-v1"
+  }
+}

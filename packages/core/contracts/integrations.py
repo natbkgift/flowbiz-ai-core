@@ -7,6 +7,7 @@ Current contents:
 - PR-111: Slack connector
 - PR-112: LINE OA connector
 - PR-113: WhatsApp connector
+- PR-114: Email agent
 """
 
 from __future__ import annotations
@@ -174,3 +175,62 @@ class WhatsAppConnectorStub:
 
     def sent_messages(self) -> list[WhatsAppSendMessageRequest]:
         return list(self._messages)
+
+
+# ── PR-114: Email agent (contracts/stubs only) ───────────────────────────
+
+EmailProvider = Literal["smtp", "ses", "sendgrid", "mailgun", "stub"]
+
+
+class EmailAgentConfig(BaseModel):
+    """Email agent/provider configuration contract."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    provider: EmailProvider = "stub"
+    from_address: str
+    provider_secret_ref: str = ""
+    enabled: bool = True
+
+
+class EmailSendRequest(BaseModel):
+    """Outbound email send request contract (no provider integration)."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    to: list[str] = Field(default_factory=list)
+    cc: list[str] = Field(default_factory=list)
+    bcc: list[str] = Field(default_factory=list)
+    subject: str
+    body_text: str = ""
+    body_html: str | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class EmailSendResult(BaseModel):
+    """Email send result contract for stubs and adapters."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    accepted: bool = True
+    message_id: str = ""
+    provider: EmailProvider = "stub"
+    error: str = ""
+
+
+class EmailAgentStub:
+    """In-memory email sender stub for contract testing."""
+
+    def __init__(self) -> None:
+        self._requests: list[EmailSendRequest] = []
+
+    def send(self, request: EmailSendRequest) -> EmailSendResult:
+        self._requests.append(request)
+        return EmailSendResult(
+            accepted=True,
+            message_id=f"stub-{len(self._requests)}",
+            provider="stub",
+        )
+
+    def sent_requests(self) -> list[EmailSendRequest]:
+        return list(self._requests)

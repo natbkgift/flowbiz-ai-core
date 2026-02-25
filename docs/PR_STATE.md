@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T14:30:27+07:00
-- Branch: feature/PR-113-whatsapp-connector
+- Last updated: 2026-02-25T14:33:22+07:00
+- Branch: feature/PR-114-email-agent
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-113 — WhatsApp connector
-- Completed in this run: PR-113 — WhatsApp connector
-- Next PR: PR-114 — Email agent
+- Last merged PR (per docs/PR_LOG.md): PR-114 — Email agent
+- Completed in this run: PR-114 — Email agent
+- Next PR: PR-115 — CRM integration
 - Persona: persona:core
 - Scope class: contracts-only
-- Checks: ruff=PASS, pytest=PASS (676 passed)
-- Notes: Added WhatsApp connector contracts/stubs/docs only; actual provider integration belongs to platform/client layer.
+- Checks: ruff=PASS, pytest=PASS (678 passed)
+- Notes: Added email-agent contracts/stubs/docs only; SMTP/provider integration and delivery pipelines belong to platform/client layer.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -120,10 +120,10 @@
 - 2026-02-25 | PR-110 | Onboarding flow | in-scope | 0029a0b | ruff PASS | pytest PASS | onboarding flow docs + AGENT_ONBOARDING cross-link
 - 2026-02-25 | PR-111 | Slack connector | contracts-only | 9144969 | ruff PASS | pytest PASS | Slack connector contracts/stubs/docs + JSON event example
 - 2026-02-25 | PR-112 | LINE OA connector | contracts-only | 14a5fed | ruff PASS | pytest PASS | LINE OA connector contracts/stubs/docs + JSON event example
-- 2026-02-25 | PR-113 | WhatsApp connector | contracts-only | (pending) | ruff PASS | pytest PASS | WhatsApp connector contracts/stubs/docs + JSON event example
+- 2026-02-25 | PR-113 | WhatsApp connector | contracts-only | 2e6c54e | ruff PASS | pytest PASS | WhatsApp connector contracts/stubs/docs + JSON event example
+- 2026-02-25 | PR-114 | Email agent | contracts-only | (pending) | ruff PASS | pytest PASS | email agent contracts/stubs/docs + JSON request example
 
 ## 3) Remaining (ordered)
-- PR-114: Email agent
 - PR-115: CRM integration
 - PR-116: Payment gateway
 - PR-117: Web app shell
