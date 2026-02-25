@@ -341,6 +341,150 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-024.1: Contract Package (schema-only)
+
+**Goal:** Formalize and verify a schema-only contract package boundary for cross-repo data exchange.
+
+**Key Changes:**
+- Added contract package guidance at `docs/contracts/CONTRACT_PACKAGE.md`
+- Added package-level tests in `tests/test_contract_package.py` to verify exports and schema invariants
+- Verified contract models remain immutable (`frozen=True`) and reject unknown fields (`extra="forbid"`)
+- Added Codex pre-flight note for traceability at `docs/pr_notes/PR-024.1.md`
+
+**Status:** ✅ Merged
+
+**Notes:** Schema-only package; no runtime integration behavior or deployment changes.
+
+---
+
+## PR-024.2: Version pinning & integration notes
+
+**Goal:** Define practical version pinning policy and downstream integration guidance for consumers of `flowbiz-ai-core` contracts.
+
+**Key Changes:**
+- Added `docs/contracts/VERSION_PINNING_AND_INTEGRATION.md` with pinning policy and upgrade workflow
+- Updated `docs/contracts/CONTRACT_PACKAGE.md` integration reference to point to the new guidance
+- Linked contract version pinning guidance from `README.md`
+- Added pre-flight trace note at `docs/pr_notes/PR-024.2.md`
+
+**Status:** ✅ Merged
+
+**Notes:** Docs-only PR; no runtime logic, infra, deploy, or integration execution changes.
+
+---
+
+## PR-024: Agent registry v2 (register/enable/disable)
+
+**Goal:** Introduce deterministic Agent Registry v2 and wire runtime execution to registry lifecycle state.
+
+**Key Changes:**
+- Added schema-only contracts at `packages/core/contracts/agent_registry.py` (`AgentSpec`, `AgentRegistration`, `AgentRegistrySnapshot`)
+- Added in-memory registry implementation at `packages/core/agent_registry.py` with register/list/get/set_enabled/remove
+- Integrated registry checks into `packages/core/runtime/runtime.py` with runtime-level `enable_agent`/`disable_agent`
+- Added tests at `tests/test_agent_registry.py` and expanded runtime tests for disable/reenable behavior
+
+**Status:** ✅ Merged
+
+**Notes:** In-scope core runtime enhancement; no infra/deploy/platform integration changes.
+
+---
+
+## PR-026: Response contract schemas (agent/tool envelopes + errors)
+
+**Goal:** Add canonical schema-only response envelopes for agent/tool outputs with normalized error payloads.
+
+**Key Changes:**
+- Added `packages/core/contracts/response.py` with `ResponseError`, `AgentResponseEnvelope`, and `ToolResponseEnvelope`
+- Exported new response contracts in `packages/core/contracts/__init__.py`
+- Added contract tests in `tests/test_response_contracts.py`
+- Updated contract export assertions in `tests/test_contract_package.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Contract-first schema addition only; no API integration behavior change in this PR.
+
+---
+
+## PR-027: Observability hooks (trace_id + tool-call log schema)
+
+**Goal:** Introduce contract-first observability hooks for trace context and tool-call logging.
+
+**Key Changes:**
+- Added observability contracts in `packages/core/contracts/observability.py` (`TraceContextContract`, `ToolCallLogEntry`)
+- Added helper module `packages/core/observability.py` for deterministic log entry construction
+- Exported observability contracts via `packages/core/contracts/__init__.py`
+- Added tests in `tests/test_observability_hooks.py` and updated contract export assertions
+
+**Status:** ✅ Merged
+
+**Notes:** Core observability schema/hooks only; no external logging backend integration or deploy changes.
+
+---
+
+## PR-028: Safety gate hook (optional)
+
+**Goal:** Add an optional safety gate hook contract and runtime pre-check integration with safe default behavior.
+
+**Key Changes:**
+- Added safety contracts in `packages/core/contracts/safety.py` (`SafetyDecision`, `SafetyGateInput`)
+- Added safety hook abstraction in `packages/core/safety_gate.py` (`SafetyGateProtocol`, `AllowAllSafetyGate`)
+- Integrated optional safety pre-check in `packages/core/runtime/runtime.py` before agent execution
+- Added tests in `tests/test_safety_gate.py` and runtime deny-path coverage in `tests/test_runtime_unit.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Core-only optional hook; no external moderation vendor or platform-specific policy integration.
+
+---
+
+## PR-028.1: LLM adapter abstraction
+
+**Goal:** Add transport-agnostic LLM adapter contracts and a deterministic stub adapter for future provider integrations.
+
+**Key Changes:**
+- Added contracts in `packages/core/contracts/llm_adapter.py` (`LLMRequest`, `LLMResponse`, `LLMAdapterInfo`)
+- Added adapter abstraction in `packages/core/llm_adapter.py` (`LLMAdapterProtocol`, `StubLLMAdapter`)
+- Exported new contract symbols via `packages/core/contracts/__init__.py`
+- Added tests in `tests/test_llm_adapter.py` and updated contract export assertions
+
+**Status:** ✅ Merged
+
+**Notes:** Contract/stub abstraction only; no external LLM SDK integration or secret handling.
+
+---
+
+## PR-028.2: Prompt template system
+
+**Goal:** Introduce a deterministic prompt template registry and rendering contracts with strict variable validation.
+
+**Key Changes:**
+- Added prompt template contracts in `packages/core/contracts/prompt_template.py`
+- Added `PromptTemplateRegistry` and rendering logic in `packages/core/prompt_templates.py`
+- Exported new contract symbols via `packages/core/contracts/__init__.py`
+- Added tests in `tests/test_prompt_templates.py` and updated contract export assertions
+
+**Status:** ✅ Merged
+
+**Notes:** Core-only template primitives; no provider/runtime orchestration integration in this PR.
+
+---
+
+## PR-028.3: Prompt versioning
+
+**Goal:** Add deterministic prompt versioning support to template registration and rendering.
+
+**Key Changes:**
+- Extended prompt contracts in `packages/core/contracts/prompt_template.py` with version fields
+- Upgraded `PromptTemplateRegistry` in `packages/core/prompt_templates.py` to store multiple versions per template
+- Added latest-version fallback rendering and explicit-version rendering support
+- Added tests for versioned behavior and sorted version listing in `tests/test_prompt_templates.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Core versioning primitives only; no runtime/provider orchestration coupling.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from ..agent_registry import InMemoryAgentRegistry
+from ..contracts.agent_registry import AgentSpec
+from ..contracts.safety import SafetyGateInput
+from ..safety_gate import AllowAllSafetyGate, SafetyGateProtocol
 from .agent_base import AgentBase
 from .agents.echo import EchoAgent
 from .context import RuntimeContext
@@ -11,15 +15,47 @@ from .result import RuntimeError, RuntimeResult
 class AgentRuntime:
     """Orchestrates agent execution with built-in agent registry."""
 
-    def __init__(self):
+    def __init__(self, safety_gate: SafetyGateProtocol | None = None):
         """Initialize runtime with built-in agents."""
-        self._agents: dict[str, AgentBase] = {
-            "echo": EchoAgent(),
-        }
+        self._agents: dict[str, AgentBase] = {}
+        self._registry = InMemoryAgentRegistry()
+        self._safety_gate = safety_gate or AllowAllSafetyGate()
+        self.register_agent(EchoAgent())
+
+    def _ensure_registry_entry(self, agent: AgentBase) -> None:
+        """Ensure agent has a registry entry.
+
+        This keeps backward compatibility for direct test-time map mutation while
+        converging runtime behavior around registry checks.
+        """
+        if self._registry.get(agent.name) is not None:
+            return
+
+        self._registry.register(
+            AgentSpec(agent_name=agent.name, description=agent.__class__.__name__)
+        )
 
     def register_agent(self, agent: AgentBase) -> None:
         """Register an agent in the runtime registry."""
+        self._registry.register(
+            AgentSpec(agent_name=agent.name, description=agent.__class__.__name__)
+        )
         self._agents[agent.name] = agent
+
+    def set_agent_enabled(self, agent_name: str, enabled: bool) -> None:
+        """Enable or disable an agent in the runtime registry."""
+        agent = self._agents.get(agent_name)
+        if agent is not None:
+            self._ensure_registry_entry(agent)
+        self._registry.set_enabled(agent_name, enabled)
+
+    def enable_agent(self, agent_name: str) -> None:
+        """Enable an agent in the runtime registry."""
+        self.set_agent_enabled(agent_name, enabled=True)
+
+    def disable_agent(self, agent_name: str) -> None:
+        """Disable an agent in the runtime registry."""
+        self.set_agent_enabled(agent_name, enabled=False)
 
     def run(self, ctx: RuntimeContext) -> RuntimeResult:
         """Execute agent specified in context.
@@ -43,6 +79,45 @@ class AgentRuntime:
                         code="AGENT_NOT_FOUND",
                         message=f"Agent '{ctx.agent}' not found",
                         details={"agent": ctx.agent},
+                    )
+                ],
+            )
+
+        self._ensure_registry_entry(agent)
+        registration = self._registry.get(ctx.agent)
+
+        if registration is None or not registration.enabled:
+            return RuntimeResult(
+                status="error",
+                trace_id=ctx.trace_id,
+                agent=ctx.agent,
+                output=None,
+                errors=[
+                    RuntimeError(
+                        code="AGENT_NOT_FOUND",
+                        message=f"Agent '{ctx.agent}' is not available",
+                        details={"agent": ctx.agent},
+                    )
+                ],
+            )
+
+        decision = self._safety_gate.check(
+            SafetyGateInput(trace_id=ctx.trace_id, agent=ctx.agent, text=ctx.input)
+        )
+        if decision.decision == "deny":
+            return RuntimeResult(
+                status="error",
+                trace_id=ctx.trace_id,
+                agent=ctx.agent,
+                output=None,
+                errors=[
+                    RuntimeError(
+                        code="VALIDATION_ERROR",
+                        message=decision.reason or "Input blocked by safety gate",
+                        details={
+                            "safety_code": decision.code,
+                            "agent": ctx.agent,
+                        },
                     )
                 ],
             )

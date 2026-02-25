@@ -12,6 +12,7 @@ FlowBiz AI Core is the foundational service layer for flowbiz.cloud. This reposi
 - **[Guardrails](docs/GUARDRAILS.md)** – Development guidelines and code review requirements
 - **[Tool Authoring Guide](docs/TOOLS.md)** – How to write tools correctly and consistently
 - **[Tool Registry](docs/TOOL_REGISTRY.md)** – Tool Registry v2 data model and lifecycle operations
+- **[Contract Version Pinning](docs/contracts/VERSION_PINNING_AND_INTEGRATION.md)** – Pinning policy and downstream integration notes
 - **[PR Log](docs/PR_LOG.md)** – History of pull requests (PR-001 to PR-120)
 
 ## Project structure
