@@ -41,6 +41,8 @@ def test_contract_package_exports_expected_symbols():
         "PersonaAssignment",
         "RoutingRule",
         "RoutingResult",
+        "AgentConfig",
+        "AgentConfigSet",
     }
     assert set(contracts.__all__) == expected
 

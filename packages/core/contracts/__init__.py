@@ -1,5 +1,6 @@
 """Schema-only contract package for cross-repo data boundaries."""
 
+from .agent_config import AgentConfig, AgentConfigSet
 from .agent_registry import AgentRegistration, AgentRegistrySnapshot, AgentSpec
 from .health import HealthResponse
 from .jobs import JobEnvelope
@@ -40,4 +41,6 @@ __all__ = [
     "PersonaAssignment",
     "RoutingRule",
     "RoutingResult",
+    "AgentConfig",
+    "AgentConfigSet",
 ]

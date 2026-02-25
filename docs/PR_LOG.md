@@ -535,6 +535,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-032: Agent config loader (yaml/env)
+
+**Goal:** Define agent configuration contracts and a loader that validates raw dicts (from YAML/JSON/env) into typed `AgentConfig` / `AgentConfigSet` models.
+
+**Key Changes:**
+- Added `packages/core/contracts/agent_config.py` with `AgentConfig` (name, persona, description, enabled, tags, allowed_tools) and `AgentConfigSet` schemas
+- Added `packages/core/agent_config_loader.py` with `load_agent_config`, `load_agent_config_set`, `load_agent_configs_from_list` functions
+- Updated contract exports and `test_contract_package.py`
+- Added 14 tests in `tests/test_agent_config_loader.py`
+
+**Status:** ✅ Merged
+
+**Notes:** No file I/O or YAML parsing — caller provides raw dicts. Pure validation layer.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-031-tool-permissions-per-persona
+- Branch: feature/PR-032-agent-config-loader
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-031 — Tool permissions per persona
-- Completed in this run: PR-029, PR-030, PR-031
-- Next PR: PR-032 — Agent config loader (yaml/env)
+- Last merged PR (per docs/PR_LOG.md): PR-032 — Agent config loader
+- Completed in this run: PR-029, PR-030, PR-031, PR-032
+- Next PR: PR-033 — Docs Agent safe IO rules (no code exec)
 - Persona: persona:core
 - Scope class: in-scope
-- Checks: ruff=PASS, pytest=PASS (268 tests)
-- Notes: Tool permission checker with deny-first authorization logic.
+- Checks: ruff=PASS, pytest=PASS (282 tests)
+- Notes: Agent config contracts + dict-based loader.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -25,9 +25,9 @@
 - 2026-02-25 | PR-029 | Personas: core/infra/docs | in-scope | (pending) | ruff PASS | pytest PASS | persona contracts+registry primitives
 - 2026-02-25 | PR-030 | Routing rules v1 | in-scope | (pending) | ruff PASS | pytest PASS | rule-based intent router with keyword+regex matching
 - 2026-02-25 | PR-031 | Tool permissions per persona | in-scope | (pending) | ruff PASS | pytest PASS | deny-first tool permission checker
+- 2026-02-25 | PR-032 | Agent config loader | in-scope | (pending) | ruff PASS | pytest PASS | agent config contracts + dict-based loader
 
 ## 3) Remaining (ordered)
-- PR-032: Agent config loader (yaml/env)
 - PR-033: Docs Agent safe IO rules (no code exec)
 - PR-034: Infra Agent ops guardrails (compose/health/logs only)
 - PR-035: Execution pipeline v1 (steps, stop conditions)
