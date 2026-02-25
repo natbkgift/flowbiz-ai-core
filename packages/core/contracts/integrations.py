@@ -8,6 +8,7 @@ Current contents:
 - PR-112: LINE OA connector
 - PR-113: WhatsApp connector
 - PR-114: Email agent
+- PR-115: CRM integration
 """
 
 from __future__ import annotations
@@ -233,4 +234,58 @@ class EmailAgentStub:
         )
 
     def sent_requests(self) -> list[EmailSendRequest]:
+        return list(self._requests)
+
+
+# ── PR-115: CRM integration (contracts/stubs only) ───────────────────────
+
+CRMProvider = Literal["hubspot", "salesforce", "zoho", "generic", "stub"]
+CRMOperation = Literal["upsert_contact", "upsert_lead", "create_note", "sync_status"]
+
+
+class CRMIntegrationConfig(BaseModel):
+    """CRM integration configuration contract (provider adapter out of scope)."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    provider: CRMProvider = "stub"
+    account_id: str
+    credential_ref: str = ""
+    enabled: bool = True
+
+
+class CRMSyncRequest(BaseModel):
+    """CRM sync request contract for platform adapters."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    operation: CRMOperation
+    external_id: str
+    record_type: str
+    payload: dict[str, Any] = Field(default_factory=dict)
+    trace_id: str = ""
+
+
+class CRMSyncResult(BaseModel):
+    """CRM sync result contract for stubs/adapters."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    ok: bool = True
+    provider: CRMProvider = "stub"
+    remote_id: str = ""
+    error: str = ""
+
+
+class CRMIntegrationStub:
+    """In-memory CRM integration stub for deterministic contract testing."""
+
+    def __init__(self) -> None:
+        self._requests: list[CRMSyncRequest] = []
+
+    def sync(self, request: CRMSyncRequest) -> CRMSyncResult:
+        self._requests.append(request)
+        return CRMSyncResult(ok=True, provider="stub", remote_id=request.external_id)
+
+    def sync_requests(self) -> list[CRMSyncRequest]:
         return list(self._requests)

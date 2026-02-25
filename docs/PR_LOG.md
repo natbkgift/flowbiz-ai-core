@@ -1776,7 +1776,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-115 to PR-120)
+## PR-115: CRM integration
+
+**Goal:** Define CRM integration contracts/stubs and docs in core without provider adapter implementation.
+
+**Key Changes:**
+- Extended `packages/core/contracts/integrations.py` (PR-115 section) with CRM integration contracts and stub
+- Extended `tests/test_integrations_contracts.py` with CRM contract/stub tests
+- Added `docs/CRM_INTEGRATION_SPEC.md` and `docs/contracts/stubs/integrations/crm_sync_request.json`
+
+**Status:** ✅ Merged
+
+**Notes:** Contracts/stubs/docs only; CRM provider adapters and sync runtime belong in platform/client layer.
+
+---
+
+## Future PRs (PR-116 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 

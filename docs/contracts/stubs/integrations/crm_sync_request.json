@@ -1,0 +1,11 @@
+{
+  "operation": "upsert_contact",
+  "external_id": "crm-contact-001",
+  "record_type": "contact",
+  "payload": {
+    "email": "user@example.com",
+    "first_name": "Flow",
+    "last_name": "Biz"
+  },
+  "trace_id": "trace-crm-001"
+}

@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from packages.core.contracts.integrations import (
+    CRMIntegrationConfig,
+    CRMIntegrationStub,
+    CRMSyncRequest,
     EmailAgentConfig,
     EmailAgentStub,
     EmailSendRequest,
@@ -107,3 +110,25 @@ class TestEmailAgentContracts:
         assert result.provider == "stub"
         assert result.message_id == "stub-1"
         assert len(stub.sent_requests()) == 1
+
+
+class TestCrmIntegrationContracts:
+    def test_crm_config_defaults(self) -> None:
+        cfg = CRMIntegrationConfig(account_id="acct-1")
+        assert cfg.provider == "stub"
+        assert cfg.enabled is True
+
+    def test_crm_stub_sync(self) -> None:
+        stub = CRMIntegrationStub()
+        result = stub.sync(
+            CRMSyncRequest(
+                operation="upsert_contact",
+                external_id="contact-1",
+                record_type="contact",
+                payload={"email": "user@example.com"},
+            )
+        )
+        assert result.ok is True
+        assert result.provider == "stub"
+        assert result.remote_id == "contact-1"
+        assert len(stub.sync_requests()) == 1
