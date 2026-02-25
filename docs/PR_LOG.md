@@ -373,6 +373,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-024: Agent registry v2 (register/enable/disable)
+
+**Goal:** Introduce deterministic Agent Registry v2 and wire runtime execution to registry lifecycle state.
+
+**Key Changes:**
+- Added schema-only contracts at `packages/core/contracts/agent_registry.py` (`AgentSpec`, `AgentRegistration`, `AgentRegistrySnapshot`)
+- Added in-memory registry implementation at `packages/core/agent_registry.py` with register/list/get/set_enabled/remove
+- Integrated registry checks into `packages/core/runtime/runtime.py` with runtime-level `enable_agent`/`disable_agent`
+- Added tests at `tests/test_agent_registry.py` and expanded runtime tests for disable/reenable behavior
+
+**Status:** ✅ Merged
+
+**Notes:** In-scope core runtime enhancement; no infra/deploy/platform integration changes.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

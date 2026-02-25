@@ -15,6 +15,9 @@ from packages.core.contracts.tool_registry import (
 
 def test_contract_package_exports_expected_symbols():
     expected = {
+        "AgentSpec",
+        "AgentRegistration",
+        "AgentRegistrySnapshot",
         "HealthResponse",
         "JobEnvelope",
         "RuntimeMeta",

@@ -339,6 +339,30 @@ class TestAgentRuntime:
 
         assert result.trace_id == custom_trace_id
 
+    def test_runtime_disable_agent_blocks_execution(self):
+        """Verify disabling an agent prevents execution."""
+        runtime = AgentRuntime()
+        runtime.disable_agent("echo")
+
+        result = runtime.run(RuntimeContext(agent="echo", input="blocked"))
+
+        assert result.status == "error"
+        assert result.agent == "echo"
+        assert result.output is None
+        assert len(result.errors) == 1
+        assert result.errors[0].code == "AGENT_NOT_FOUND"
+
+    def test_runtime_reenable_agent_allows_execution(self):
+        """Verify re-enabling an agent restores execution."""
+        runtime = AgentRuntime()
+        runtime.disable_agent("echo")
+        runtime.enable_agent("echo")
+
+        result = runtime.run(RuntimeContext(agent="echo", input="allowed"))
+
+        assert result.status == "ok"
+        assert result.output == "allowed"
+
     def test_runtime_exception_handling(self):
         """Verify AgentRuntime handles agent exceptions gracefully."""
         runtime = AgentRuntime()
