@@ -1819,7 +1819,20 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-118 to PR-120)
+## PR-118: Admin UI
+
+**Goal:** Define Admin UI requirements/boundaries as docs only, without frontend implementation in core.
+
+**Key Changes:**
+- Added `docs/ADMIN_UI_SPEC.md` documenting goals, non-goals, and core touchpoints for an external admin UI repo
+
+**Status:** ✅ Merged
+
+**Notes:** Docs-only(out-of-scope); Admin UI must be implemented in a platform/web frontend repository.
+
+---
+
+## Future PRs (PR-119 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
