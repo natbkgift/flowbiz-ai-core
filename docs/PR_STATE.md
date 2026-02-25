@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T09:25:11.9741120+07:00
-- Branch: feature/PR-028-2-prompt-template-system
-- HEAD: 66f8d9d
-- Last merged PR (per docs/PR_LOG.md): PR-028.2 — Prompt template system
-- Completed in this run: PR-028.2 — Prompt template system
-- Next PR: PR-028.3 — Prompt versioning
+- Last updated: 2026-02-25T09:27:32.8291778+07:00
+- Branch: feature/PR-028-3-prompt-versioning
+- HEAD: f703a38
+- Last merged PR (per docs/PR_LOG.md): PR-028.3 — Prompt versioning
+- Completed in this run: PR-028.3 — Prompt versioning
+- Next PR: PR-029 — Personas: core/infra/docs
 - Persona: persona:core
 - Scope class: in-scope
 - Checks: ruff=PASS, pytest=PASS
-- Notes: Added deterministic prompt template contracts, registry, and strict render validation.
+- Notes: Added prompt versioning with latest-default and explicit-version render support.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -21,9 +21,9 @@
 - 2026-02-25 | PR-028 | Safety gate hook (optional) | in-scope | c365580 | ruff PASS | pytest PASS | optional safety contracts+runtime pre-check hook
 - 2026-02-25 | PR-028.1 | LLM adapter abstraction | in-scope | 96c3bc7 | ruff PASS | pytest PASS | contract/protocol/stub only, no provider integration
 - 2026-02-25 | PR-028.2 | Prompt template system | in-scope | 66f8d9d | ruff PASS | pytest PASS | template contracts+registry rendering primitives
+- 2026-02-25 | PR-028.3 | Prompt versioning | in-scope | f703a38 | ruff PASS | pytest PASS | versioned templates with latest fallback + explicit version
 
 ## 3) Remaining (ordered)
-- PR-028.3: Prompt versioning
 - PR-029: Personas: core/infra/docs
 - PR-030: Routing rules v1 (rule-based intent router)
 - PR-031: Tool permissions per persona (allowlist)
