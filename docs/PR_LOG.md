@@ -786,6 +786,83 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-045: Versioned API (v1/v2)
+
+**Goal:** Introduce API v2 routing alongside existing v1 to demonstrate versioned API pattern.
+
+**Key Changes:**
+- Added `apps/api/routes/v2/__init__.py` with `GET /v2/meta` endpoint
+- V2 meta extends v1 with `api_version` and `capabilities` fields
+- Wired v2 router into `apps/api/main.py`
+- V1 endpoints remain unchanged for backward compatibility
+
+**Status:** ✅ Merged
+
+---
+
+## PR-046: Webhook framework
+
+**Goal:** Define webhook registration, payload, and delivery result contracts with an in-memory registry stub.
+
+**Key Changes:**
+- Added `packages/core/contracts/webhook.py` with `WebhookRegistration`, `WebhookPayload`, `WebhookDeliveryResult`, `InMemoryWebhookRegistry`
+- Registry supports event filtering, wildcard subscriptions, and active/inactive hooks
+- Added 12 tests in `tests/test_webhook_contracts.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Contracts + in-memory stub; actual HTTP delivery belongs in platform layer.
+
+---
+
+## PR-047: Webhook retry & signature
+
+**Goal:** Add webhook retry policy and HMAC signature verification contracts.
+
+**Key Changes:**
+- Added `WebhookRetryPolicy` (max_retries, backoff_seconds, backoff_multiplier)
+- Added `compute_webhook_signature()` and `verify_webhook_signature()` using HMAC-SHA256
+- Added 4 tests for signature compute/verify
+
+**Status:** ✅ Merged
+
+---
+
+## PR-048: Public SDK spec (docs-only)
+
+**Goal:** Document the public SDK specification and generation workflow.
+
+**Key Changes:**
+- Added `docs/SDK_SPEC.md` with SDK design principles, endpoint catalog, and generation workflow
+- Marked as docs-only; SDK repos belong outside core
+
+**Status:** ✅ Merged
+
+---
+
+## PR-049: OpenAPI hardening
+
+**Goal:** Verify OpenAPI schema completeness and add tests to prevent schema regressions.
+
+**Key Changes:**
+- Added `tests/test_openapi.py` with 10 OpenAPI schema validation tests
+- Validates paths, schemas, version info, and component definitions
+
+**Status:** ✅ Merged
+
+---
+
+## PR-050: API deprecation policy (docs-only)
+
+**Goal:** Establish the API deprecation policy with timeline, headers, and migration guide template.
+
+**Key Changes:**
+- Added `docs/API_DEPRECATION_POLICY.md` with deprecation timeline (90-day migration), sunset headers, and migration guide template
+
+**Status:** ✅ Merged
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

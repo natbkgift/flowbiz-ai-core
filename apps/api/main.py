@@ -18,6 +18,7 @@ from apps.api.routes.v1.agent import router as agent_v1_router
 from apps.api.routes.v1.agent_health import router as agent_health_router
 from apps.api.routes.v1.meta import router as meta_v1_router
 from apps.api.routes.v1.tools import router as tools_v1_router
+from apps.api.routes.v2 import router as v2_router
 from packages.core import build_error_response, get_logger, get_settings
 
 
@@ -101,6 +102,7 @@ def create_app() -> FastAPI:
     app.include_router(agent_v1_router)
     app.include_router(agent_health_router)
     app.include_router(tools_v1_router)
+    app.include_router(v2_router)
 
     @app.get("/", summary="Root placeholder")
     async def read_root() -> dict[str, str]:

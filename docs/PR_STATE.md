@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-044.1-044.14-workflow-auth
+- Branch: feature/PR-045-050-api-webhooks-sdk
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-044.14 — api.flowbiz.cloud (docs)
-- Completed in this run: PR-044.1–044.14
-- Next PR: PR-045 — Versioned API (v1/v2)
+- Last merged PR (per docs/PR_LOG.md): PR-050 — API deprecation policy
+- Completed in this run: PR-045–050
+- Next PR: PR-051 — Metrics endpoint
 - Persona: persona:core
 - Scope class: in-scope (contracts/docs)
-- Checks: ruff=PASS, pytest=PASS (464 tests)
-- Notes: Phase 5 complete — workflow contracts, auth, rate limiting, gateway docs.
+- Checks: ruff=PASS, pytest=PASS (488 tests)
+- Notes: Phase 6 complete — v2 API, webhooks, SDK spec, OpenAPI hardening, deprecation policy.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -41,14 +41,14 @@
 - 2026-02-25 | PR-044.1–044.10 | Workflow contracts | in-scope | (pending) | ruff PASS | pytest PASS | workflow schema v2 + conditions + parallel + HITL + state + audit + replay + export + visual
 - 2026-02-25 | PR-044.11–044.13 | Auth contracts | in-scope | (pending) | ruff PASS | pytest PASS | API key + RBAC + rate limiting contracts/stubs
 - 2026-02-25 | PR-044.14 | api.flowbiz.cloud | docs-only | (pending) | ruff PASS | pytest PASS | gateway design docs (out-of-scope implementation)
+- 2026-02-25 | PR-045 | Versioned API (v1/v2) | in-scope | (pending) | ruff PASS | pytest PASS | v2 API router with /v2/meta endpoint
+- 2026-02-25 | PR-046 | Webhook framework | in-scope | (pending) | ruff PASS | pytest PASS | webhook registration + payload + delivery contracts
+- 2026-02-25 | PR-047 | Webhook retry & signature | in-scope | (pending) | ruff PASS | pytest PASS | HMAC-SHA256 signing + retry policy
+- 2026-02-25 | PR-048 | Public SDK spec | docs-only | (pending) | ruff PASS | pytest PASS | SDK design docs (out-of-scope repos)
+- 2026-02-25 | PR-049 | OpenAPI hardening | in-scope | (pending) | ruff PASS | pytest PASS | 10 OpenAPI schema validation tests
+- 2026-02-25 | PR-050 | API deprecation policy | docs-only | (pending) | ruff PASS | pytest PASS | deprecation timeline + migration template
 
 ## 3) Remaining (ordered)
-- PR-045: Versioned API (v1/v2)
-- PR-046: Webhook framework
-- PR-047: Webhook retry & signature
-- PR-048: Public SDK spec
-- PR-049: OpenAPI hardening
-- PR-050: API deprecation policy
 - PR-051: Metrics endpoint
 - PR-052: Prometheus exporter
 - PR-053: Tracing (OpenTelemetry)
