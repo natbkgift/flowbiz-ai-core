@@ -5,6 +5,7 @@ from __future__ import annotations
 from fastapi.testclient import TestClient
 
 from apps.api.main import create_app
+from packages.core import get_version_info
 
 
 def _get_openapi() -> dict:
@@ -22,6 +23,10 @@ class TestOpenAPIHardening:
     def test_info_title(self) -> None:
         schema = _get_openapi()
         assert schema["info"]["title"]
+
+    def test_info_version_matches_runtime_version(self) -> None:
+        schema = _get_openapi()
+        assert schema["info"]["version"] == get_version_info().version
 
     def test_paths_not_empty(self) -> None:
         schema = _get_openapi()

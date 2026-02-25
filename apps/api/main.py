@@ -19,7 +19,12 @@ from apps.api.routes.v1.agent_health import router as agent_health_router
 from apps.api.routes.v1.meta import router as meta_v1_router
 from apps.api.routes.v1.tools import router as tools_v1_router
 from apps.api.routes.v2 import router as v2_router
-from packages.core import build_error_response, get_logger, get_settings
+from packages.core import (
+    build_error_response,
+    get_logger,
+    get_settings,
+    get_version_info,
+)
 
 
 @asynccontextmanager
@@ -34,7 +39,11 @@ def create_app() -> FastAPI:
 
     settings = get_settings()
 
-    app = FastAPI(title=settings.name, lifespan=lifespan)
+    app = FastAPI(
+        title=settings.name,
+        version=get_version_info().version,
+        lifespan=lifespan,
+    )
 
     # innermost
     app.add_middleware(RequestLoggingMiddleware)
