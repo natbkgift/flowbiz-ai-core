@@ -9,6 +9,7 @@ from .observability import ToolCallLogEntry, TraceContextContract
 from .persona import PersonaAssignment, PersonaSpec
 from .prompt_template import PromptRenderRequest, PromptRenderResult, PromptTemplateSpec
 from .response import AgentResponseEnvelope, ResponseError, ToolResponseEnvelope
+from .routing import RoutingResult, RoutingRule
 from .safety import SafetyDecision, SafetyGateInput
 from .tool_registry import ToolRegistration, ToolRegistrySnapshot, ToolSpec
 
@@ -37,4 +38,6 @@ __all__ = [
     "ToolRegistrySnapshot",
     "PersonaSpec",
     "PersonaAssignment",
+    "RoutingRule",
+    "RoutingResult",
 ]

@@ -502,6 +502,23 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-030: Routing rules v1 (rule-based intent router)
+
+**Goal:** Implement a rule-based intent router that matches inbound intent strings to target personas/agents via keyword or regex pattern rules, evaluated in priority order.
+
+**Key Changes:**
+- Added `packages/core/contracts/routing.py` with `RoutingRule` (keyword/pattern strategy, priority, enabled flag) and `RoutingResult` schemas
+- Added `packages/core/intent_router.py` with `IntentRouter` class (add/remove rules, route intent, priority-sorted evaluation)
+- Updated `packages/core/contracts/__init__.py` to export `RoutingRule` and `RoutingResult`
+- Updated `tests/test_contract_package.py` with new expected symbols
+- Added 16 tests in `tests/test_intent_router.py` covering keyword/pattern matching, priority ordering, disabled rules, duplicates, and edge cases
+
+**Status:** ✅ Merged
+
+**Notes:** Rule-based routing primitives only; no LLM-based classification or middleware integration yet.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

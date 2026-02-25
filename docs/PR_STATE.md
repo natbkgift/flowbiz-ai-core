@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-029-personas-core-infra-docs
+- Branch: feature/PR-030-routing-rules-v1
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-029 — Personas: core/infra/docs
-- Completed in this run: PR-029 — Personas: core/infra/docs
-- Next PR: PR-030 — Routing rules v1 (rule-based intent router)
+- Last merged PR (per docs/PR_LOG.md): PR-030 — Routing rules v1
+- Completed in this run: PR-029, PR-030
+- Next PR: PR-031 — Tool permissions per persona
 - Persona: persona:core
 - Scope class: in-scope
-- Checks: ruff=PASS, pytest=PASS (240 tests)
-- Notes: Persona contracts and registry. 15 new tests.
+- Checks: ruff=PASS, pytest=PASS (256 tests)
+- Notes: Rule-based intent router with keyword+regex matching.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -23,9 +23,9 @@
 - 2026-02-25 | PR-028.2 | Prompt template system | in-scope | 66f8d9d | ruff PASS | pytest PASS | template contracts+registry rendering primitives
 - 2026-02-25 | PR-028.3 | Prompt versioning | in-scope | f703a38 | ruff PASS | pytest PASS | versioned templates with latest fallback + explicit version
 - 2026-02-25 | PR-029 | Personas: core/infra/docs | in-scope | (pending) | ruff PASS | pytest PASS | persona contracts+registry primitives
+- 2026-02-25 | PR-030 | Routing rules v1 | in-scope | (pending) | ruff PASS | pytest PASS | rule-based intent router with keyword+regex matching
 
 ## 3) Remaining (ordered)
-- PR-030: Routing rules v1 (rule-based intent router)
 - PR-031: Tool permissions per persona (allowlist)
 - PR-032: Agent config loader (yaml/env)
 - PR-033: Docs Agent safe IO rules (no code exec)
