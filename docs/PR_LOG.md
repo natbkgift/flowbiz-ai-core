@@ -453,6 +453,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-028.2: Prompt template system
+
+**Goal:** Introduce a deterministic prompt template registry and rendering contracts with strict variable validation.
+
+**Key Changes:**
+- Added prompt template contracts in `packages/core/contracts/prompt_template.py`
+- Added `PromptTemplateRegistry` and rendering logic in `packages/core/prompt_templates.py`
+- Exported new contract symbols via `packages/core/contracts/__init__.py`
+- Added tests in `tests/test_prompt_templates.py` and updated contract export assertions
+
+**Status:** ✅ Merged
+
+**Notes:** Core-only template primitives; no provider/runtime orchestration integration in this PR.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
