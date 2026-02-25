@@ -1,0 +1,11 @@
+{
+  "event_id": "pay-evt-1",
+  "provider": "stub",
+  "event_type": "payment_succeeded",
+  "payment_id": "pay-1",
+  "amount_minor": 1000,
+  "currency": "THB",
+  "payload": {
+    "order_id": "order-1"
+  }
+}

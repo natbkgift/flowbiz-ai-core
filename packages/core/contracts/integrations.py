@@ -9,6 +9,7 @@ Current contents:
 - PR-113: WhatsApp connector
 - PR-114: Email agent
 - PR-115: CRM integration
+- PR-116: Payment gateway
 """
 
 from __future__ import annotations
@@ -289,3 +290,58 @@ class CRMIntegrationStub:
 
     def sync_requests(self) -> list[CRMSyncRequest]:
         return list(self._requests)
+
+
+# ── PR-116: Payment gateway (contracts/stubs only; implementation out of scope)
+
+PaymentProvider = Literal["stripe", "paypal", "xendit", "omise", "stub"]
+PaymentEventType = Literal["payment_succeeded", "payment_failed", "refund_created"]
+
+
+class PaymentGatewayConfig(BaseModel):
+    """Payment gateway config contract (provider processing out of scope in core)."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    provider: PaymentProvider = "stub"
+    merchant_id: str
+    secret_ref: str = ""
+    webhook_secret_ref: str = ""
+    enabled: bool = True
+
+
+class PaymentEventEnvelope(BaseModel):
+    """Payment webhook/event contract shape for platform adapters."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    event_id: str
+    provider: PaymentProvider = "stub"
+    event_type: PaymentEventType
+    payment_id: str = ""
+    amount_minor: int = 0
+    currency: str = "USD"
+    payload: dict[str, Any] = Field(default_factory=dict)
+
+
+class PaymentVerificationRequest(BaseModel):
+    """Webhook verification input contract for external adapters."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    headers: dict[str, str] = Field(default_factory=dict)
+    raw_body: str
+    provider: PaymentProvider = "stub"
+
+
+class PaymentGatewayStub:
+    """In-memory payment gateway stub for contract testing only."""
+
+    def __init__(self) -> None:
+        self._events: list[PaymentEventEnvelope] = []
+
+    def ingest(self, event: PaymentEventEnvelope) -> None:
+        self._events.append(event)
+
+    def events(self) -> list[PaymentEventEnvelope]:
+        return list(self._events)

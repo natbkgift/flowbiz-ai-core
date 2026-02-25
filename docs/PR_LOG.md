@@ -1791,7 +1791,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-116 to PR-120)
+## PR-116: Payment gateway
+
+**Goal:** Define payment gateway boundary contracts/stubs and docs only, with explicit note that payment processing is out of scope for core.
+
+**Key Changes:**
+- Extended `packages/core/contracts/integrations.py` (PR-116 section) with payment gateway contracts and stub
+- Extended `tests/test_integrations_contracts.py` with payment contract/stub tests
+- Added `docs/PAYMENT_GATEWAY_SPEC.md` and `docs/contracts/stubs/integrations/payment_event.json`
+
+**Status:** ✅ Merged
+
+**Notes:** Contracts/stubs/docs only; payment processing/webhooks/reconciliation must be implemented in platform billing services.
+
+---
+
+## Future PRs (PR-117 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 

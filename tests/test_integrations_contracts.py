@@ -9,6 +9,9 @@ from packages.core.contracts.integrations import (
     EmailAgentConfig,
     EmailAgentStub,
     EmailSendRequest,
+    PaymentEventEnvelope,
+    PaymentGatewayConfig,
+    PaymentGatewayStub,
     LineOAConnectorConfig,
     LineOAConnectorStub,
     LineOAReplyRequest,
@@ -132,3 +135,24 @@ class TestCrmIntegrationContracts:
         assert result.provider == "stub"
         assert result.remote_id == "contact-1"
         assert len(stub.sync_requests()) == 1
+
+
+class TestPaymentGatewayContracts:
+    def test_payment_config_defaults(self) -> None:
+        cfg = PaymentGatewayConfig(merchant_id="m-1")
+        assert cfg.provider == "stub"
+        assert cfg.enabled is True
+
+    def test_payment_event_and_stub(self) -> None:
+        stub = PaymentGatewayStub()
+        event = PaymentEventEnvelope(
+            event_id="pay-evt-1",
+            event_type="payment_succeeded",
+            payment_id="pay-1",
+            amount_minor=1000,
+            currency="THB",
+        )
+        stub.ingest(event)
+        events = stub.events()
+        assert len(events) == 1
+        assert events[0].event_type == "payment_succeeded"
