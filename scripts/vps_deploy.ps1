@@ -27,11 +27,20 @@ param(
   [switch]$ReloadNginx,
 
   [Parameter()]
+  [switch]$ResetRemoteGitWorkingTree,
+
+  [Parameter()]
+  [string[]]$PreserveRemotePaths = @(".env", ".env.bak*", ".env.preclean.*"),
+
+  [Parameter()]
   [switch]$DryRun
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+if (Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyContinue) {
+  $PSNativeCommandUseErrorActionPreference = $false
+}
 
 if (-not $RemotePath.StartsWith("/opt/flowbiz/")) {
   throw "RemotePath must be under /opt/flowbiz/. Got: $RemotePath"
@@ -51,7 +60,67 @@ function Assert-CommandExists {
   }
 }
 
+function Invoke-CheckedNative {
+  param(
+    [Parameter(Mandatory = $true)][string]$FilePath,
+    [Parameter()][string[]]$ArgumentList = @(),
+    [Parameter(Mandatory = $true)][string]$Description,
+    [Parameter()][int[]]$AllowedExitCodes = @(0),
+    [Parameter()][switch]$CaptureOutput
+  )
+
+  $output = @()
+  if ($CaptureOutput) {
+    $output = @(& $FilePath @ArgumentList 2>&1)
+    $exitCode = if ($null -ne $LASTEXITCODE) { [int]$LASTEXITCODE } else { 0 }
+    foreach ($line in $output) {
+      Write-Host $line
+    }
+  }
+  else {
+    & $FilePath @ArgumentList
+    $exitCode = if ($null -ne $LASTEXITCODE) { [int]$LASTEXITCODE } else { 0 }
+  }
+
+  if ($AllowedExitCodes -notcontains $exitCode) {
+    throw ("{0} failed with exit code {1}" -f $Description, $exitCode)
+  }
+
+  return ,$output
+}
+
+$sshBaseArgs = @("-o", "BatchMode=yes", "-o", "ConnectTimeout=20")
+$successMarker = "FLOWBIZ_DEPLOY_COMPLETED"
+$resetRemoteGit = if ($ResetRemoteGitWorkingTree) { "1" } else { "0" }
+$gitCleanExcludeArgs = (
+  $PreserveRemotePaths |
+  Where-Object { $_ -and $_.Trim().Length -gt 0 } |
+  ForEach-Object { "-e '$($_)'" }
+) -join " "
+$preserveDisplay = if ($PreserveRemotePaths.Count -gt 0) {
+  ($PreserveRemotePaths -join ", ")
+}
+else {
+  "(none)"
+}
+
 $gitSection = @"
+
+echo "== repo sanity"
+if [ -d .git ]; then
+  if [ "$resetRemoteGit" = "1" ]; then
+    echo "ResetRemoteGitWorkingTree=on (preserving: $preserveDisplay)"
+    git reset --hard
+    git clean -fd $gitCleanExcludeArgs
+  else
+    if [ -n "`$(git status --porcelain)" ]; then
+      echo "❌ remote git working tree is not clean" 1>&2
+      git status --short 1>&2 || true
+      echo "Hint: rerun with -ResetRemoteGitWorkingTree to clean tracked/untracked files (preserves: $preserveDisplay)" 1>&2
+      exit 1
+    fi
+  fi
+fi
 
 echo "== git fetch"
 git fetch origin --prune
@@ -61,7 +130,7 @@ if echo "$GitRef" | grep -Eq '^[0-9a-f]{7,40}$'; then
   git checkout --detach "$GitRef"
 else
   git checkout "$GitRef"
-  git pull --ff-only origin "$GitRef" || true
+  git pull --ff-only origin "$GitRef"
 fi
 "@
 
@@ -126,7 +195,8 @@ else
     docker compose $composeArgs logs --tail=200 api || true
     exit 1
   fi
-  curl -fsS "$HealthUrlLocal" | head -c 400 || true
+  local_health_body="`$(curl -fsS "$HealthUrlLocal" || true)"
+  printf '%s' "`$local_health_body" | cut -c1-400 || true
 fi
 
 echo ""
@@ -136,8 +206,9 @@ if ($PublicHealthUrl.Trim().Length -gt 0) {
   $remoteScript += @"
 
 echo "== health (public)"
-curl -fsS "$PublicHealthUrl" >/dev/null
-curl -fsS "$PublicHealthUrl" | head -c 400 || true
+public_health_body="`$(curl -fsS "$PublicHealthUrl" || true)"
+test -n "`$public_health_body"
+printf '%s' "`$public_health_body" | cut -c1-400 || true
 
 echo ""
 "@
@@ -154,7 +225,11 @@ echo ""
 "@
 }
 
-$remoteScript += "echo '✅ deploy completed'\n"
+$remoteScript += @"
+
+echo "$successMarker"
+echo "✅ deploy completed"
+"@
 
 $remoteScriptLf = $remoteScript -replace "`r`n", "`n"
 $scriptBytes = [System.Text.Encoding]::UTF8.GetBytes($remoteScriptLf)
@@ -171,7 +246,7 @@ if ($DryRun) {
 }
 
 # Preflight: ensure SSH works non-interactively
-& ssh -o BatchMode=yes flowbiz-vps "echo ok" | Out-Null
+Invoke-CheckedNative -FilePath "ssh" -ArgumentList (@($sshBaseArgs + @("flowbiz-vps", "echo ok"))) -Description "SSH preflight" | Out-Null
 
 if ($SourceMode -eq "upload") {
   Assert-CommandExists -Name "git"
@@ -188,18 +263,22 @@ if ($SourceMode -eq "upload") {
   }
 
   Write-Host "Creating git archive for $sha ..."
-  & git archive --format=tar.gz -o $tmp $sha
+  Invoke-CheckedNative -FilePath "git" -ArgumentList @("archive", "--format=tar.gz", "-o", $tmp, $sha) -Description "git archive" | Out-Null
 
   $remoteTmp = "/tmp/flowbiz-src-$sha.tar.gz"
 
   Write-Host "Uploading archive to VPS ..."
-  & scp $tmp ("flowbiz-vps:{0}" -f $remoteTmp) | Out-Null
+  Invoke-CheckedNative -FilePath "scp" -ArgumentList (@($sshBaseArgs + @($tmp, ("flowbiz-vps:{0}" -f $remoteTmp)))) -Description "scp upload archive" | Out-Null
 
   Write-Host "Extracting archive on VPS ..."
-  & ssh flowbiz-vps ("mkdir -p '{0}' && tar -xzf '{1}' -C '{0}' && rm -f '{1}'" -f $RemotePath, $remoteTmp)
+  $extractCmd = ("mkdir -p '{0}' && tar -xzf '{1}' -C '{0}' && rm -f '{1}'" -f $RemotePath, $remoteTmp)
+  Invoke-CheckedNative -FilePath "ssh" -ArgumentList (@($sshBaseArgs + @("flowbiz-vps", $extractCmd))) -Description "SSH extract archive" | Out-Null
 
   Remove-Item -Force $tmp -ErrorAction SilentlyContinue
 }
 
 # Execute remote script
-& ssh flowbiz-vps $sshPayload
+$remoteOutput = Invoke-CheckedNative -FilePath "ssh" -ArgumentList (@($sshBaseArgs + @("flowbiz-vps", $sshPayload))) -Description "SSH remote deploy" -CaptureOutput
+if (-not ($remoteOutput -join "`n").Contains($successMarker)) {
+  throw "Remote deploy finished without success marker ($successMarker). Treating as failure."
+}

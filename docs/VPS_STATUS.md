@@ -330,6 +330,9 @@ docker compose exec api curl http://localhost:8000/healthz
 
 If a deployment causes issues, use these steps to rollback to a previous stable version:
 
+Preferred controlled-lane procedure (with candidate/promotion and smoke checks):
+- [docs/RELEASE_ROLLBACK_RUNBOOK.md](RELEASE_ROLLBACK_RUNBOOK.md)
+
 #### Rollback to Tagged Version
 ```bash
 cd /opt/flowbiz/flowbiz-ai-core
