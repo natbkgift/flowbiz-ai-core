@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T14:39:48+07:00
-- Branch: feature/PR-116-payment-gateway
+- Last updated: 2026-02-25T14:42:06+07:00
+- Branch: feature/PR-117-web-app-shell
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-116 — Payment gateway
-- Completed in this run: PR-116 — Payment gateway
-- Next PR: PR-117 — Web app shell
-- Persona: persona:core
-- Scope class: contracts-only
+- Last merged PR (per docs/PR_LOG.md): PR-117 — Web app shell
+- Completed in this run: PR-117 — Web app shell
+- Next PR: PR-118 — Admin UI
+- Persona: persona:docs
+- Scope class: docs-only(out-of-scope)
 - Checks: ruff=PASS, pytest=PASS (682 passed)
-- Notes: Added payment gateway boundary contracts/stubs/docs only; processing implementation remains out of scope for core.
+- Notes: Added web app shell specification only; frontend implementation remains out of scope for core.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -123,10 +123,10 @@
 - 2026-02-25 | PR-113 | WhatsApp connector | contracts-only | 2e6c54e | ruff PASS | pytest PASS | WhatsApp connector contracts/stubs/docs + JSON event example
 - 2026-02-25 | PR-114 | Email agent | contracts-only | a4950a2 | ruff PASS | pytest PASS | email agent contracts/stubs/docs + JSON request example
 - 2026-02-25 | PR-115 | CRM integration | contracts-only | aead0a3 | ruff PASS | pytest PASS | CRM integration contracts/stubs/docs + JSON request example
-- 2026-02-25 | PR-116 | Payment gateway | contracts-only | (pending) | ruff PASS | pytest PASS | payment gateway boundary contracts/stubs/docs + JSON event example
+- 2026-02-25 | PR-116 | Payment gateway | contracts-only | 1bca053 | ruff PASS | pytest PASS | payment gateway boundary contracts/stubs/docs + JSON event example
+- 2026-02-25 | PR-117 | Web app shell | docs-only(out-of-scope) | (pending) | ruff PASS | pytest PASS | web app shell specification only; no UI implementation in core
 
 ## 3) Remaining (ordered)
-- PR-117: Web app shell
 - PR-118: Admin UI
 - PR-119: Multi-tenant deploy
 - PR-120: GA release

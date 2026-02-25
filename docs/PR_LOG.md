@@ -1806,7 +1806,20 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-117 to PR-120)
+## PR-117: Web app shell
+
+**Goal:** Define web app shell requirements/boundaries as docs only, without frontend implementation in core.
+
+**Key Changes:**
+- Added `docs/WEB_APP_SHELL_SPEC.md` documenting goals, non-goals, and core touchpoints for an external web UI repo
+
+**Status:** ✅ Merged
+
+**Notes:** Docs-only(out-of-scope); web app shell UI must be implemented in a platform/web frontend repository.
+
+---
+
+## Future PRs (PR-118 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
