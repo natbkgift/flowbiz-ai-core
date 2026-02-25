@@ -341,6 +341,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-024.1: Contract Package (schema-only)
+
+**Goal:** Formalize and verify a schema-only contract package boundary for cross-repo data exchange.
+
+**Key Changes:**
+- Added contract package guidance at `docs/contracts/CONTRACT_PACKAGE.md`
+- Added package-level tests in `tests/test_contract_package.py` to verify exports and schema invariants
+- Verified contract models remain immutable (`frozen=True`) and reject unknown fields (`extra="forbid"`)
+- Added Codex pre-flight note for traceability at `docs/pr_notes/PR-024.1.md`
+
+**Status:** ✅ Merged
+
+**Notes:** Schema-only package; no runtime integration behavior or deployment changes.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
