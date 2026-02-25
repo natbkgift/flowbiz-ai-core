@@ -1,25 +1,25 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T09:13:35.7655487+07:00
-- Branch: feature/PR-026-response-contract-schemas
-- HEAD: 24304c6
-- Last merged PR (per docs/PR_LOG.md): PR-026 — Response contract schemas (agent/tool envelopes + errors)
-- Completed in this run: PR-026 — Response contract schemas (agent/tool envelopes + errors)
-- Next PR: PR-027 — Observability hooks (trace_id + tool-call log schema)
+- Last updated: 2026-02-25T09:16:10.5787906+07:00
+- Branch: feature/PR-027-observability-hooks
+- HEAD: 326b61c
+- Last merged PR (per docs/PR_LOG.md): PR-027 — Observability hooks (trace_id + tool-call log schema)
+- Completed in this run: PR-027 — Observability hooks (trace_id + tool-call log schema)
+- Next PR: PR-028 — Safety gate hook (optional)
 - Persona: persona:core
 - Scope class: in-scope
 - Checks: ruff=PASS, pytest=PASS
-- Notes: Added canonical response envelopes for agent/tool outputs and normalized errors.
+- Notes: Added trace context and tool-call log schemas with deterministic hook helpers.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
 - 2026-02-25 | PR-024.2 | Version pinning & integration notes | in-scope | 85cf0be | ruff PASS | pytest PASS | docs-only policy and integration guidance
 - 2026-02-25 | PR-024 | Agent registry v2 (register/enable/disable) | in-scope | 36539d0 | ruff PASS | pytest PASS | registry contracts+runtime lifecycle controls
 - 2026-02-25 | PR-026 | Response contract schemas (agent/tool envelopes + errors) | in-scope | 24304c6 | ruff PASS | pytest PASS | contract schemas only, no runtime integration
+- 2026-02-25 | PR-027 | Observability hooks (trace_id + tool-call log schema) | in-scope | 326b61c | ruff PASS | pytest PASS | schema/hooks only, no external backend integration
 
 ## 3) Remaining (ordered)
-- PR-027: Observability hooks (trace_id + tool-call log schema)
 - PR-028: Safety gate hook (optional)
 - PR-028.1: LLM adapter abstraction
 - PR-028.2: Prompt template system
