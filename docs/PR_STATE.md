@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-035-execution-pipeline-v1
+- Branch: feature/PR-040-044-api-endpoints-tests
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-039 — Deterministic toggle
-- Completed in this run: PR-035, PR-036, PR-037, PR-038, PR-039
-- Next PR: PR-040 — /agent/tools endpoint
+- Last merged PR (per docs/PR_LOG.md): PR-044 — Smoke tests
+- Completed in this run: PR-040, PR-041, PR-042, PR-043, PR-044
+- Next PR: PR-044.1 — Workflow schema v2
 - Persona: persona:core
 - Scope class: in-scope
-- Checks: ruff=PASS, pytest=PASS
-- Notes: Phase 3 complete — execution pipeline, memory, conversation, retry, deterministic toggle.
+- Checks: ruff=PASS, pytest=PASS (427 tests)
+- Notes: Phase 4 complete — API endpoints + golden-path/failure/smoke tests.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -33,13 +33,13 @@
 - 2026-02-25 | PR-037 | Conversation state | in-scope | (pending) | ruff PASS | pytest PASS | deterministic conversation state + manager
 - 2026-02-25 | PR-038 | Retry/timeout/abort | in-scope | (pending) | ruff PASS | pytest PASS | retry policy + executor with backoff/abort
 - 2026-02-25 | PR-039 | Deterministic toggle | in-scope | (pending) | ruff PASS | pytest PASS | execution mode contract + resolve function
+- 2026-02-25 | PR-040 | /agent/tools endpoint | in-scope | (pending) | ruff PASS | pytest PASS | tool listing API endpoint
+- 2026-02-25 | PR-041 | /agent/health endpoint | in-scope | (pending) | ruff PASS | pytest PASS | agent subsystem health probe
+- 2026-02-25 | PR-042 | Golden-path tests | in-scope | (pending) | ruff PASS | pytest PASS | 10 happy-path integration tests
+- 2026-02-25 | PR-043 | Failure scenario tests | in-scope | (pending) | ruff PASS | pytest PASS | 10 error/edge-case tests
+- 2026-02-25 | PR-044 | Smoke tests | in-scope | (pending) | ruff PASS | pytest PASS | 14 parametrized smoke tests
 
 ## 3) Remaining (ordered)
-- PR-040: /agent/tools endpoint
-- PR-041: /agent/health endpoint
-- PR-042: Golden-path tests (runtime + router + tool)
-- PR-043: Failure scenario tests
-- PR-044: Light load/smoke tests (optional)
 - PR-044.1: Workflow schema v2
 - PR-044.2: Step condition engine
 - PR-044.3: Parallel steps

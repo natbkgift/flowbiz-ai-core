@@ -658,6 +658,79 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-040: /agent/tools endpoint
+
+**Goal:** Expose a REST endpoint that lists all registered tools as a `ToolRegistrySnapshot`.
+
+**Key Changes:**
+- Added `apps/api/routes/v1/tools.py` with `GET /v1/agent/tools` endpoint
+- Returns `ToolRegistrySnapshot` with optional `include_disabled` query parameter
+- Wired router into `apps/api/main.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Uses shared `InMemoryToolRegistry` singleton; DI will be added later.
+
+---
+
+## PR-041: /agent/health endpoint
+
+**Goal:** Provide a lightweight health probe for the agent subsystem reporting registered agent/tool counts.
+
+**Key Changes:**
+- Added `apps/api/routes/v1/agent_health.py` with `GET /v1/agent/health` endpoint
+- Returns `AgentHealthResponse` with status, registered_agents, registered_tools
+- Wired router into `apps/api/main.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Reads counts from runtime singletons; gracefully returns 0 on import failures.
+
+---
+
+## PR-042: Golden-path tests (runtime + router + tool)
+
+**Goal:** Validate the happy path through the full stack: API → Runtime → Agent → Response, including tools and health endpoints.
+
+**Key Changes:**
+- Added `tests/test_golden_path.py` with 10 integration tests
+- Covers: healthz, meta, echo agent run, tools listing, agent health, root endpoint
+
+**Status:** ✅ Merged
+
+**Notes:** Uses FastAPI TestClient; no external dependencies.
+
+---
+
+## PR-043: Failure scenario tests
+
+**Goal:** Verify the system returns proper error responses for invalid requests, unknown agents, and bad routes.
+
+**Key Changes:**
+- Added `tests/test_failure_scenarios.py` with 10 failure/edge-case tests
+- Covers: unknown agent, missing fields (422), empty body, wrong HTTP methods, invalid routes
+
+**Status:** ✅ Merged
+
+**Notes:** Validates error envelopes and HTTP status codes.
+
+---
+
+## PR-044: Light load/smoke tests
+
+**Goal:** Quick sanity checks to verify critical endpoints respond within acceptable timeframes and return well-formed JSON.
+
+**Key Changes:**
+- Added `tests/test_smoke.py` with 14 parametrized smoke tests
+- Validates response time < 1s for all GET endpoints, < 2s for agent/run
+- Checks content-type headers and X-Request-ID propagation
+
+**Status:** ✅ Merged
+
+**Notes:** Designed to run in CI as a fast regression gate.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
