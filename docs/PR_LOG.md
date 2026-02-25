@@ -1645,7 +1645,21 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-106 to PR-120)
+## PR-106: Docs site
+
+**Goal:** Define docs-site specification and ownership boundaries without implementing frontend code in core.
+
+**Key Changes:**
+- Added `docs/DOCS_SITE_SPEC.md` documenting goals, non-goals, content sources, and external repo responsibilities
+- Explicitly marked docs-site implementation as out-of-scope for `flowbiz-ai-core`
+
+**Status:** ✅ Merged
+
+**Notes:** Docs-only(out-of-scope); docs site UI/build/deploy must be implemented in a dedicated docs/web repo.
+
+---
+
+## Future PRs (PR-107 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 

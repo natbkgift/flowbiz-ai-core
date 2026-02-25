@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T14:11:21+07:00
-- Branch: feature/PR-105-example-workflows
+- Last updated: 2026-02-25T14:13:34+07:00
+- Branch: feature/PR-106-docs-site
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-105 — Example workflows
-- Completed in this run: PR-105 — Example workflows
-- Next PR: PR-106 — Docs site
-- Persona: persona:core
-- Scope class: contracts-only
+- Last merged PR (per docs/PR_LOG.md): PR-106 — Docs site
+- Completed in this run: PR-106 — Docs site
+- Next PR: PR-107 — API playground
+- Persona: persona:docs
+- Scope class: docs-only(out-of-scope)
 - Checks: ruff=PASS, pytest=PASS (665 passed)
-- Notes: Added validated workflow example stubs/docs/tests using existing contracts; no workflow engine or UI changes.
+- Notes: Added docs-site specification only; frontend/docs-site implementation and deploy remain outside core repo.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -112,10 +112,10 @@
 - 2026-02-25 | PR-102 | Local dev kit | in-scope | 80e0941 | ruff PASS | pytest PASS | local dev kit contracts/docs + validation tests
 - 2026-02-25 | PR-103 | Seed templates | contracts-only | 3d915cc | ruff PASS | pytest PASS | seed template manifests + example stubs/docs
 - 2026-02-25 | PR-104 | Example agents | in-scope | bae2559 | ruff PASS | pytest PASS | deterministic example agents + tests/docs
-- 2026-02-25 | PR-105 | Example workflows | contracts-only | (pending) | ruff PASS | pytest PASS | workflow example stubs + validation tests/docs; pending SHA due single-commit self-reference
+- 2026-02-25 | PR-105 | Example workflows | contracts-only | 893f46d | ruff PASS | pytest PASS | workflow example stubs + validation tests/docs
+- 2026-02-25 | PR-106 | Docs site | docs-only(out-of-scope) | (pending) | ruff PASS | pytest PASS | docs site specification only; no frontend/build/deploy implementation in core
 
 ## 3) Remaining (ordered)
-- PR-106: Docs site
 - PR-107: API playground
 - PR-108: SDK generators
 - PR-109: Contribution guide
