@@ -54,7 +54,7 @@ class AgentManifest(BaseModel):
     required_tools: tuple[str, ...] = ()
     required_permissions: tuple[str, ...] = ()
     config_schema: dict[str, Any] = Field(default_factory=dict)
-    min_core_version: str = "0.1.0"
+    min_core_version: str = "0.2.0"
 
 
 # ---------------------------------------------------------------------------

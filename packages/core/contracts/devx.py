@@ -135,7 +135,7 @@ class SDKGeneratorTarget(BaseModel):
 
     language: SDKLanguage
     package_name: str
-    package_version: str = "0.1.0"
+    package_version: str = "0.2.0"
     transport: SDKTransport = "http-rest"
     output_dir: str = "generated"
 

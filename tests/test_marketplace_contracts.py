@@ -33,7 +33,7 @@ class TestAgentManifest:
             required_tools=("dummy",),
         )
         assert m.agent_id == "echo"
-        assert m.min_core_version == "0.1.0"
+        assert m.min_core_version == "0.2.0"
 
     def test_frozen(self) -> None:
         m = AgentManifest(agent_id="x", name="X", version="1.0.0")
