@@ -6,6 +6,7 @@ from .jobs import JobEnvelope
 from .meta import RuntimeMeta
 from .observability import ToolCallLogEntry, TraceContextContract
 from .response import AgentResponseEnvelope, ResponseError, ToolResponseEnvelope
+from .safety import SafetyDecision, SafetyGateInput
 from .tool_registry import ToolRegistration, ToolRegistrySnapshot, ToolSpec
 
 __all__ = [
@@ -17,6 +18,8 @@ __all__ = [
     "ToolResponseEnvelope",
     "TraceContextContract",
     "ToolCallLogEntry",
+    "SafetyDecision",
+    "SafetyGateInput",
     "HealthResponse",
     "JobEnvelope",
     "RuntimeMeta",

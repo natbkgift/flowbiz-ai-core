@@ -421,6 +421,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-028: Safety gate hook (optional)
+
+**Goal:** Add an optional safety gate hook contract and runtime pre-check integration with safe default behavior.
+
+**Key Changes:**
+- Added safety contracts in `packages/core/contracts/safety.py` (`SafetyDecision`, `SafetyGateInput`)
+- Added safety hook abstraction in `packages/core/safety_gate.py` (`SafetyGateProtocol`, `AllowAllSafetyGate`)
+- Integrated optional safety pre-check in `packages/core/runtime/runtime.py` before agent execution
+- Added tests in `tests/test_safety_gate.py` and runtime deny-path coverage in `tests/test_runtime_unit.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Core-only optional hook; no external moderation vendor or platform-specific policy integration.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

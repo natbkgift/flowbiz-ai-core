@@ -23,6 +23,8 @@ def test_contract_package_exports_expected_symbols():
         "ToolResponseEnvelope",
         "TraceContextContract",
         "ToolCallLogEntry",
+        "SafetyDecision",
+        "SafetyGateInput",
         "HealthResponse",
         "JobEnvelope",
         "RuntimeMeta",

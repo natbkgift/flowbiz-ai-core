@@ -16,6 +16,7 @@ from packages.core.runtime import (
 from packages.core.runtime.agents import EchoAgent
 from packages.core.runtime.request import RuntimeRequestMeta
 from packages.core.runtime.result import RuntimeError
+from packages.core.safety_gate import SafetyGateProtocol
 
 
 class TestRuntimeRequestMeta:
@@ -385,3 +386,24 @@ class TestAgentRuntime:
         assert len(result.errors) == 1
         assert result.errors[0].code == "RUNTIME_ERROR"
         assert "Intentional failure" in result.errors[0].message
+
+    def test_runtime_safety_gate_denies_execution(self):
+        """Verify optional safety gate can block execution before agent runs."""
+
+        class DenyGate(SafetyGateProtocol):
+            def check(self, payload):
+                from packages.core.contracts.safety import SafetyDecision
+
+                return SafetyDecision(
+                    decision="deny",
+                    reason="Blocked by policy",
+                    code="POLICY_BLOCK",
+                )
+
+        runtime = AgentRuntime(safety_gate=DenyGate())
+        result = runtime.run(RuntimeContext(agent="echo", input="blocked"))
+
+        assert result.status == "error"
+        assert len(result.errors) == 1
+        assert result.errors[0].code == "VALIDATION_ERROR"
+        assert "Blocked by policy" in result.errors[0].message
