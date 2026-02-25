@@ -23,6 +23,9 @@ dev = [
     "ruff",
 ]
 
+[project.scripts]
+flowbiz-core = "packages.core.cli:main"
+
 [tool.ruff]
 target-version = "py311"
 src = ["apps", "packages", "tests"]

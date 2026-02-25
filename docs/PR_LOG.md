@@ -1570,7 +1570,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-101 to PR-120)
+## PR-101: CLI tool
+
+**Goal:** Add a local developer CLI for inspecting core version/meta information and sample registry state.
+
+**Key Changes:**
+- Added `packages/core/cli.py` with `argparse`-based commands: `version`, `meta`, `agents`, `tools`
+- Added console script entrypoint `flowbiz-core` in `pyproject.toml`
+- Added `tests/test_cli.py` covering output formats, disabled filtering, and error handling
+
+**Status:** ✅ Merged
+
+**Notes:** Core-only CLI for local/dev workflows; uses in-memory sample registries and does not call external services or platform integrations.
+
+---
+
+## Future PRs (PR-102 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
