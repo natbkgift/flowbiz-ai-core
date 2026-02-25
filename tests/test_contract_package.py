@@ -21,6 +21,8 @@ def test_contract_package_exports_expected_symbols():
         "ResponseError",
         "AgentResponseEnvelope",
         "ToolResponseEnvelope",
+        "TraceContextContract",
+        "ToolCallLogEntry",
         "HealthResponse",
         "JobEnvelope",
         "RuntimeMeta",

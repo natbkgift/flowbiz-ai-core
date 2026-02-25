@@ -405,6 +405,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-027: Observability hooks (trace_id + tool-call log schema)
+
+**Goal:** Introduce contract-first observability hooks for trace context and tool-call logging.
+
+**Key Changes:**
+- Added observability contracts in `packages/core/contracts/observability.py` (`TraceContextContract`, `ToolCallLogEntry`)
+- Added helper module `packages/core/observability.py` for deterministic log entry construction
+- Exported observability contracts via `packages/core/contracts/__init__.py`
+- Added tests in `tests/test_observability_hooks.py` and updated contract export assertions
+
+**Status:** ✅ Merged
+
+**Notes:** Core observability schema/hooks only; no external logging backend integration or deploy changes.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
