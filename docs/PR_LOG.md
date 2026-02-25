@@ -863,6 +863,124 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-051: Metrics endpoint contracts
+
+**Goal:** Define metric types, snapshots, and an in-memory metrics collector.
+
+**Key Changes:**
+- Added `packages/core/contracts/metrics.py` with `MetricDefinition`, `MetricSample`, `MetricsSnapshot`, `InMemoryMetricsCollector`
+- 12 tests in `tests/test_metrics_contracts.py`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-052: Prometheus exporter
+
+**Goal:** Add Prometheus text exposition format contract and rendering.
+
+**Key Changes:**
+- Added `PrometheusExposition` contract and `to_prometheus()` method on collector
+- Renders HELP/TYPE/sample lines in Prometheus format
+
+**Status:** ✅ Merged
+
+---
+
+## PR-053: Tracing (OpenTelemetry)
+
+**Goal:** Define span/trace contracts compatible with the OpenTelemetry data model.
+
+**Key Changes:**
+- Added `packages/core/contracts/tracing.py` with `SpanContext`, `SpanEvent`, `Span`, `TraceExport`, `InMemorySpanCollector`
+- 11 tests in `tests/test_tracing_contracts.py`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-054: Error aggregation
+
+**Goal:** Define structured error entries and an in-memory aggregator.
+
+**Key Changes:**
+- Added `packages/core/contracts/errors.py` with `ErrorEntry`, `ErrorGroup`, `ErrorAggregateSnapshot`, `InMemoryErrorAggregator`
+- 8 tests in `tests/test_error_aggregation.py`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-055: Slow query tracking
+
+**Goal:** Track operations exceeding a configurable duration threshold.
+
+**Key Changes:**
+- Added `packages/core/contracts/analytics.py` with `SlowQueryEntry`, `SlowQuerySnapshot`, `InMemorySlowQueryTracker`
+- 5 tests in `tests/test_analytics_contracts.py`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-056: Request analytics
+
+**Goal:** Track HTTP request metrics with p95 latency and path breakdown.
+
+**Key Changes:**
+- Added `RequestLogEntry`, `RequestAnalyticsSnapshot`, `InMemoryRequestAnalytics` to analytics module
+- 4 tests for analytics snapshot, p95, clear
+
+**Status:** ✅ Merged
+
+---
+
+## PR-057: Health dashboard (docs-only)
+
+**Goal:** Document what Core exposes for a health dashboard UI.
+
+**Key Changes:**
+- Added `docs/HEALTH_DASHBOARD_DESIGN.md` — data sources, recommended panels, implementation notes
+
+**Status:** ✅ Merged
+
+---
+
+## PR-058: Alert rules
+
+**Goal:** Define alert rule evaluation and firing/resolving contracts.
+
+**Key Changes:**
+- Added `packages/core/contracts/alerting.py` with `AlertRule`, `AlertEvent`, `InMemoryAlertStore`
+- 5 tests in `tests/test_alerting_contracts.py`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-059: Uptime monitoring
+
+**Goal:** Define uptime check configuration and result contracts.
+
+**Key Changes:**
+- Added `UptimeCheck`, `UptimeResult`, `UptimeSnapshot`, `InMemoryUptimeStore` to alerting module
+- 6 tests for uptime store, snapshot status rollup
+
+**Status:** ✅ Merged
+
+---
+
+## PR-060: Incident runbook (docs-only)
+
+**Goal:** Operational guidance for common incident scenarios.
+
+**Key Changes:**
+- Added `docs/INCIDENT_RUNBOOK.md` — severity levels, common scenarios (API down, high error rate, slow responses, deploy failure), post-incident process
+
+**Status:** ✅ Merged
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

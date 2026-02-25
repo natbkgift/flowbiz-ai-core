@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-045-050-api-webhooks-sdk
+- Branch: feature/PR-051-060-observability
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-050 — API deprecation policy
-- Completed in this run: PR-045–050
-- Next PR: PR-051 — Metrics endpoint
+- Last merged PR (per docs/PR_LOG.md): PR-060 — Incident runbook
+- Completed in this run: PR-051–060
+- Next PR: PR-061 — Organization model
 - Persona: persona:core
 - Scope class: in-scope (contracts/docs)
-- Checks: ruff=PASS, pytest=PASS (488 tests)
-- Notes: Phase 6 complete — v2 API, webhooks, SDK spec, OpenAPI hardening, deprecation policy.
+- Checks: ruff=PASS, pytest=PASS (544 tests)
+- Notes: Phase 7 complete — metrics, tracing, errors, analytics, alerting, uptime, runbook.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -47,18 +47,18 @@
 - 2026-02-25 | PR-048 | Public SDK spec | docs-only | (pending) | ruff PASS | pytest PASS | SDK design docs (out-of-scope repos)
 - 2026-02-25 | PR-049 | OpenAPI hardening | in-scope | (pending) | ruff PASS | pytest PASS | 10 OpenAPI schema validation tests
 - 2026-02-25 | PR-050 | API deprecation policy | docs-only | (pending) | ruff PASS | pytest PASS | deprecation timeline + migration template
+- 2026-02-25 | PR-051 | Metrics endpoint | in-scope | (pending) | ruff PASS | pytest PASS | metric contracts + in-memory collector
+- 2026-02-25 | PR-052 | Prometheus exporter | in-scope | (pending) | ruff PASS | pytest PASS | text exposition format contract
+- 2026-02-25 | PR-053 | Tracing (OpenTelemetry) | in-scope | (pending) | ruff PASS | pytest PASS | span/trace contracts + collector
+- 2026-02-25 | PR-054 | Error aggregation | in-scope | (pending) | ruff PASS | pytest PASS | error grouping + aggregation contracts
+- 2026-02-25 | PR-055 | Slow query tracking | in-scope | (pending) | ruff PASS | pytest PASS | threshold-based slow op tracking
+- 2026-02-25 | PR-056 | Request analytics | in-scope | (pending) | ruff PASS | pytest PASS | HTTP request metrics + p95
+- 2026-02-25 | PR-057 | Health dashboard | docs-only | (pending) | ruff PASS | pytest PASS | dashboard design docs (UI forbidden)
+- 2026-02-25 | PR-058 | Alert rules | in-scope | (pending) | ruff PASS | pytest PASS | alert rule + event contracts
+- 2026-02-25 | PR-059 | Uptime monitoring | in-scope | (pending) | ruff PASS | pytest PASS | uptime check + snapshot contracts
+- 2026-02-25 | PR-060 | Incident runbook | docs-only | (pending) | ruff PASS | pytest PASS | operational incident guidance
 
 ## 3) Remaining (ordered)
-- PR-051: Metrics endpoint
-- PR-052: Prometheus exporter
-- PR-053: Tracing (OpenTelemetry)
-- PR-054: Error aggregation
-- PR-055: Slow query tracking
-- PR-056: Request analytics
-- PR-057: Health dashboard
-- PR-058: Alert rules
-- PR-059: Uptime monitoring
-- PR-060: Incident runbook
 - PR-061: Organization model
 - PR-062: Project / workspace
 - PR-063: Usage tracking
