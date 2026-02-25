@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T14:05:40+07:00
-- Branch: feature/PR-103-seed-templates
+- Last updated: 2026-02-25T14:08:25+07:00
+- Branch: feature/PR-104-example-agents
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-103 — Seed templates
-- Completed in this run: PR-103 — Seed templates
-- Next PR: PR-104 — Example agents
+- Last merged PR (per docs/PR_LOG.md): PR-104 — Example agents
+- Completed in this run: PR-104 — Example agents
+- Next PR: PR-105 — Example workflows
 - Persona: persona:core
-- Scope class: contracts-only
-- Checks: ruff=PASS, pytest=PASS (659 passed)
-- Notes: Added seed template manifest contracts and example stubs/docs only; generator runtime remains out of scope for core.
+- Scope class: in-scope
+- Checks: ruff=PASS, pytest=PASS (662 passed)
+- Notes: Added deterministic example agents and tests/docs for developer reference; no platform integrations or external I/O.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -110,10 +110,10 @@
 - 2026-02-25 | PR-100 | Scale readiness | docs-only(out-of-scope) | 9f891d6 | ruff PASS | pytest PASS | readiness checklist + contracts (batched phase commit 9f891d6)
 - 2026-02-25 | PR-101 | CLI tool | in-scope | dc6fc07 | ruff PASS | pytest PASS | argparse CLI + console script + tests
 - 2026-02-25 | PR-102 | Local dev kit | in-scope | 80e0941 | ruff PASS | pytest PASS | local dev kit contracts/docs + validation tests
-- 2026-02-25 | PR-103 | Seed templates | contracts-only | (pending) | ruff PASS | pytest PASS | seed template manifests + example stubs/docs; pending SHA due single-commit self-reference
+- 2026-02-25 | PR-103 | Seed templates | contracts-only | 3d915cc | ruff PASS | pytest PASS | seed template manifests + example stubs/docs
+- 2026-02-25 | PR-104 | Example agents | in-scope | (pending) | ruff PASS | pytest PASS | deterministic example agents + tests/docs; pending SHA due single-commit self-reference
 
 ## 3) Remaining (ordered)
-- PR-104: Example agents
 - PR-105: Example workflows
 - PR-106: Docs site
 - PR-107: API playground

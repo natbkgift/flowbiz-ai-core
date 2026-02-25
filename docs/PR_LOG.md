@@ -1615,7 +1615,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-104 to PR-120)
+## PR-104: Example agents
+
+**Goal:** Provide deterministic example agents in core for developer reference and testing.
+
+**Key Changes:**
+- Added `packages/core/agents/examples.py` with `TemplateReplyAgent` and `MetadataEchoAgent`
+- Added `tests/test_example_agents.py` covering deterministic outputs and trace fields
+- Added `docs/EXAMPLE_AGENTS.md` usage guidance and scope notes
+
+**Status:** ✅ Merged
+
+**Notes:** Reference-only agents with no external I/O or platform integrations.
+
+---
+
+## Future PRs (PR-105 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
