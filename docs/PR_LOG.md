@@ -1206,6 +1206,117 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-081: Secrets manager
+
+**Goal:** Define secret reference and in-memory secrets manager stub.
+
+**Key Changes:**
+- Added `packages/core/contracts/security.py` with `SecretReference`, `StubSecretsManager`
+- Tests in `tests/test_security_contracts.py`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-082: Key rotation
+
+**Goal:** Define key rotation policy and event contracts.
+
+**Key Changes:**
+- Added `KeyRotationPolicy`, `KeyRotationEvent` with rotation status tracking
+
+**Status:** ✅ Merged
+
+---
+
+## PR-083: Audit log
+
+**Goal:** Define audit log entry and in-memory audit log.
+
+**Key Changes:**
+- Added `AuditLogEntry` (CRUD + auth + config actions), `InMemoryAuditLog` with actor/resource filtering
+
+**Status:** ✅ Merged
+
+---
+
+## PR-084: Data masking
+
+**Goal:** Define data masking rules and strategies.
+
+**Key Changes:**
+- Added `MaskingRule`, `apply_mask()` function with redact/partial/hash/tokenize strategies
+
+**Status:** ✅ Merged
+
+---
+
+## PR-085: GDPR tools
+
+**Goal:** Define GDPR data subject request and export contracts.
+
+**Key Changes:**
+- Added `GDPRRequest` (access/rectification/erasure/portability/restriction), `GDPRDataExport`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-086: Consent tracking
+
+**Goal:** Define consent record and in-memory consent store.
+
+**Key Changes:**
+- Added `ConsentRecord`, `InMemoryConsentStore` with `has_consent()` checking latest status
+
+**Status:** ✅ Merged
+
+---
+
+## PR-087: Access review
+
+**Goal:** Define access review entry and report contracts.
+
+**Key Changes:**
+- Added `AccessReviewEntry`, `AccessReviewReport` for periodic access reviews
+
+**Status:** ✅ Merged
+
+---
+
+## PR-088: Security scan
+
+**Goal:** Define security scan finding and result contracts.
+
+**Key Changes:**
+- Added `SecurityFinding` (severity levels), `SecurityScanResult`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-089: Threat modeling
+
+**Goal:** Define threat entry and threat model contracts.
+
+**Key Changes:**
+- Added `ThreatEntry` (STRIDE-compatible), `ThreatModel`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-090: Compliance report
+
+**Goal:** Define compliance control and report contracts.
+
+**Key Changes:**
+- Added `ComplianceControl`, `ComplianceReport` with framework support (SOC2, ISO27001, etc.)
+
+**Status:** ✅ Merged
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

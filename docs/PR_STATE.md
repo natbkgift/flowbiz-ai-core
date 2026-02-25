@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-071-080-marketplace
+- Branch: feature/PR-081-090-security
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-080 — Marketplace UI API
-- Completed in this run: PR-071–080
-- Next PR: PR-081 — Secrets manager
+- Last merged PR (per docs/PR_LOG.md): PR-090 — Compliance report
+- Completed in this run: PR-081–090
+- Next PR: PR-091 — Async optimization
 - Persona: persona:core
 - Scope class: contracts/stubs/docs
-- Checks: ruff=PASS, pytest=PASS (586 tests)
-- Notes: Phase 9 complete — marketplace manifests, versioning, sandbox, ratings, install.
+- Checks: ruff=PASS, pytest=PASS (615 tests)
+- Notes: Phase 10 complete — security, audit, GDPR, consent, compliance contracts.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -77,18 +77,18 @@
 - 2026-02-25 | PR-078 | Agent install/update | contracts/stubs | (pending) | ruff PASS | pytest PASS | installation + update request
 - 2026-02-25 | PR-079 | Agent usage analytics | contracts/stubs | (pending) | ruff PASS | pytest PASS | usage metrics contract
 - 2026-02-25 | PR-080 | Marketplace UI API | docs-only | (pending) | ruff PASS | pytest PASS | marketplace UI design docs
+- 2026-02-25 | PR-081 | Secrets manager | contracts/stubs | (pending) | ruff PASS | pytest PASS | secret ref + stub manager
+- 2026-02-25 | PR-082 | Key rotation | contracts/stubs | (pending) | ruff PASS | pytest PASS | rotation policy + event
+- 2026-02-25 | PR-083 | Audit log | contracts/stubs | (pending) | ruff PASS | pytest PASS | audit entry + in-memory log
+- 2026-02-25 | PR-084 | Data masking | contracts/stubs | (pending) | ruff PASS | pytest PASS | masking rules + strategies
+- 2026-02-25 | PR-085 | GDPR tools | contracts/stubs | (pending) | ruff PASS | pytest PASS | subject request + data export
+- 2026-02-25 | PR-086 | Consent tracking | contracts/stubs | (pending) | ruff PASS | pytest PASS | consent record + store
+- 2026-02-25 | PR-087 | Access review | contracts/stubs | (pending) | ruff PASS | pytest PASS | review entry + report
+- 2026-02-25 | PR-088 | Security scan | contracts/stubs | (pending) | ruff PASS | pytest PASS | finding + scan result
+- 2026-02-25 | PR-089 | Threat modeling | contracts/stubs | (pending) | ruff PASS | pytest PASS | threat entry + model
+- 2026-02-25 | PR-090 | Compliance report | contracts/stubs | (pending) | ruff PASS | pytest PASS | control + report
 
 ## 3) Remaining (ordered)
-- PR-081: Secrets manager
-- PR-082: Key rotation
-- PR-083: Audit log
-- PR-084: Data masking
-- PR-085: GDPR tools
-- PR-086: Consent tracking
-- PR-087: Access review
-- PR-088: Security scan
-- PR-089: Threat modeling
-- PR-090: Compliance report
 - PR-091: Async optimization
 - PR-092: Caching layer
 - PR-093: Queue backend
