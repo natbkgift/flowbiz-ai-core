@@ -1688,7 +1688,21 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-109 to PR-120)
+## PR-109: Contribution guide
+
+**Goal:** Add repository contribution guidance aligned with core scope, guardrails, and pre-flight workflow.
+
+**Key Changes:**
+- Added `CONTRIBUTING.md` covering scope boundaries, testing, PR hygiene, and contributor workflow
+- Linked contributors to `docs/SCOPE.md`, `docs/GUARDRAILS.md`, and `docs/CODEX_PREFLIGHT.md`
+
+**Status:** ✅ Merged
+
+**Notes:** In-scope docs update only; no CI/runtime/infra behavior changes.
+
+---
+
+## Future PRs (PR-110 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 

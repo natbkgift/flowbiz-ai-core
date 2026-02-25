@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T14:17:54+07:00
-- Branch: feature/PR-108-sdk-generators
+- Last updated: 2026-02-25T14:19:39+07:00
+- Branch: feature/PR-109-contribution-guide
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-108 — SDK generators
-- Completed in this run: PR-108 — SDK generators
-- Next PR: PR-109 — Contribution guide
-- Persona: persona:core
-- Scope class: contracts-only
+- Last merged PR (per docs/PR_LOG.md): PR-109 — Contribution guide
+- Completed in this run: PR-109 — Contribution guide
+- Next PR: PR-110 — Onboarding flow
+- Persona: persona:docs
+- Scope class: in-scope
 - Checks: ruff=PASS, pytest=PASS (667 passed)
-- Notes: Added SDK generator specification contracts/examples/docs only; no generator runtime or publishing pipeline implementation.
+- Notes: Added repository contribution guide aligned to scope/guardrails/preflight; no runtime or infra behavior changes.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -115,10 +115,10 @@
 - 2026-02-25 | PR-105 | Example workflows | contracts-only | 893f46d | ruff PASS | pytest PASS | workflow example stubs + validation tests/docs
 - 2026-02-25 | PR-106 | Docs site | docs-only(out-of-scope) | 6aa9a21 | ruff PASS | pytest PASS | docs site specification only; no frontend/build/deploy implementation in core
 - 2026-02-25 | PR-107 | API playground | docs-only(out-of-scope) | dd3065a | ruff PASS | pytest PASS | API playground specification only; no UI/proxy/hosting implementation in core
-- 2026-02-25 | PR-108 | SDK generators | contracts-only | (pending) | ruff PASS | pytest PASS | SDK generator spec contracts + examples/docs; pending SHA due single-commit self-reference
+- 2026-02-25 | PR-108 | SDK generators | contracts-only | e0e6ee8 | ruff PASS | pytest PASS | SDK generator spec contracts + examples/docs
+- 2026-02-25 | PR-109 | Contribution guide | in-scope | (pending) | ruff PASS | pytest PASS | CONTRIBUTING.md aligned with scope/guardrails/preflight
 
 ## 3) Remaining (ordered)
-- PR-109: Contribution guide
 - PR-110: Onboarding flow
 - PR-111: Slack connector
 - PR-112: LINE OA connector
