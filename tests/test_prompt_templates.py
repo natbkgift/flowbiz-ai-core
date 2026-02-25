@@ -5,7 +5,10 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from packages.core.contracts.prompt_template import PromptRenderRequest, PromptTemplateSpec
+from packages.core.contracts.prompt_template import (
+    PromptRenderRequest,
+    PromptTemplateSpec,
+)
 from packages.core.prompt_templates import PromptTemplateRegistry
 
 
@@ -142,7 +145,11 @@ def test_render_with_explicit_version() -> None:
 
 def test_list_versions_sorted() -> None:
     registry = PromptTemplateRegistry()
-    registry.register(PromptTemplateSpec(name="a", version="v2", template="x", variables=[]))
-    registry.register(PromptTemplateSpec(name="a", version="v1", template="x", variables=[]))
+    registry.register(
+        PromptTemplateSpec(name="a", version="v2", template="x", variables=[])
+    )
+    registry.register(
+        PromptTemplateSpec(name="a", version="v1", template="x", variables=[])
+    )
 
     assert registry.list_versions("a") == ["v1", "v2"]
