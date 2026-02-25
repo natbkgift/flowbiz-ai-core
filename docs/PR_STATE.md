@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T14:21:53+07:00
-- Branch: feature/PR-110-onboarding-flow
+- Last updated: 2026-02-25T14:24:37+07:00
+- Branch: feature/PR-111-slack-connector
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-110 — Onboarding flow
-- Completed in this run: PR-110 — Onboarding flow
-- Next PR: PR-111 — Slack connector
-- Persona: persona:docs
-- Scope class: in-scope
-- Checks: ruff=PASS, pytest=PASS (667 passed)
-- Notes: Added onboarding flow docs for contributors/agents in core; no UI/automation/runtime changes.
+- Last merged PR (per docs/PR_LOG.md): PR-111 — Slack connector
+- Completed in this run: PR-111 — Slack connector
+- Next PR: PR-112 — LINE OA connector
+- Persona: persona:core
+- Scope class: contracts-only
+- Checks: ruff=PASS, pytest=PASS (670 passed)
+- Notes: Added Slack connector contracts/stubs/docs only; actual webhook/API integration belongs to platform/client layer.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -117,10 +117,10 @@
 - 2026-02-25 | PR-107 | API playground | docs-only(out-of-scope) | dd3065a | ruff PASS | pytest PASS | API playground specification only; no UI/proxy/hosting implementation in core
 - 2026-02-25 | PR-108 | SDK generators | contracts-only | e0e6ee8 | ruff PASS | pytest PASS | SDK generator spec contracts + examples/docs
 - 2026-02-25 | PR-109 | Contribution guide | in-scope | d192963 | ruff PASS | pytest PASS | CONTRIBUTING.md aligned with scope/guardrails/preflight
-- 2026-02-25 | PR-110 | Onboarding flow | in-scope | (pending) | ruff PASS | pytest PASS | onboarding flow docs + AGENT_ONBOARDING cross-link
+- 2026-02-25 | PR-110 | Onboarding flow | in-scope | 0029a0b | ruff PASS | pytest PASS | onboarding flow docs + AGENT_ONBOARDING cross-link
+- 2026-02-25 | PR-111 | Slack connector | contracts-only | (pending) | ruff PASS | pytest PASS | Slack connector contracts/stubs/docs + JSON event example
 
 ## 3) Remaining (ordered)
-- PR-111: Slack connector
 - PR-112: LINE OA connector
 - PR-113: WhatsApp connector
 - PR-114: Email agent

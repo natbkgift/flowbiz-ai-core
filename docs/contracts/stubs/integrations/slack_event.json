@@ -1,0 +1,12 @@
+{
+  "type": "event_callback",
+  "team_id": "T12345",
+  "event_id": "Ev12345",
+  "event_ts": "1730000000.1234",
+  "event": {
+    "type": "app_mention",
+    "user": "U12345",
+    "text": "<@B12345> hello",
+    "channel": "C12345"
+  }
+}

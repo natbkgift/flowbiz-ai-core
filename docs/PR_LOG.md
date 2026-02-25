@@ -1716,7 +1716,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-111 to PR-120)
+## PR-111: Slack connector
+
+**Goal:** Define Slack connector contracts/stubs and docs in core without implementing real Slack integration.
+
+**Key Changes:**
+- Added `packages/core/contracts/integrations.py` (PR-111 section) with Slack connector contracts and in-memory stub
+- Added `tests/test_integrations_contracts.py` initial Slack contract/stub tests
+- Added `docs/SLACK_CONNECTOR_SPEC.md` and `docs/contracts/stubs/integrations/slack_event.json`
+
+**Status:** ✅ Merged
+
+**Notes:** Contracts/stubs/docs only; real Slack integration must be implemented in platform/client layer.
+
+---
+
+## Future PRs (PR-112 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
