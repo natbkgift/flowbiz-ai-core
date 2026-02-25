@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T09:22:43.5722850+07:00
-- Branch: feature/PR-028-1-llm-adapter-abstraction
-- HEAD: 96c3bc7
-- Last merged PR (per docs/PR_LOG.md): PR-028.1 — LLM adapter abstraction
-- Completed in this run: PR-028.1 — LLM adapter abstraction
-- Next PR: PR-028.2 — Prompt template system
+- Last updated: 2026-02-25T09:25:11.9741120+07:00
+- Branch: feature/PR-028-2-prompt-template-system
+- HEAD: 66f8d9d
+- Last merged PR (per docs/PR_LOG.md): PR-028.2 — Prompt template system
+- Completed in this run: PR-028.2 — Prompt template system
+- Next PR: PR-028.3 — Prompt versioning
 - Persona: persona:core
 - Scope class: in-scope
 - Checks: ruff=PASS, pytest=PASS
-- Notes: Added provider-agnostic LLM adapter contracts and deterministic stub adapter.
+- Notes: Added deterministic prompt template contracts, registry, and strict render validation.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -20,9 +20,9 @@
 - 2026-02-25 | PR-027 | Observability hooks (trace_id + tool-call log schema) | in-scope | 326b61c | ruff PASS | pytest PASS | schema/hooks only, no external backend integration
 - 2026-02-25 | PR-028 | Safety gate hook (optional) | in-scope | c365580 | ruff PASS | pytest PASS | optional safety contracts+runtime pre-check hook
 - 2026-02-25 | PR-028.1 | LLM adapter abstraction | in-scope | 96c3bc7 | ruff PASS | pytest PASS | contract/protocol/stub only, no provider integration
+- 2026-02-25 | PR-028.2 | Prompt template system | in-scope | 66f8d9d | ruff PASS | pytest PASS | template contracts+registry rendering primitives
 
 ## 3) Remaining (ordered)
-- PR-028.2: Prompt template system
 - PR-028.3: Prompt versioning
 - PR-029: Personas: core/infra/docs
 - PR-030: Routing rules v1 (rule-based intent router)
