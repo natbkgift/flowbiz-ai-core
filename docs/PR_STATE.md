@@ -1,16 +1,16 @@
 # PR State Tracking
 
 ## 1) Current Snapshot
-- Last updated: 2026-02-25T14:46:39+07:00
-- Branch: feature/PR-119-multi-tenant-deploy
+- Last updated: 2026-02-25T14:49:41+07:00
+- Branch: feature/PR-120-ga-release
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-119 — Multi-tenant deploy
-- Completed in this run: PR-119 — Multi-tenant deploy
-- Next PR: PR-120 — GA release
+- Last merged PR (per docs/PR_LOG.md): PR-120 — GA release
+- Completed in this run: PR-120 — GA release
+- Next PR: None — roadmap complete through PR-120
 - Persona: persona:docs
 - Scope class: docs-only(out-of-scope)
 - Checks: ruff=PASS, pytest=PASS (682 passed)
-- Notes: Added multi-tenant deploy specification only; no infra mutation/deploy execution performed in core.
+- Notes: Added GA release checklist docs and marked roadmap completion; no release/deploy execution performed.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -126,7 +126,8 @@
 - 2026-02-25 | PR-116 | Payment gateway | contracts-only | 1bca053 | ruff PASS | pytest PASS | payment gateway boundary contracts/stubs/docs + JSON event example
 - 2026-02-25 | PR-117 | Web app shell | docs-only(out-of-scope) | 1625145 | ruff PASS | pytest PASS | web app shell specification only; no UI implementation in core
 - 2026-02-25 | PR-118 | Admin UI | docs-only(out-of-scope) | 57cf69d | ruff PASS | pytest PASS | admin UI specification only; no UI implementation in core
-- 2026-02-25 | PR-119 | Multi-tenant deploy | docs-only(out-of-scope) | (pending) | ruff PASS | pytest PASS | multi-tenant deploy specification only; no infra mutation/deploy execution in core
+- 2026-02-25 | PR-119 | Multi-tenant deploy | docs-only(out-of-scope) | d698dac | ruff PASS | pytest PASS | multi-tenant deploy specification only; no infra mutation/deploy execution in core
+- 2026-02-25 | PR-120 | GA release | docs-only(out-of-scope) | (pending) | ruff PASS | pytest PASS | GA release checklist docs + roadmap completion tracking updates
 
 ## 3) Remaining (ordered)
-- PR-120: GA release
+- None (roadmap complete through PR-120)

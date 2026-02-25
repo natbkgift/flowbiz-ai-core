@@ -1846,25 +1846,23 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-120)
+## PR-120: GA release
 
-This section is reserved for future pull requests. Each PR should follow the same format:
-
-**Template:**
-```
-## PR-XXX: [Title]
-
-**Goal:** [Brief description of what this PR aims to achieve]
+**Goal:** Document GA release readiness/checklist and mark practical roadmap completion in core without executing release/deploy operations.
 
 **Key Changes:**
-- [Change 1]
-- [Change 2]
-- [Change 3]
+- Added `docs/GA_RELEASE_CHECKLIST.md` with release preconditions, core quality gates, and explicit out-of-scope platform release steps
+- Updated PR tracking docs to mark roadmap completion through `PR-120`
 
-**Status:** [🚧 In Progress | ✅ Merged | ❌ Closed]
-```
+**Status:** ✅ Merged
+
+**Notes:** Docs-only(out-of-scope); release execution, deployment, and production operations remain external to core and require explicit authorization.
 
 ---
+
+## Roadmap Completion
+
+Practical numbering roadmap is complete through **PR-120** in this repository.
 
 ## Status Legend
 
