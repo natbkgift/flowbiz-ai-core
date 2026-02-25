@@ -485,6 +485,23 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-029: Personas: core/infra/docs
+
+**Goal:** Define persona contracts and an in-memory persona registry so agents can be tagged as core, infra, or docs persona types.
+
+**Key Changes:**
+- Added `packages/core/contracts/persona.py` with `PersonaType` literal, `PersonaSpec`, `PersonaAssignment`, and canonical constants (`CORE_PERSONA`, `INFRA_PERSONA`, `DOCS_PERSONA`, `ALL_PERSONAS`)
+- Added `packages/core/persona_registry.py` with `PersonaRegistry` class (assign/get/list/filter/remove operations)
+- Updated `packages/core/contracts/__init__.py` to export `PersonaSpec` and `PersonaAssignment`
+- Updated `tests/test_contract_package.py` with new expected symbols
+- Added comprehensive tests in `tests/test_persona.py` (15 tests covering contracts immutability, registry CRUD, filtering)
+
+**Status:** ✅ Merged
+
+**Notes:** Schema + registry primitives only; no routing or permission logic yet.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

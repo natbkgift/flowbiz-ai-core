@@ -37,6 +37,8 @@ def test_contract_package_exports_expected_symbols():
         "ToolSpec",
         "ToolRegistration",
         "ToolRegistrySnapshot",
+        "PersonaSpec",
+        "PersonaAssignment",
     }
     assert set(contracts.__all__) == expected
 

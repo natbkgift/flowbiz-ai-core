@@ -6,6 +6,7 @@ from .jobs import JobEnvelope
 from .llm_adapter import LLMAdapterInfo, LLMRequest, LLMResponse
 from .meta import RuntimeMeta
 from .observability import ToolCallLogEntry, TraceContextContract
+from .persona import PersonaAssignment, PersonaSpec
 from .prompt_template import PromptRenderRequest, PromptRenderResult, PromptTemplateSpec
 from .response import AgentResponseEnvelope, ResponseError, ToolResponseEnvelope
 from .safety import SafetyDecision, SafetyGateInput
@@ -34,4 +35,6 @@ __all__ = [
     "ToolSpec",
     "ToolRegistration",
     "ToolRegistrySnapshot",
+    "PersonaSpec",
+    "PersonaAssignment",
 ]
