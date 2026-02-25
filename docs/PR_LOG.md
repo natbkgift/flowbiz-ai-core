@@ -1659,7 +1659,21 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-107 to PR-120)
+## PR-107: API playground
+
+**Goal:** Define API playground requirements and safety notes without implementing UI/frontend code in core.
+
+**Key Changes:**
+- Added `docs/API_PLAYGROUND_SPEC.md` with goals, non-goals, required features, and security notes
+- Explicitly marked playground implementation as out-of-scope for core
+
+**Status:** ✅ Merged
+
+**Notes:** Docs-only(out-of-scope); playground UI/proxy/hosting belongs in platform/docs web repo.
+
+---
+
+## Future PRs (PR-108 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
