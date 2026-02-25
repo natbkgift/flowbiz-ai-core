@@ -13,6 +13,7 @@ class PromptTemplateSpec(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
     name: str
+    version: str = "v1"
     template: str
     variables: list[str] = Field(default_factory=list)
     description: str | None = None
@@ -24,6 +25,7 @@ class PromptRenderRequest(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
     template_name: str
+    version: str | None = None
     variables: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -34,5 +36,6 @@ class PromptRenderResult(BaseModel):
 
     status: Literal["ok", "error"]
     template_name: str
+    version: str | None = None
     prompt: str | None = None
     error: str | None = None

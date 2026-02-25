@@ -469,6 +469,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-028.3: Prompt versioning
+
+**Goal:** Add deterministic prompt versioning support to template registration and rendering.
+
+**Key Changes:**
+- Extended prompt contracts in `packages/core/contracts/prompt_template.py` with version fields
+- Upgraded `PromptTemplateRegistry` in `packages/core/prompt_templates.py` to store multiple versions per template
+- Added latest-version fallback rendering and explicit-version rendering support
+- Added tests for versioned behavior and sorted version listing in `tests/test_prompt_templates.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Core versioning primitives only; no runtime/provider orchestration coupling.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

@@ -78,3 +78,71 @@ def test_render_fails_for_unknown_template() -> None:
 
     assert result.status == "error"
     assert "not found" in (result.error or "")
+
+
+def test_render_uses_latest_version_when_not_specified() -> None:
+    registry = PromptTemplateRegistry()
+    registry.register(
+        PromptTemplateSpec(
+            name="assistant",
+            version="v1",
+            template="V1: {text}",
+            variables=["text"],
+        )
+    )
+    registry.register(
+        PromptTemplateSpec(
+            name="assistant",
+            version="v2",
+            template="V2: {text}",
+            variables=["text"],
+        )
+    )
+
+    result = registry.render(
+        PromptRenderRequest(template_name="assistant", variables={"text": "hello"})
+    )
+
+    assert result.status == "ok"
+    assert result.version == "v2"
+    assert result.prompt == "V2: hello"
+
+
+def test_render_with_explicit_version() -> None:
+    registry = PromptTemplateRegistry()
+    registry.register(
+        PromptTemplateSpec(
+            name="assistant",
+            version="v1",
+            template="Old: {text}",
+            variables=["text"],
+        )
+    )
+    registry.register(
+        PromptTemplateSpec(
+            name="assistant",
+            version="v2",
+            template="New: {text}",
+            variables=["text"],
+        )
+    )
+
+    result = registry.render(
+        PromptRenderRequest(
+            template_name="assistant",
+            version="v1",
+            variables={"text": "hello"},
+        )
+    )
+
+    assert result.status == "ok"
+    assert result.version == "v1"
+    assert result.prompt == "Old: hello"
+
+
+def test_list_versions_sorted() -> None:
+    registry = PromptTemplateRegistry()
+    registry.register(PromptTemplateSpec(name="a", version="v2", template="x", variables=[]))
+    registry.register(PromptTemplateSpec(name="a", version="v1", template="x", variables=[]))
+
+    assert registry.list_versions("a") == ["v1", "v2"]
