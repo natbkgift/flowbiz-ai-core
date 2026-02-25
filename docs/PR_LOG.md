@@ -568,6 +568,23 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-034: Infra Agent ops guardrails (compose/health/logs only)
+
+**Goal:** Constrain infra agent shell commands to an allowlist of safe operations (compose, health checks, log viewing, system monitoring) with a deny-pattern blocklist for destructive commands.
+
+**Key Changes:**
+- Added `packages/core/ops_guardrail.py` with `OpsGuardrail` class and `OpsCommandResult` contract
+- Default allowed prefixes: docker compose/ps/logs, curl, tail, journalctl, df/du/free/uptime, ping/dig/ss, systemctl status
+- Deny patterns block: `rm -rf`, `mkfs`, `dd`, `shutdown/reboot/halt/poweroff`, `chmod 777`, writes to `/dev/`
+- Word-boundary prefix matching prevents false positives (e.g., `ss` vs `ssh`)
+- Added 44 tests in `tests/test_ops_guardrail.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Guardrail checker only; not yet integrated into execution pipeline.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

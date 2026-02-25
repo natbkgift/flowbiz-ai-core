@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-033-docs-agent-safe-io-rules
+- Branch: feature/PR-034-infra-agent-ops-guardrails
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-033 — Docs Agent safe IO rules
-- Completed in this run: PR-029, PR-030, PR-031, PR-032, PR-033
-- Next PR: PR-034 — Infra Agent ops guardrails (compose/health/logs only)
+- Last merged PR (per docs/PR_LOG.md): PR-034 — Infra Agent ops guardrails
+- Completed in this run: PR-029, PR-030, PR-031, PR-032, PR-033, PR-034
+- Next PR: PR-035 — Execution pipeline v1
 - Persona: persona:core
 - Scope class: in-scope
-- Checks: ruff=PASS, pytest=PASS (299 tests)
-- Notes: Canonical persona policies with least-privilege rules.
+- Checks: ruff=PASS, pytest=PASS (343 tests)
+- Notes: Ops command guardrails with prefix allowlist + deny patterns.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -27,9 +27,9 @@
 - 2026-02-25 | PR-031 | Tool permissions per persona | in-scope | (pending) | ruff PASS | pytest PASS | deny-first tool permission checker
 - 2026-02-25 | PR-032 | Agent config loader | in-scope | (pending) | ruff PASS | pytest PASS | agent config contracts + dict-based loader
 - 2026-02-25 | PR-033 | Docs Agent safe IO rules | in-scope | (pending) | ruff PASS | pytest PASS | canonical persona policies with least-privilege
+- 2026-02-25 | PR-034 | Infra Agent ops guardrails | in-scope | (pending) | ruff PASS | pytest PASS | ops command guardrails with prefix allowlist + deny patterns
 
 ## 3) Remaining (ordered)
-- PR-034: Infra Agent ops guardrails (compose/health/logs only)
 - PR-035: Execution pipeline v1 (steps, stop conditions)
 - PR-036: Short-term memory object (in-memory)
 - PR-037: Conversation state schema (deterministic)
