@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 from packages.core.contracts.integrations import (
+    LineOAConnectorConfig,
+    LineOAConnectorStub,
+    LineOAReplyRequest,
+    LineOAWebhookEvent,
     SlackConnectorConfig,
     SlackConnectorStub,
     SlackEventEnvelope,
@@ -33,3 +37,24 @@ class TestSlackConnectorContracts:
         sent = stub.sent_messages()
         assert len(sent) == 1
         assert sent[0].text == "hello"
+
+
+class TestLineOAConnectorContracts:
+    def test_line_config_defaults(self) -> None:
+        cfg = LineOAConnectorConfig(channel_id="2001")
+        assert cfg.enabled is True
+
+    def test_line_webhook_event(self) -> None:
+        event = LineOAWebhookEvent(
+            event_id="line-evt-1",
+            type="message",
+            user_id="U-line",
+            payload={"text": "hi"},
+        )
+        assert event.type == "message"
+        assert event.payload["text"] == "hi"
+
+    def test_line_stub_send(self) -> None:
+        stub = LineOAConnectorStub()
+        stub.send(LineOAReplyRequest(to_user_id="U1", messages=[{"type": "text"}]))
+        assert len(stub.sent_replies()) == 1

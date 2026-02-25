@@ -1,0 +1,12 @@
+{
+  "event_id": "line-evt-1",
+  "type": "message",
+  "user_id": "U123",
+  "reply_token": "reply-token-123",
+  "payload": {
+    "message": {
+      "type": "text",
+      "text": "hello"
+    }
+  }
+}

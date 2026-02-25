@@ -5,6 +5,7 @@ must be implemented outside `flowbiz-ai-core`.
 
 Current contents:
 - PR-111: Slack connector
+- PR-112: LINE OA connector
 """
 
 from __future__ import annotations
@@ -67,3 +68,54 @@ class SlackConnectorStub:
 
     def sent_messages(self) -> list[SlackMessageRequest]:
         return list(self._sent)
+
+
+# ── PR-112: LINE OA connector (contracts/stubs only) ─────────────────────
+
+LineEventType = Literal["message", "follow", "unfollow", "postback"]
+
+
+class LineOAConnectorConfig(BaseModel):
+    """LINE OA connector configuration contract."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    channel_id: str
+    channel_secret_ref: str = ""
+    channel_access_token_ref: str = ""
+    enabled: bool = True
+
+
+class LineOAWebhookEvent(BaseModel):
+    """LINE OA webhook event contract (normalized stub shape)."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    event_id: str
+    type: LineEventType
+    user_id: str = ""
+    reply_token: str | None = None
+    payload: dict[str, Any] = Field(default_factory=dict)
+
+
+class LineOAReplyRequest(BaseModel):
+    """LINE OA reply/push request contract (stub only)."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    to_user_id: str
+    messages: list[dict[str, Any]] = Field(default_factory=list)
+    reply_token: str | None = None
+
+
+class LineOAConnectorStub:
+    """In-memory LINE OA connector stub for contract testing."""
+
+    def __init__(self) -> None:
+        self._replies: list[LineOAReplyRequest] = []
+
+    def send(self, request: LineOAReplyRequest) -> None:
+        self._replies.append(request)
+
+    def sent_replies(self) -> list[LineOAReplyRequest]:
+        return list(self._replies)

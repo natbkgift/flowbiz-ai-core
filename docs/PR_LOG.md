@@ -1731,7 +1731,22 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
-## Future PRs (PR-112 to PR-120)
+## PR-112: LINE OA connector
+
+**Goal:** Define LINE OA connector contracts/stubs and docs in core without implementing real LINE integration.
+
+**Key Changes:**
+- Extended `packages/core/contracts/integrations.py` (PR-112 section) with LINE OA connector contracts and stub
+- Extended `tests/test_integrations_contracts.py` with LINE OA contract/stub tests
+- Added `docs/LINE_OA_CONNECTOR_SPEC.md` and `docs/contracts/stubs/integrations/line_oa_event.json`
+
+**Status:** ✅ Merged
+
+**Notes:** Contracts/stubs/docs only; webhook/signature/API integration belongs in platform/client layer.
+
+---
+
+## Future PRs (PR-113 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
 
