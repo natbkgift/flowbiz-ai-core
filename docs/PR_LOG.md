@@ -981,6 +981,119 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-061: Organization model
+
+**Goal:** Define the top-level tenant entity contract.
+
+**Key Changes:**
+- Added `packages/core/contracts/billing.py` with `Organization`, `InMemoryOrgStore`
+- 3 tests in `tests/test_billing_contracts.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Contract + stub only — billing implementation FORBIDDEN per SCOPE.md.
+
+---
+
+## PR-062: Project / workspace
+
+**Goal:** Define project/workspace entity within an organization.
+
+**Key Changes:**
+- Added `Project` contract to billing module
+
+**Status:** ✅ Merged
+
+---
+
+## PR-063: Usage tracking
+
+**Goal:** Define usage record and summary contracts.
+
+**Key Changes:**
+- Added `UsageRecord`, `UsageSummary`, `InMemoryUsageStore` to billing module
+
+**Status:** ✅ Merged
+
+---
+
+## PR-064: Quota system
+
+**Goal:** Define quota policy and check result contracts.
+
+**Key Changes:**
+- Added `QuotaPolicy`, `QuotaCheckResult`, `StubQuotaChecker` to billing module
+
+**Status:** ✅ Merged
+
+---
+
+## PR-065: Billing abstraction
+
+**Goal:** Define billing account contract.
+
+**Key Changes:**
+- Added `BillingAccount` with status/plan/payment references
+
+**Status:** ✅ Merged
+
+---
+
+## PR-066: Plan tiers
+
+**Goal:** Define subscription plan tier contracts.
+
+**Key Changes:**
+- Added `PlanDefinition` with tier, pricing, included limits, features
+
+**Status:** ✅ Merged
+
+---
+
+## PR-067: Invoice events
+
+**Goal:** Define invoice lifecycle event contract.
+
+**Key Changes:**
+- Added `InvoiceEvent` with status/amount/currency
+
+**Status:** ✅ Merged
+
+---
+
+## PR-068: Cost attribution
+
+**Goal:** Define cost entry and report contracts.
+
+**Key Changes:**
+- Added `CostEntry`, `CostReport` for per-resource cost attribution
+
+**Status:** ✅ Merged
+
+---
+
+## PR-069: Usage dashboard (docs-only)
+
+**Goal:** Document what Core exposes for a usage dashboard UI.
+
+**Key Changes:**
+- Added `docs/USAGE_DASHBOARD_DESIGN.md` — data sources, panels, implementation notes
+
+**Status:** ✅ Merged
+
+---
+
+## PR-070: Billing webhooks
+
+**Goal:** Define billing webhook payload contract.
+
+**Key Changes:**
+- Added `BillingWebhookPayload` with event types (invoice, subscription, quota)
+
+**Status:** ✅ Merged
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:

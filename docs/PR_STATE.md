@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-051-060-observability
+- Branch: feature/PR-061-070-org-billing
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-060 — Incident runbook
-- Completed in this run: PR-051–060
-- Next PR: PR-061 — Organization model
+- Last merged PR (per docs/PR_LOG.md): PR-070 — Billing webhooks
+- Completed in this run: PR-061–070
+- Next PR: PR-071 — Agent manifest
 - Persona: persona:core
-- Scope class: in-scope (contracts/docs)
-- Checks: ruff=PASS, pytest=PASS (544 tests)
-- Notes: Phase 7 complete — metrics, tracing, errors, analytics, alerting, uptime, runbook.
+- Scope class: contracts/stubs/docs (billing FORBIDDEN per SCOPE.md)
+- Checks: ruff=PASS, pytest=PASS (563 tests)
+- Notes: Phase 8 complete — org/billing contracts + stubs only.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -57,18 +57,18 @@
 - 2026-02-25 | PR-058 | Alert rules | in-scope | (pending) | ruff PASS | pytest PASS | alert rule + event contracts
 - 2026-02-25 | PR-059 | Uptime monitoring | in-scope | (pending) | ruff PASS | pytest PASS | uptime check + snapshot contracts
 - 2026-02-25 | PR-060 | Incident runbook | docs-only | (pending) | ruff PASS | pytest PASS | operational incident guidance
+- 2026-02-25 | PR-061 | Organization model | contracts/stubs | (pending) | ruff PASS | pytest PASS | org entity + in-memory store
+- 2026-02-25 | PR-062 | Project / workspace | contracts/stubs | (pending) | ruff PASS | pytest PASS | project entity contract
+- 2026-02-25 | PR-063 | Usage tracking | contracts/stubs | (pending) | ruff PASS | pytest PASS | usage record + summary + store
+- 2026-02-25 | PR-064 | Quota system | contracts/stubs | (pending) | ruff PASS | pytest PASS | quota policy + check + stub checker
+- 2026-02-25 | PR-065 | Billing abstraction | contracts/stubs | (pending) | ruff PASS | pytest PASS | billing account contract
+- 2026-02-25 | PR-066 | Plan tiers | contracts/stubs | (pending) | ruff PASS | pytest PASS | plan definition contract
+- 2026-02-25 | PR-067 | Invoice events | contracts/stubs | (pending) | ruff PASS | pytest PASS | invoice event contract
+- 2026-02-25 | PR-068 | Cost attribution | contracts/stubs | (pending) | ruff PASS | pytest PASS | cost entry + report contracts
+- 2026-02-25 | PR-069 | Usage dashboard | docs-only | (pending) | ruff PASS | pytest PASS | dashboard design docs (UI forbidden)
+- 2026-02-25 | PR-070 | Billing webhooks | contracts/stubs | (pending) | ruff PASS | pytest PASS | billing webhook payload contract
 
 ## 3) Remaining (ordered)
-- PR-061: Organization model
-- PR-062: Project / workspace
-- PR-063: Usage tracking
-- PR-064: Quota system
-- PR-065: Billing abstraction
-- PR-066: Plan tiers
-- PR-067: Invoice events
-- PR-068: Cost attribution
-- PR-069: Usage dashboard
-- PR-070: Billing webhooks
 - PR-071: Agent manifest
 - PR-072: Tool manifest
 - PR-073: Agent versioning
