@@ -95,7 +95,15 @@ class PromptTemplateRegistry:
                 ),
             )
 
-        rendered = spec.template.format(**request.variables)
+        try:
+            rendered = spec.template.format(**request.variables)
+        except KeyError as exc:
+            return PromptRenderResult(
+                status="error",
+                template_name=request.template_name,
+                version=spec.version,
+                error=(f"Template contains undeclared placeholder: {exc}"),
+            )
         return PromptRenderResult(
             status="ok",
             template_name=request.template_name,

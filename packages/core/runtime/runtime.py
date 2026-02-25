@@ -37,10 +37,10 @@ class AgentRuntime:
 
     def register_agent(self, agent: AgentBase) -> None:
         """Register an agent in the runtime registry."""
-        self._agents[agent.name] = agent
         self._registry.register(
             AgentSpec(agent_name=agent.name, description=agent.__class__.__name__)
         )
+        self._agents[agent.name] = agent
 
     def set_agent_enabled(self, agent_name: str, enabled: bool) -> None:
         """Enable or disable an agent in the runtime registry."""

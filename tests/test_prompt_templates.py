@@ -153,3 +153,21 @@ def test_list_versions_sorted() -> None:
     )
 
     assert registry.list_versions("a") == ["v1", "v2"]
+
+
+def test_render_undeclared_placeholder_in_template() -> None:
+    """P1: template contains {name} but variables=[] — should return error, not raise."""
+    registry = PromptTemplateRegistry()
+    registry.register(
+        PromptTemplateSpec(
+            name="bad",
+            version="v1",
+            template="Hello {name}",
+            variables=[],
+        )
+    )
+
+    result = registry.render(PromptRenderRequest(template_name="bad", variables={}))
+
+    assert result.status == "error"
+    assert "undeclared placeholder" in result.error.lower()
