@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-040-044-api-endpoints-tests
+- Branch: feature/PR-044.1-044.14-workflow-auth
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-044 — Smoke tests
-- Completed in this run: PR-040, PR-041, PR-042, PR-043, PR-044
-- Next PR: PR-044.1 — Workflow schema v2
+- Last merged PR (per docs/PR_LOG.md): PR-044.14 — api.flowbiz.cloud (docs)
+- Completed in this run: PR-044.1–044.14
+- Next PR: PR-045 — Versioned API (v1/v2)
 - Persona: persona:core
-- Scope class: in-scope
-- Checks: ruff=PASS, pytest=PASS (427 tests)
-- Notes: Phase 4 complete — API endpoints + golden-path/failure/smoke tests.
+- Scope class: in-scope (contracts/docs)
+- Checks: ruff=PASS, pytest=PASS (464 tests)
+- Notes: Phase 5 complete — workflow contracts, auth, rate limiting, gateway docs.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -38,22 +38,11 @@
 - 2026-02-25 | PR-042 | Golden-path tests | in-scope | (pending) | ruff PASS | pytest PASS | 10 happy-path integration tests
 - 2026-02-25 | PR-043 | Failure scenario tests | in-scope | (pending) | ruff PASS | pytest PASS | 10 error/edge-case tests
 - 2026-02-25 | PR-044 | Smoke tests | in-scope | (pending) | ruff PASS | pytest PASS | 14 parametrized smoke tests
+- 2026-02-25 | PR-044.1–044.10 | Workflow contracts | in-scope | (pending) | ruff PASS | pytest PASS | workflow schema v2 + conditions + parallel + HITL + state + audit + replay + export + visual
+- 2026-02-25 | PR-044.11–044.13 | Auth contracts | in-scope | (pending) | ruff PASS | pytest PASS | API key + RBAC + rate limiting contracts/stubs
+- 2026-02-25 | PR-044.14 | api.flowbiz.cloud | docs-only | (pending) | ruff PASS | pytest PASS | gateway design docs (out-of-scope implementation)
 
 ## 3) Remaining (ordered)
-- PR-044.1: Workflow schema v2
-- PR-044.2: Step condition engine
-- PR-044.3: Parallel steps
-- PR-044.4: Human-in-the-loop
-- PR-044.5: Workflow pause / resume
-- PR-044.6: Workflow state persistence
-- PR-044.7: Workflow audit trail
-- PR-044.8: Workflow replay
-- PR-044.9: Workflow import/export
-- PR-044.10: Visual workflow JSON spec
-- PR-044.11: API key auth
-- PR-044.12: Role / permission model
-- PR-044.13: Rate limiting
-- PR-044.14: api.flowbiz.cloud
 - PR-045: Versioned API (v1/v2)
 - PR-046: Webhook framework
 - PR-047: Webhook retry & signature

@@ -731,6 +731,61 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-044.1 to PR-044.10: Workflow contracts (schema v2, conditions, parallel, HITL, pause/resume, state, audit, replay, import/export, visual spec)
+
+**Goal:** Define comprehensive workflow contract schemas covering the full lifecycle from definition through execution, auditing, and visualization.
+
+**Key Changes:**
+- Added `packages/core/contracts/workflow.py` with 15+ Pydantic contracts:
+  - PR-044.1: `WorkflowSpec`, `WorkflowStepDef` (workflow schema v2)
+  - PR-044.2: `StepCondition`, `evaluate_condition()` (step condition engine)
+  - PR-044.3: `ParallelGroup` (parallel steps with join strategies)
+  - PR-044.4: `HITLRequest` (human-in-the-loop)
+  - PR-044.5: `WorkflowPauseEvent`, `WorkflowResumeEvent`
+  - PR-044.6: `WorkflowState`, `InMemoryWorkflowStateStore`
+  - PR-044.7: `WorkflowAuditEntry` (audit trail)
+  - PR-044.8: `WorkflowReplayRequest`
+  - PR-044.9: `WorkflowExport` (import/export)
+  - PR-044.10: `WorkflowVisualSpec`, `WorkflowNodePosition`
+- Added 25 tests in `tests/test_workflow_contracts.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Schema-only contracts with in-memory stubs; actual orchestration engine is deferred.
+
+---
+
+## PR-044.11 to PR-044.13: Auth contracts (API key, RBAC, rate limiting)
+
+**Goal:** Define authentication, authorization, and rate limiting contracts/stubs for the API layer.
+
+**Key Changes:**
+- Added `packages/core/contracts/auth.py` with:
+  - PR-044.11: `APIKeyInfo`, `APIKeyValidationResult`, `StubAPIKeyValidator`
+  - PR-044.12: `RoleDefinition`, `PrincipalRoles`, `check_permission()`
+  - PR-044.13: `RateLimitPolicy`, `RateLimitResult`, `InMemoryRateLimiter`
+- Added 15 tests in `tests/test_auth_contracts.py`
+
+**Status:** ✅ Merged
+
+**Notes:** Stub implementations for development; production backends (Redis, DB) belong in platform layer.
+
+---
+
+## PR-044.14: api.flowbiz.cloud (docs-only)
+
+**Goal:** Document the public API gateway design intent for api.flowbiz.cloud.
+
+**Key Changes:**
+- Added `docs/API_GATEWAY_DESIGN.md` with gateway architecture, integration pattern, and platform-side next steps
+- Explicitly marked as out-of-scope per `docs/SCOPE.md` — implementation belongs in platform repo
+
+**Status:** ✅ Merged
+
+**Notes:** Docs-only; no runtime code. References auth contracts from PR-044.11–044.13.
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
