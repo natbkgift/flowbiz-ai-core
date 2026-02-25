@@ -2,15 +2,15 @@
 
 ## 1) Current Snapshot
 - Last updated: 2026-02-25
-- Branch: feature/PR-061-070-org-billing
+- Branch: feature/PR-071-080-marketplace
 - HEAD: (pending commit)
-- Last merged PR (per docs/PR_LOG.md): PR-070 — Billing webhooks
-- Completed in this run: PR-061–070
-- Next PR: PR-071 — Agent manifest
+- Last merged PR (per docs/PR_LOG.md): PR-080 — Marketplace UI API
+- Completed in this run: PR-071–080
+- Next PR: PR-081 — Secrets manager
 - Persona: persona:core
-- Scope class: contracts/stubs/docs (billing FORBIDDEN per SCOPE.md)
-- Checks: ruff=PASS, pytest=PASS (563 tests)
-- Notes: Phase 8 complete — org/billing contracts + stubs only.
+- Scope class: contracts/stubs/docs
+- Checks: ruff=PASS, pytest=PASS (586 tests)
+- Notes: Phase 9 complete — marketplace manifests, versioning, sandbox, ratings, install.
 
 ## 2) Completed (append-only)
 - 2026-02-25 | PR-024.1 | Contract Package (schema-only) | in-scope | eff5b28 | ruff PASS | pytest PASS | docs+tests only, no deploy/integration changes
@@ -67,18 +67,18 @@
 - 2026-02-25 | PR-068 | Cost attribution | contracts/stubs | (pending) | ruff PASS | pytest PASS | cost entry + report contracts
 - 2026-02-25 | PR-069 | Usage dashboard | docs-only | (pending) | ruff PASS | pytest PASS | dashboard design docs (UI forbidden)
 - 2026-02-25 | PR-070 | Billing webhooks | contracts/stubs | (pending) | ruff PASS | pytest PASS | billing webhook payload contract
+- 2026-02-25 | PR-071 | Agent manifest | contracts/stubs | (pending) | ruff PASS | pytest PASS | declarative agent manifest
+- 2026-02-25 | PR-072 | Tool manifest | contracts/stubs | (pending) | ruff PASS | pytest PASS | declarative tool manifest
+- 2026-02-25 | PR-073 | Agent versioning | contracts/stubs | (pending) | ruff PASS | pytest PASS | versioned release contract
+- 2026-02-25 | PR-074 | Agent sandbox | contracts/stubs | (pending) | ruff PASS | pytest PASS | sandbox config + state
+- 2026-02-25 | PR-075 | Permission isolation | contracts/stubs | (pending) | ruff PASS | pytest PASS | permission boundary + check
+- 2026-02-25 | PR-076 | Marketplace API | contracts/stubs | (pending) | ruff PASS | pytest PASS | search + listing + stub store
+- 2026-02-25 | PR-077 | Agent rating | contracts/stubs | (pending) | ruff PASS | pytest PASS | rating + summary contracts
+- 2026-02-25 | PR-078 | Agent install/update | contracts/stubs | (pending) | ruff PASS | pytest PASS | installation + update request
+- 2026-02-25 | PR-079 | Agent usage analytics | contracts/stubs | (pending) | ruff PASS | pytest PASS | usage metrics contract
+- 2026-02-25 | PR-080 | Marketplace UI API | docs-only | (pending) | ruff PASS | pytest PASS | marketplace UI design docs
 
 ## 3) Remaining (ordered)
-- PR-071: Agent manifest
-- PR-072: Tool manifest
-- PR-073: Agent versioning
-- PR-074: Agent sandbox
-- PR-075: Permission isolation
-- PR-076: Marketplace API
-- PR-077: Agent rating
-- PR-078: Agent install/update
-- PR-079: Agent usage analytics
-- PR-080: Marketplace UI API
 - PR-081: Secrets manager
 - PR-082: Key rotation
 - PR-083: Audit log

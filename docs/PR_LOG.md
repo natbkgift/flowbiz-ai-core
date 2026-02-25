@@ -1094,6 +1094,118 @@ This document tracks the history of pull requests for FlowBiz AI Core, summarizi
 
 ---
 
+## PR-071: Agent manifest
+
+**Goal:** Define declarative agent manifest for marketplace listing.
+
+**Key Changes:**
+- Added `packages/core/contracts/marketplace.py` with `AgentManifest` (category, tags, required tools/permissions, config schema)
+- Tests in `tests/test_marketplace_contracts.py`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-072: Tool manifest
+
+**Goal:** Define declarative tool manifest.
+
+**Key Changes:**
+- Added `ToolManifest` with category, input/output schema, required permissions
+
+**Status:** ✅ Merged
+
+---
+
+## PR-073: Agent versioning
+
+**Goal:** Define versioned agent release contracts.
+
+**Key Changes:**
+- Added `AgentVersion` with status (draft/published/deprecated/archived) and changelog
+
+**Status:** ✅ Merged
+
+---
+
+## PR-074: Agent sandbox
+
+**Goal:** Define sandbox configuration and state contracts.
+
+**Key Changes:**
+- Added `SandboxConfig` (memory/CPU limits, timeout, network access) and `SandboxState`
+
+**Status:** ✅ Merged
+
+---
+
+## PR-075: Permission isolation
+
+**Goal:** Define permission boundary contracts for marketplace agents.
+
+**Key Changes:**
+- Added `PermissionBoundary` with isolation levels and `check_resource_access()` function
+
+**Status:** ✅ Merged
+
+---
+
+## PR-076: Marketplace API
+
+**Goal:** Define marketplace search and listing contracts.
+
+**Key Changes:**
+- Added `MarketplaceSearchRequest`, `MarketplaceListing`, `MarketplaceSearchResult`
+- Added `InMemoryMarketplace` stub store
+
+**Status:** ✅ Merged
+
+---
+
+## PR-077: Agent rating
+
+**Goal:** Define agent rating and summary contracts.
+
+**Key Changes:**
+- Added `AgentRating`, `AgentRatingSummary` with score distribution
+
+**Status:** ✅ Merged
+
+---
+
+## PR-078: Agent install/update
+
+**Goal:** Define agent installation and update request contracts.
+
+**Key Changes:**
+- Added `AgentInstallation`, `AgentUpdateRequest` with auto-migrate config flag
+
+**Status:** ✅ Merged
+
+---
+
+## PR-079: Agent usage analytics
+
+**Goal:** Define marketplace agent usage metrics.
+
+**Key Changes:**
+- Added `AgentUsageMetrics` with invocations, unique users, response time, error rate
+
+**Status:** ✅ Merged
+
+---
+
+## PR-080: Marketplace UI API (docs-only)
+
+**Goal:** Document marketplace UI design and API endpoints.
+
+**Key Changes:**
+- Added `docs/MARKETPLACE_UI_DESIGN.md` — endpoints, panels, implementation notes
+
+**Status:** ✅ Merged
+
+---
+
 ## Future PRs (PR-015 to PR-120)
 
 This section is reserved for future pull requests. Each PR should follow the same format:
